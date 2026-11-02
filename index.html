@@ -1,0 +1,1668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>China Trip Planner</title>
+<meta name="description" content="Our Shanghai & Chongqing trip: day-by-day plan, city guides with photos, map and checklists.">
+<meta name="theme-color" content="#F6F7F9">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon.svg">
+<script>
+(function(){try{var t=localStorage.getItem("chinaTrip.theme");if(!t)t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t;}catch(e){document.documentElement.dataset.theme="light";}})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ---------- tokens ---------- */
+:root{
+  --bg:#F6F7F9; --surface:#FFFFFF; --surface-2:#F1F3F5; --hover:#EBEDF0;
+  --ink:#16181D; --ink-2:#4B515C; --muted:#80868F;
+  --line:#E6E8EC; --line-2:#D7DAE0;
+  --sh:#3E63DD; --cq:#E5484D; --ok:#18794E; --warn:#AD5700;
+  --cn:"PingFang SC","Hiragino Sans GB","Noto Sans SC","Noto Sans CJK SC","Microsoft YaHei",sans-serif;
+  --pad:24px;
+  color-scheme:light;
+}
+[data-theme="dark"]{
+  --bg:#111215; --surface:#18191D; --surface-2:#212328; --hover:#2A2C32;
+  --ink:#EDEEF0; --ink-2:#B9BEC6; --muted:#868B94;
+  --line:#26282D; --line-2:#363940;
+  --sh:#8DA4EF; --cq:#FF6369; --ok:#4CC38A; --warn:#FFA057;
+  color-scheme:dark;
+}
+@media (max-width:600px){:root{--pad:16px}}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15.5px/1.55 Manrope,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{margin:0;font-weight:700;letter-spacing:-.015em;line-height:1.25}
+p{margin:0}
+a{color:inherit}
+button,input,select,textarea{font:inherit;color:inherit}
+.zh{font-family:var(--cn)}
+.muted{color:var(--muted)}
+:focus-visible{outline:2px solid var(--sh);outline-offset:2px;border-radius:8px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.ic{flex:none;display:block}
+
+/* ---------- top bar ---------- */
+.top{position:sticky;top:0;z-index:30;background:var(--bg);border-bottom:1px solid var(--line)}
+.top-in{max-width:1120px;margin:0 auto;height:64px;padding:0 var(--pad);display:flex;align-items:center;gap:12px}
+.mark{flex:none}
+.title-in{flex:1;min-width:0;height:36px;background:transparent;border:0;font-size:17px;font-weight:700;letter-spacing:-.01em;padding:0 8px;margin-left:-8px;border-radius:8px;text-overflow:ellipsis}
+.title-in:hover,.title-in:focus{outline:none;background:var(--surface-2)}
+.nav{display:flex;gap:4px}
+.nav button{height:36px;border:0;background:transparent;cursor:pointer;display:flex;align-items:center;gap:8px;padding:0 12px;border-radius:9px;color:var(--ink-2);font-weight:600;font-size:14.5px;white-space:nowrap}
+.nav button:hover{background:var(--surface-2);color:var(--ink)}
+.nav button[aria-current="page"]{background:var(--surface-2);color:var(--ink)}
+.count{font-size:14px;color:var(--muted);white-space:nowrap;padding-left:8px}
+.count b{color:var(--ink);font-weight:700}
+@media (max-width:899px){
+  .top .nav{position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--surface);border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom));gap:0}
+  .nav button{flex:1;height:auto;flex-direction:column;gap:3px;font-size:11px;padding:6px 0;border-radius:10px}
+  .nav button[aria-current="page"]{background:transparent;color:var(--ink)}
+  .nav button[aria-current="page"] .ic{color:var(--sh)}
+  .count{display:none}
+  main{padding-bottom:110px!important}
+}
+
+main{max-width:1120px;margin:0 auto;padding:32px var(--pad) 64px}
+.view{display:none}
+.view.on{display:block}
+
+/* ---------- controls ---------- */
+.btn{height:40px;padding:0 16px;border-radius:10px;border:1px solid var(--line-2);background:var(--surface);color:var(--ink);font-weight:600;font-size:14.5px;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn:hover{background:var(--surface-2)}
+.btn.primary{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.btn.primary:hover{opacity:.88;background:var(--ink)}
+.btn.sm{height:34px;padding:0 12px;font-size:14px;border-radius:9px}
+.btn.ghost{border-color:transparent;background:transparent}
+.btn.ghost:hover{background:var(--surface-2)}
+.btn.block{width:100%}
+.btn.dashed{border-style:dashed;color:var(--ink-2)}
+.ibtn{width:32px;height:32px;border:0;background:transparent;border-radius:8px;display:inline-grid;place-items:center;cursor:pointer;color:var(--muted);flex:none}
+.ibtn:hover{background:var(--surface-2);color:var(--ink)}
+.field{display:block;min-width:0}
+.field>span{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:6px}
+.in{display:block;width:100%;min-width:0;height:40px;border:1px solid var(--line-2);background:var(--surface);border-radius:10px;padding:0 12px;font-size:14.5px}
+textarea.in{height:auto;padding:10px 12px;resize:vertical;line-height:1.5}
+input[type="date"].in,input[type="time"].in{padding:0 10px}
+.in:focus{outline:none;border-color:var(--sh);box-shadow:0 0 0 3px color-mix(in srgb,var(--sh) 22%,transparent)}
+.seg{display:inline-flex;background:var(--surface-2);border-radius:11px;padding:3px;gap:2px}
+.seg button{height:34px;border:0;background:transparent;border-radius:8px;padding:0 14px;cursor:pointer;color:var(--ink-2);font-weight:600;font-size:14px;white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(16,24,40,.08),0 0 0 1px var(--line)}
+.pill{display:inline-flex;align-items:center;gap:6px;height:28px;font-size:13px;font-weight:600;border:1px solid var(--line-2);border-radius:999px;padding:0 11px;color:var(--ink-2);text-decoration:none;background:var(--surface);cursor:pointer;white-space:nowrap}
+a.pill:hover,button.pill:hover{background:var(--surface-2);color:var(--ink)}
+.tag{display:inline-flex;align-items:center;height:24px;padding:0 9px;border-radius:6px;font-size:12.5px;font-weight:600;background:var(--surface-2);color:var(--ink-2)}
+.tag-pork{background:color-mix(in srgb,#D6336C 12%,transparent);color:#C2255C}
+.tag-halal{background:color-mix(in srgb,var(--ok) 14%,transparent);color:var(--ok)}
+.tag-spicy{background:color-mix(in srgb,var(--cq) 13%,transparent);color:var(--cq)}
+[data-theme="dark"] .tag-pork{color:#F783AC}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--c);flex:none}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px}
+
+/* ---------- plan ---------- */
+.plan{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:32px;align-items:start}
+.plan>*{min-width:0}
+@media (max-width:979px){.plan{grid-template-columns:minmax(0,1fr)}}
+.plan-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+
+.strip{display:flex;gap:8px;overflow-x:auto;margin-top:16px;padding:2px 2px 6px;margin-left:-2px;scrollbar-width:none}
+.strip::-webkit-scrollbar{display:none}
+.daychip{flex:none;width:100px;padding:10px 8px;border:1px solid var(--line);background:var(--surface);border-radius:12px;cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:2px}
+.daychip:hover{border-color:var(--line-2);background:var(--surface-2)}
+.daychip small{font-size:12px;font-weight:600;color:var(--muted);line-height:16px}
+.daychip b{font-size:18px;font-weight:700;line-height:24px;letter-spacing:-.01em}
+.daychip span{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--ink-2);line-height:16px;white-space:nowrap;overflow:hidden}
+.daychip[aria-current="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.daychip[aria-current="true"] small,.daychip[aria-current="true"] span{color:color-mix(in srgb,var(--bg) 75%,transparent)}
+
+.daycard{margin-top:16px;background:var(--surface);border:1px solid var(--line);border-radius:16px}
+.daycard+.daycard{margin-top:16px}
+.dayhead{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px var(--pad);border-bottom:1px solid var(--line)}
+.dayhead h2{font-size:22px}
+.dayhead p{font-size:14.5px;color:var(--muted);margin-top:2px}
+.dayinfo{display:flex;flex-direction:column;align-items:flex-end;gap:4px;text-align:right}
+.dayinfo .cities{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14.5px}
+.dayinfo .cities span{display:inline-flex;align-items:center;gap:6px}
+.dayinfo .cities em{font-style:normal;font-weight:500;color:var(--muted)}
+.dayinfo .wx{font-size:13.5px;color:var(--muted)}
+
+.stops{list-style:none;margin:0;padding:8px var(--pad)}
+.stop{display:grid;grid-template-columns:52px 16px minmax(0,1fr) auto;grid-template-areas:"time rail body tools";column-gap:16px}
+.stop .time{grid-area:time;padding:16px 0;font-size:14px;font-weight:700;line-height:24px;font-variant-numeric:tabular-nums}
+.stop .time small{display:block;white-space:nowrap;font-size:12.5px;font-weight:500;color:var(--muted);line-height:18px}
+.stop .rail{grid-area:rail;position:relative}
+.stop .rail::before{content:"";position:absolute;left:7px;top:0;bottom:0;width:2px;background:color-mix(in srgb,var(--c) 30%,transparent)}
+.stop:first-child .rail::before{top:28px}
+.stop.add .rail::before{bottom:auto;height:28px}
+.stop:first-child.add .rail::before{display:none}
+.stop .rail i{position:absolute;left:3px;top:23px;width:10px;height:10px;border-radius:50%;background:var(--c);box-shadow:0 0 0 3px var(--surface)}
+.stop.done .rail i{background:var(--surface);border:2px solid var(--c);width:10px;height:10px}
+.stop.add .rail i{background:var(--surface);border:2px dashed var(--line-2)}
+.stop .body{grid-area:body;padding:16px 0;min-width:0}
+.stop h3{font-size:15.5px;line-height:24px;font-weight:700;letter-spacing:-.01em}
+.stop.done h3{color:var(--muted);text-decoration:line-through}
+.meta{display:flex;flex-wrap:wrap;gap:2px 14px;margin-top:2px;font-size:13.5px;color:var(--muted);line-height:20px}
+.meta span{display:inline-flex;align-items:center;gap:5px}
+.meta .warn{color:var(--warn);font-weight:600}
+.notes{margin-top:6px;font-size:14px;color:var(--ink-2);white-space:pre-wrap;max-width:62ch}
+.links{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.stop .tools{grid-area:tools;display:flex;gap:2px;padding-top:12px}
+.addline{display:inline-flex;align-items:center;gap:8px;height:24px;border:0;background:transparent;padding:0;cursor:pointer;color:var(--ink-2);font-weight:700;font-size:14.5px}
+.addline:hover{color:var(--ink)}
+.freeday{font-size:14px;color:var(--muted);line-height:24px}
+.freeday+.addline{margin-top:4px}
+@media (max-width:600px){
+  .dayhead{align-items:flex-start}
+  .stop{grid-template-columns:48px 16px minmax(0,1fr);grid-template-areas:"time rail body" "time rail tools";column-gap:12px}
+  .stop .body{padding-bottom:4px}
+  .stop .tools{padding:0 0 12px;margin-left:-8px}
+}
+
+.empty{padding:48px var(--pad);text-align:left}
+.empty h2{font-size:26px}
+.empty p{color:var(--ink-2);margin-top:8px;max-width:46ch}
+.empty .row{display:flex;gap:8px;margin-top:20px;flex-wrap:wrap}
+
+/* aside */
+.aside{position:sticky;top:88px}
+@media (max-width:979px){.aside{position:static}}
+.aside>section{padding:20px}
+.aside>section+section{border-top:1px solid var(--line)}
+.aside h3{font-size:14.5px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.aside h3 small{font-size:12.5px;font-weight:600;color:var(--muted)}
+.city{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+.city+.city{margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
+.cityname{grid-column:1/-1;display:flex;align-items:center;gap:10px}
+.cityname .in{flex:1;font-weight:700}
+.city .nights{grid-column:1/-1;font-size:13px;color:var(--muted);margin-top:-2px}
+.aside .btn.dashed{margin-top:16px}
+.together{margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
+.totals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.totals div{background:var(--surface-2);border-radius:10px;padding:10px 12px}
+.totals b{display:block;font-size:20px;font-weight:700;line-height:28px}
+.totals span{font-size:12.5px;font-weight:600;color:var(--muted)}
+.budget{margin-top:12px;font-size:14px;color:var(--ink-2)}
+.budget b{color:var(--ink)}
+.conv{display:grid;grid-template-columns:minmax(0,1fr) 104px;gap:8px}
+.conv-out{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.conv-out div{background:var(--surface-2);border-radius:10px;padding:8px 12px;font-weight:700;font-size:15px}
+.conv-out small{display:block;font-size:12px;font-weight:600;color:var(--muted)}
+.tools-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
+.tools-grid .btn{justify-content:flex-start;padding:0 12px}
+.tools-grid .full{grid-column:1/-1;justify-content:center}
+.danger{color:var(--cq)!important}
+
+/* ---------- guides ---------- */
+.ghero{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:32px;margin-top:24px;align-items:start}
+@media (max-width:899px){.ghero{grid-template-columns:minmax(0,1fr)}}
+.gtitle{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.gtitle h1{font-size:40px;letter-spacing:-.03em;line-height:1.1}
+.gtitle span{font-size:16px;color:var(--muted);font-weight:600}
+.gtag{font-size:18px;font-weight:700;color:var(--ink-2);margin-top:12px;letter-spacing:-.01em;max-width:40ch}
+.gintro{margin-top:10px;color:var(--ink-2);max-width:62ch}
+.kv{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 24px;margin-top:20px;border-top:1px solid var(--line)}
+.kv div{padding:12px 0;border-bottom:1px solid var(--line)}
+.kv dt{font-size:12.5px;font-weight:600;color:var(--muted)}
+.kv dd{margin:2px 0 0;font-weight:600;font-size:14.5px}
+.wxcard{padding:20px}
+.wxnow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid var(--line)}
+.wxnow b{font-size:32px;font-weight:700;letter-spacing:-.02em;line-height:1}
+.wxnow span{font-size:14px;color:var(--ink-2);text-align:right}
+.wxcard h4{font-size:14px}
+.wxcard p{font-size:13.5px;color:var(--muted);margin-top:2px}
+.bars{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:4px;align-items:end;height:112px;margin-top:14px}
+.bars div{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;font-size:11px;font-weight:600;color:var(--muted)}
+.bars i{display:block;width:100%;max-width:18px;border-radius:4px;background:var(--surface-2);margin:4px 0}
+.bars em{font-style:normal;font-size:10.5px}
+.bars .hl{color:var(--ink)}
+.bars .hl i{background:var(--c)}
+
+.sec{margin-top:48px}
+.sec-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:16px}
+.sec-h h2{font-size:22px}
+.sec-h p{color:var(--muted);font-size:14px}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.cards{grid-template-columns:minmax(0,1fr)}}
+.spot{display:flex;flex-direction:column;padding:20px;background:var(--surface);border:1px solid var(--line);border-radius:14px}
+.spot-h{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.spot h3{font-size:16px}
+.spot-h .zh{font-size:14px;color:var(--muted)}
+.spot p{margin-top:6px;font-size:14.5px;color:var(--ink-2)}
+.spot .tip{margin-top:8px;font-size:14px;color:var(--muted)}
+.spot .tip b{color:var(--ink-2);font-weight:700}
+.spot-f{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:auto;padding-top:16px}
+.spot-f .grow{flex:1}
+.note{margin-top:12px;padding:16px 20px;border-radius:14px;background:color-mix(in srgb,var(--ok) 9%,var(--surface));border:1px solid color-mix(in srgb,var(--ok) 22%,transparent);font-size:14.5px;color:var(--ink-2)}
+.note b{color:var(--ink)}
+.cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px}
+@media (max-width:760px){.cols{grid-template-columns:minmax(0,1fr)}}
+.plain{list-style:none;margin:0;padding:0}
+.plain li{padding:14px 0;border-top:1px solid var(--line);font-size:15px;color:var(--ink-2);display:flex;gap:12px}
+.plain li:last-child{border-bottom:1px solid var(--line)}
+.plain .y{color:var(--ok)}
+.plain .n{color:var(--cq)}
+.plain .y,.plain .n{flex:none;margin-top:2px}
+
+/* basics */
+.pagehead h1{font-size:40px;letter-spacing:-.03em;line-height:1.1}
+.pagehead p{color:var(--muted);margin-top:8px}
+.phrases{overflow:hidden}
+.phrase{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) minmax(0,.8fr) 32px;gap:16px;align-items:center;padding:12px 20px}
+.phrase+.phrase{border-top:1px solid var(--line)}
+.phrase .en{font-weight:700;font-size:14.5px}
+.phrase .py{color:var(--ink-2);font-size:14.5px}
+.phrase .hz{font-family:var(--cn);font-size:18px;font-weight:500}
+@media (max-width:600px){
+  .phrase{grid-template-columns:minmax(0,1fr) auto 32px;grid-template-areas:"en hz b" "py hz b";gap:0 12px;padding:12px 16px}
+  .phrase .en{grid-area:en}.phrase .py{grid-area:py;font-size:13.5px}.phrase .hz{grid-area:hz}.phrase .ibtn{grid-area:b}
+}
+
+/* lists */
+.listhead{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.progress{display:flex;align-items:center;gap:12px;margin:20px 0 12px;font-size:14px;font-weight:600;color:var(--ink-2)}
+.progress div{flex:1;height:6px;border-radius:9px;background:var(--surface-2);overflow:hidden}
+.progress i{display:block;height:100%;background:var(--ink);transition:width .25s}
+.hint{font-size:14px;color:var(--muted);margin-bottom:12px}
+.checks{overflow:hidden}
+.check{display:flex;gap:14px;align-items:flex-start;padding:14px 20px;cursor:pointer}
+.check+.check{border-top:1px solid var(--line)}
+.check:hover{background:color-mix(in srgb,var(--surface-2) 50%,transparent)}
+.check input{width:18px;height:18px;accent-color:var(--ink);margin:3px 0 0;flex:none}
+.check .t{flex:1;min-width:0}
+.check .t b{font-weight:700;font-size:15px}
+.check .t .zh{color:var(--muted);margin-left:8px;font-size:14px}
+.check .t p{font-size:13.5px;color:var(--muted);margin-top:2px}
+.check.on .t b{color:var(--muted);text-decoration:line-through}
+.addrow{display:flex;gap:8px;margin-top:12px}
+
+/* map */
+.mapbar{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:16px}
+.mapwrap{position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--line);height:calc(100vh - 230px);min-height:420px;background:var(--surface-2)}
+@media (max-width:899px){.mapwrap{height:calc(100vh - 290px)}}
+#map{position:absolute;inset:0}
+.maplegend{display:flex;gap:16px;font-size:13.5px;font-weight:600;color:var(--ink-2);flex-wrap:wrap;margin-top:12px;align-items:center}
+.maplegend span{display:inline-flex;align-items:center;gap:6px}
+.maplegend i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.maplegend i.ring{background:transparent;border:2.5px solid var(--ink-2)}
+.maplegend .muted{font-weight:500}
+.mapmsg{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);text-align:center;padding:20px}
+.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--surface)!important;color:var(--ink)!important;box-shadow:0 8px 28px rgba(0,0,0,.18)!important}
+.leaflet-popup-content-wrapper{border-radius:12px!important}
+.leaflet-popup-content{margin:16px!important;font:14px/1.5 Manrope,sans-serif!important;min-width:210px}
+.leaflet-popup-content h4{font-size:15px}
+.leaflet-popup-content .zh{color:var(--muted);font-weight:500;font-size:13px}
+.leaflet-popup-content p{margin:4px 0 0!important;color:var(--ink-2)}
+.leaflet-container a.leaflet-popup-close-button{color:var(--muted)}
+.leaflet-control-zoom a{background:var(--surface)!important;color:var(--ink)!important;border-color:var(--line)!important}
+.leaflet-control-attribution{background:color-mix(in srgb,var(--surface) 85%,transparent)!important;color:var(--muted)!important}
+.leaflet-control-attribution a{color:var(--ink-2)!important}
+
+/* sheet */
+.sheet-bg{position:fixed;inset:0;z-index:60;background:rgba(10,12,16,.45);display:none;align-items:center;justify-content:center;padding:16px}
+.sheet-bg.on{display:flex}
+.sheet{width:100%;max-width:520px;max-height:92vh;overflow:auto;background:var(--surface);border-radius:18px;padding:24px;box-shadow:0 24px 70px rgba(0,0,0,.28);animation:up .18s ease}
+@keyframes up{from{transform:translateY(12px);opacity:0}to{transform:none;opacity:1}}
+@media (max-width:600px){.sheet-bg{align-items:flex-end;padding:0}.sheet{border-radius:20px 20px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom))}}
+.sheet h2{font-size:20px;margin-bottom:20px}
+.fgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px 12px}
+.fgrid .full{grid-column:1/-1}
+.catpick{display:flex;gap:6px;flex-wrap:wrap}
+.catpick button{height:34px;border:1px solid var(--line-2);background:var(--surface);border-radius:999px;padding:0 12px 0 10px;cursor:pointer;font-size:14px;font-weight:600;display:inline-flex;gap:6px;align-items:center;color:var(--ink-2)}
+.catpick button:hover{background:var(--surface-2)}
+.catpick button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.sheet-foot{display:flex;justify-content:flex-end;gap:8px;margin-top:24px}
+
+.bigphrase{position:fixed;inset:0;z-index:70;background:var(--surface);display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center;cursor:pointer}
+.bigphrase.on{display:flex}
+.bigphrase .hz{font-family:var(--cn);font-size:clamp(56px,16vw,128px);line-height:1.15;font-weight:600}
+.bigphrase .py{font-size:22px;color:var(--ink-2)}
+.bigphrase small{color:var(--muted);margin-top:16px}
+
+.banner{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:14px 16px 14px 20px;margin-bottom:24px}
+.banner p{font-size:14.5px}
+
+.toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,12px);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:14px;font-weight:600;opacity:0;transition:.2s;z-index:80;pointer-events:none;white-space:nowrap}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media (max-width:899px){.toast{bottom:100px}}
+
+@media print{
+  .top,.aside,.stop .tools,.links,.strip,.plan-head,.stop.add,.banner{display:none!important}
+  body{background:#fff;color:#000}
+  .view{display:none!important}
+  #v-plan{display:block!important}
+  .plan{display:block}
+  .daycard{break-inside:avoid}
+  .rail i,.rail::before{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+
+/* ---------- additions: photos, details, info ---------- */
+.ph{position:relative;overflow:hidden;background:linear-gradient(135deg,color-mix(in srgb,var(--c,var(--sh)) 24%,var(--surface-2)) 0%,var(--surface-2) 100%)}
+.ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .35s ease}
+.ph.loaded img{opacity:1}
+.ph .ph-ic{position:absolute;inset:0;display:grid;place-items:center;color:color-mix(in srgb,var(--c,var(--sh)) 50%,var(--muted))}
+.ph.loaded .ph-ic{display:none}
+[data-spot]{cursor:pointer}
+
+/* guide cards with photo on the left */
+.spot{display:grid;grid-template-columns:156px minmax(0,1fr);padding:0;overflow:hidden}
+.spot>.ph{min-height:100%;height:100%}
+.spot .sc{padding:18px 20px;display:flex;flex-direction:column;min-width:0}
+.spot h3 span[data-spot]:hover{text-decoration:underline;text-underline-offset:3px}
+@media (max-width:600px){.spot{grid-template-columns:minmax(0,1fr)}.spot>.ph{height:190px;min-height:0}.spot .sc{padding:16px}}
+.added{color:var(--ok)!important;border-color:color-mix(in srgb,var(--ok) 35%,transparent)!important}
+
+/* city weather card with photo */
+.wxcard{padding:0;overflow:hidden}
+.wxcard>.ph{height:170px}
+.wxcard .wxin{padding:18px 20px 20px}
+.wxnow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:14px;margin-bottom:14px;border-bottom:1px solid var(--line)}
+
+/* plan stop thumbnail */
+.stop:not(.add) .body{display:flex;gap:14px}
+.stop .body .tx{flex:1;min-width:0}
+.stop .body>.ph{width:64px;height:64px;border-radius:10px;flex:none;margin-top:4px}
+@media (max-width:600px){.stop .body>.ph{width:52px;height:52px}}
+
+/* souvenir thumbnails */
+.check .ph{width:48px;height:48px;border-radius:10px;flex:none}
+.check.withph{align-items:center}
+.check.withph input{margin-top:0}
+.check.on .ph{opacity:.5}
+
+/* basics */
+.infogrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.info{padding:18px 20px}
+.info .ico{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;background:var(--surface-2);color:var(--ink);margin-bottom:12px}
+.info h3{font-size:15px}
+.info p{font-size:14px;color:var(--ink-2);margin-top:4px}
+.info .big{margin-top:6px;display:grid;grid-template-columns:auto 1fr;gap:2px 12px;font-size:14px;color:var(--ink-2)}
+.info .big b{color:var(--ink);font-size:16px}
+
+/* place detail sheet */
+.spotsheet{padding:0;max-width:580px;position:relative}
+.spotsheet>.ph{height:300px}
+.spotsheet .sb{padding:22px 24px 24px}
+.spotsheet h2{font-size:22px;margin:0;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.spotsheet h2 .zh{font-size:16px;font-weight:500;color:var(--muted)}
+.spotsheet .sub{font-size:14px;color:var(--muted);margin-top:4px}
+.spotsheet .desc{margin-top:12px;font-size:15.5px;color:var(--ink-2)}
+.spotsheet .tipbox{margin-top:14px;background:var(--surface-2);border-radius:12px;padding:12px 14px;font-size:14.5px;color:var(--ink-2)}
+.spotsheet .tipbox b{color:var(--ink)}
+.spotsheet .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.spotsheet .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+.spotsheet .credit{margin-top:16px;font-size:12.5px;color:var(--muted)}
+.spotsheet .x{position:absolute;top:12px;right:12px;z-index:2;width:36px;height:36px;border-radius:50%;border:0;background:rgba(0,0,0,.5);color:#fff;display:grid;place-items:center;cursor:pointer}
+@media (max-width:600px){.spotsheet>.ph{height:220px}.spotsheet .sb{padding:18px 16px calc(20px + env(safe-area-inset-bottom))}}
+
+/* map extras */
+.mk{width:26px;height:26px;border-radius:50%;color:#fff;font:800 12px/22px Manrope,sans-serif;text-align:center;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.leaflet-div-icon{background:none!important;border:0!important}
+.leaflet-popup-content-wrapper{padding:0!important;overflow:hidden}
+.leaflet-popup-content{margin:0!important;width:240px!important}
+.leaflet-popup-content .ph{height:120px}
+.leaflet-popup-content .pb{padding:12px 14px 14px}
+.leaflet-container a.leaflet-popup-close-button{color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.6);top:6px;right:6px}
+
+body.ro .eo{display:none!important}
+body.ro .cityrow .in,body.ro #travelers{pointer-events:none;border-color:transparent;background:transparent;padding-left:0;box-shadow:none}
+body.ro .cityrow input[type="date"]::-webkit-calendar-picker-indicator{display:none}
+body.ro .check{cursor:default}
+body.ro .check input{pointer-events:none}
+body.ro .stops>.stop:last-child .rail::before{bottom:auto;height:28px}
+#authBtn .ic{flex:none}
+@media (max-width:600px){#authBtn span{display:none}#authBtn{padding:0 9px}}
+.steps{margin:14px 0 0;padding-left:20px;font-size:14.5px;color:var(--ink-2);display:grid;gap:6px}
+.steps a{color:var(--sh);font-weight:700}
+.tokerr{color:var(--cq);font-size:14px;margin-top:8px;min-height:1em}
+footer{max-width:1120px;margin:0 auto;padding:0 var(--pad) 40px;color:var(--muted);font-size:13px}
+@media (max-width:899px){footer{padding-bottom:120px}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-in">
+    <svg width="28" height="16" viewBox="0 0 28 16" aria-hidden="true" style="flex:none"><rect x="7" y="7" width="14" height="2" rx="1" fill="var(--line-2)"/><circle cx="6" cy="8" r="5" fill="var(--sh)"/><circle cx="22" cy="8" r="5" fill="var(--cq)"/></svg>
+    <input class="title-in" id="tripTitle" aria-label="Trip name" maxlength="60">
+    <nav class="nav" id="nav" aria-label="Sections"></nav>
+    <span class="count" id="count"></span>
+    <button class="btn sm hide" id="authBtn"></button>
+    <button class="ibtn" id="themeBtn" aria-label="Switch theme"></button>
+  </div>
+</header>
+
+<main>
+  <div id="sharedBanner"></div>
+  <section class="view" id="v-plan"></section>
+  <section class="view" id="v-map"></section>
+  <section class="view" id="v-guides"></section>
+  <section class="view" id="v-basics"></section>
+  <section class="view" id="v-lists"></section>
+</main>
+<footer>Photos from Wikipedia and Wikimedia Commons, used under their free licences. Map data © OpenStreetMap contributors. Weather by Open-Meteo.</footer>
+
+<!-- add / edit stop -->
+<div class="sheet-bg" id="sheetBg">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sTitle">
+    <h2 id="sTitle">Add a stop</h2>
+    <div class="fgrid">
+      <div class="full"><div class="catpick" id="sCats" role="group" aria-label="Type"></div></div>
+      <label class="field full"><span>What</span><input class="in" id="sName" placeholder="Soup dumplings near Yu Garden"></label>
+      <label class="field full"><span>Day</span><select class="in" id="sDate"></select></label>
+      <label class="field"><span>From</span><input class="in" type="time" id="sStart"></label>
+      <label class="field"><span>To</span><input class="in" type="time" id="sEnd"></label>
+      <label class="field"><span>Where</span><input class="in" id="sPlace" placeholder="豫园 Yu Garden"></label>
+      <label class="field"><span>Budget (¥)</span><input class="in" type="number" min="0" inputmode="numeric" id="sCost" placeholder="0"></label>
+      <label class="field full"><span>Notes</span><textarea class="in" id="sNotes" rows="3" placeholder="Booking details, what to order, tips"></textarea></label>
+    </div>
+    <div class="sheet-foot">
+      <button class="btn ghost" id="sCancel">Cancel</button>
+      <button class="btn primary" id="sSave">Save stop</button>
+    </div>
+  </div>
+</div>
+
+<!-- place detail -->
+<div class="sheet-bg" id="spotBg">
+  <div class="sheet spotsheet" role="dialog" aria-modal="true" id="spotSheet" style="position:relative"></div>
+</div>
+
+<div class="sheet-bg" id="authBg">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+    <h2 id="authTitle">Sign in to edit</h2>
+    <p class="muted" style="font-size:14.5px">Only you can change this plan. Everyone else sees it read-only. Paste a GitHub access token that can save to your <b>china-trip</b> repo. It stays on this device only.</p>
+    <ol class="steps">
+      <li>Open <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub token settings</a> (fine-grained token).</li>
+      <li>Repository access: <b>Only select repositories</b>, then pick <b>china-trip</b>.</li>
+      <li>Permissions: <b>Contents</b>, set to <b>Read and write</b>.</li>
+      <li>Generate the token, copy it and paste it here.</li>
+    </ol>
+    <label class="field" style="margin-top:16px"><span>Access token</span><input class="in" type="password" id="tokIn" placeholder="github_pat_…" autocomplete="off" spellcheck="false"></label>
+    <p class="tokerr" id="tokErr"></p>
+    <div class="sheet-foot"><button class="btn ghost" id="authCancel">Cancel</button><button class="btn primary" id="authGo">Sign in</button></div>
+  </div>
+</div>
+
+<div class="bigphrase" id="bigPhrase" role="dialog" aria-label="Phrase"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<input type="file" id="importFile" accept=".json,application/json" hidden>
+
+<script>
+/* =========================================================
+   ICONS
+   ========================================================= */
+const IC = {
+  food:'<path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>',
+  cafe:'<path d="M10 2v2"/><path d="M14 2v2"/><path d="M6 2v2"/><path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1"/>',
+  place:'<path d="M3 22h18"/><path d="M6 18v-7"/><path d="M10 18v-7"/><path d="M14 18v-7"/><path d="M18 18v-7"/><path d="M12 2l8 5H4z"/>',
+  activity:'<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/>',
+  shopping:'<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>',
+  night:'<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
+  transport:'<path d="M8 3h8a4 4 0 0 1 4 4v8a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V7a4 4 0 0 1 4-4Z"/><path d="M4 11h16"/><path d="M12 3v8"/><path d="m8 18-2 4"/><path d="m16 18 2 4"/>',
+  hotel:'<path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/>',
+  home:'<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/>',
+  plan:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+  compass:'<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>',
+  map:'<path d="M14.1 5.9 9 3.3a2 2 0 0 0-1.8 0L3.6 5.1A1 1 0 0 0 3 6v14.4a1 1 0 0 0 1.4.9l3.7-1.9a2 2 0 0 1 1.8 0l5.2 2.6a2 2 0 0 0 1.8 0l3.5-1.8a1 1 0 0 0 .6-.9V4.6a1 1 0 0 0-1.4-.9l-3.7 1.9a2 2 0 0 1-1.8.3Z"/><path d="M15 5.8v15"/><path d="M9 3.2v15"/>',
+  bag:'<rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 13h18"/>',
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>',
+  moon:'<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  lock:'<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+  x:'<path d="M18 6 6 18M6 6l12 12"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>',
+  undo:'<path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/>',
+  edit:'<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>',
+  trash:'<path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>',
+  pin:'<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
+  share:'<path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="m16 6-4-4-4 4"/><path d="M12 2v13"/>',
+  cal:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M12 14v4M10 16h4"/>',
+  copy:'<rect x="8" y="8" width="14" height="14" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',
+  print:'<path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>',
+  down:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/>',
+  up:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/>',
+  spark:'<path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/>',
+  ext:'<path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>',
+  expand:'<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',
+  arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+  card:'<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/>',
+  wifi:'<path d="M5 12.5a10 10 0 0 1 14 0"/><path d="M8.5 16a5 5 0 0 1 7 0"/><path d="M2 9a15 15 0 0 1 20 0"/><circle cx="12" cy="19.5" r="1"/>',
+  phone:'<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/>',
+  bolt:'<path d="M13 2 3 14h9l-1 8 10-12h-9z"/>',
+  drop:'<path d="M12 2.7s-6 6.6-6 11.3a6 6 0 0 0 12 0c0-4.7-6-11.3-6-11.3z"/>',
+  globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
+  image:'<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/>'
+};
+const icon = (n, s=18) => `<svg class="ic" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]||""}</svg>`;
+
+/* =========================================================
+   CONTENT  (q = Wikipedia photo lookup: "t:Exact title" or search words)
+   ========================================================= */
+const CATS = {
+  food:{label:"Food"}, cafe:{label:"Café"}, place:{label:"Sightseeing"}, activity:{label:"Activity"},
+  shopping:{label:"Shopping"}, night:{label:"Night out"}, transport:{label:"Transport"}, hotel:{label:"Hotel"}
+};
+const KINDS = {places:"Sights", shows:"Shows & experiences", foods:"Food", cool:"Cafés & spots"};
+const MONTHS = ["J","F","M","A","M","J","J","A","S","O","N","D"];
+const MONTHS_LONG = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+const GUIDES = {
+  Shanghai:{
+    zh:"上海", py:"Shànghǎi", color:"--sh", lat:31.2304, lng:121.4737, hero:"t:Lujiazui",
+    tag:"Neon skyline, 1920s glamour, and the best breakfast in China.",
+    intro:"China’s biggest city and its money capital. Old riverside banks face a skyline of towers, and quiet lanes of plane trees hide cafés in 1930s villas. Go up 600 metres at night, then eat soup dumplings at 7am.",
+    kv:[["People","About 25 million"],["Tallest building","Shanghai Tower, 632 m"],["Metro","The longest network in the world"],["Name means","“Upon the sea”"]],
+    weather:[[8,2],[10,3],[14,6],[20,11],[25,16],[28,21],[32,25],[32,25],[28,21],[23,16],[17,10],[11,4]],
+    places:[
+      {name:"The Bund", zh:"外滩", cat:"place", q:"t:The Bund", lat:31.2400, lng:121.4903, desc:"Riverside promenade of grand 1920s banks and hotels, facing the Pudong skyline across the Huangpu River.", tip:"Go after sunset when the lights come on, then come back at 7am to watch locals doing tai chi.", top:true},
+      {name:"Shanghai Tower", zh:"上海中心大厦", cat:"place", q:"t:Shanghai Tower", lat:31.2335, lng:121.5055, desc:"China’s tallest building, a twisting 632 m tower. The observation deck is around 546 m up.", tip:"Pick a clear day. The lift is one of the fastest in the world.", top:true},
+      {name:"Yu Garden", zh:"豫园", cat:"place", q:"t:Yu Garden", lat:31.2272, lng:121.4921, desc:"A Ming-dynasty garden from the 1500s with rockeries, koi ponds, a zigzag bridge and a famous teahouse.", tip:"Arrive at opening time. The bazaar around it is full of snacks."},
+      {name:"Wukang Road", zh:"武康路", cat:"activity", q:"Wukang Mansion Shanghai", lat:31.2047, lng:121.4373, desc:"Leafy streets of old villas, boutiques and cafés in the former French Concession. Wukang Mansion looks like a ship’s bow.", tip:"The best area for a slow walk. Rent a shared bike in Alipay."},
+      {name:"Tianzifang", zh:"田子坊", cat:"shopping", q:"Tianzifang Shanghai", lat:31.2087, lng:121.4686, desc:"A maze of old stone-gate alleys turned into tiny shops, galleries and snack stalls.", tip:"Touristy but fun. Get lost on purpose."},
+      {name:"Xintiandi", zh:"新天地", cat:"night", q:"Xintiandi Shanghai", lat:31.2196, lng:121.4747, desc:"Restored stone-gate houses with stylish restaurants and terraces.", tip:"Good for a nicer dinner date."},
+      {name:"Nanjing Road", zh:"南京路步行街", cat:"shopping", q:"t:Nanjing Road", lat:31.2355, lng:121.4790, desc:"The famous pedestrian shopping street, glowing with neon at night. It ends at the Bund.", tip:"Walk it after dark from People’s Square to the river."},
+      {name:"Huangpu River night cruise", zh:"黄浦江游船", cat:"night", q:"t:Huangpu River", lat:31.2290, lng:121.4975, desc:"See both skylines lit up from the water.", tip:"Boats leave from Shiliupu Wharf. Between 7 and 9pm is best."},
+      {name:"Zhujiajiao water town", zh:"朱家角", cat:"place", q:"Zhujiajiao water town", lat:31.1085, lng:121.0530, desc:"An old canal town about an hour away, with stone bridges, boats and riverside snacks.", tip:"Half-day trip. Take a small boat through the canals."},
+      {name:"Shanghai Museum", zh:"上海博物馆", cat:"place", q:"t:Shanghai Museum", lat:31.2283, lng:121.4753, desc:"World-class bronzes, ceramics, jade and calligraphy. Free entry at People’s Square.", tip:"Reserve ahead on the museum’s WeChat account and bring your passport."},
+      {name:"Jing’an Temple", zh:"静安寺", cat:"place", q:"Jing'an Temple Shanghai", lat:31.2236, lng:121.4458, desc:"A golden Buddhist temple squeezed between glass skyscrapers.", tip:"Lovely at dusk. The metro station is right beside it."},
+      {name:"Maglev train", zh:"磁悬浮", cat:"transport", q:"t:Shanghai maglev train", lat:31.2033, lng:121.5590, desc:"A magnetic floating train between Pudong Airport and Longyang Road. About 30 km in roughly 8 minutes.", tip:"Take it from the airport just for the ride. Watch the speed screen."}
+    ],
+    shows:[
+      {name:"ERA: Intersection of Time", zh:"时空之旅", cat:"night", q:"t:Shanghai Circus World", lat:31.2800, lng:121.4520, desc:"Shanghai’s signature acrobatics show: jaw-dropping stunts mixed with music, lights and stage tech. No language needed.", tip:"Starts 19:30. A shorter version runs on weekdays and a longer one at weekends. Book ahead.", top:true},
+      {name:"teamLab Borderless Shanghai", zh:"teamLab无界美术馆", cat:"activity", q:"teamLab Borderless", lat:31.2015, lng:121.4935, desc:"An immersive digital art museum where artworks flow between rooms and react to you. Hugely popular for photos.", tip:"Wear plain light clothes. The projections look amazing on you."},
+      {name:"Hanfu photoshoot", zh:"汉服写真", cat:"activity", q:"t:Hanfu", desc:"Rent traditional Han clothing with hair and make-up, then get photographed in an old garden or water town. A huge trend with young Chinese.", tip:"Book a studio near Yu Garden or Zhujiajiao. A great couple activity."},
+      {name:"Tea at Huxinting Teahouse", zh:"湖心亭茶楼", cat:"cafe", q:"Huxinting Teahouse", lat:31.2275, lng:121.4917, desc:"A centuries-old teahouse on the lake in Yu Garden, reached by the famous zigzag bridge.", tip:"Order a pot of tea with small snacks and take your time."},
+      {name:"Chinese EV showrooms", zh:"新能源汽车展厅", cat:"shopping", q:"Xiaomi SU7", desc:"China leads the world in electric cars. Brands like Xiaomi, BYD, NIO and Li Auto have showrooms in malls where you can sit in cars with fridges, massage seats and giant screens.", tip:"Free to walk in. Look for them on Nanjing Road and in big malls."},
+      {name:"Shanghai Astronomy Museum", zh:"上海天文馆", cat:"place", q:"t:Shanghai Astronomy Museum", lat:30.9140, lng:121.9060, desc:"One of the largest astronomy museums in the world, with a striking building designed around the movement of the sun, moon and stars.", tip:"It’s far out in Lingang. Plan half a day."},
+      {name:"Foot massage", zh:"足疗", cat:"activity", q:"Foot reflexology", desc:"Chinese foot and body massage is everywhere and affordable. Perfect after a day of walking.", tip:"Look on Dianping for 足疗 near your hotel. Many are open late."}
+    ],
+    foods:[
+      {name:"Xiaolongbao", zh:"小笼包", q:"t:Xiaolongbao", desc:"Soup dumplings: hot broth sealed inside a thin, pleated skin.", tip:"Put it on a spoon, bite a small hole, sip the soup, then eat.", tags:["pork"], top:true},
+      {name:"Shengjianbao", zh:"生煎包", q:"Shengjian mantou", desc:"Pan-fried buns with a crunchy base and soup inside.", tip:"They squirt. Yang’s Dumpling is the famous chain.", tags:["pork"]},
+      {name:"Hairy crab", zh:"大闸蟹", q:"t:Chinese mitten crab", desc:"An autumn delicacy prized for its rich golden roe.", tip:"Season runs roughly September to December, best in October and November.", tags:[]},
+      {name:"Scallion oil noodles", zh:"葱油拌面", q:"scallion oil noodles", desc:"Noodles tossed in fried scallion oil and soy. Cheap and addictive.", tip:"Ask whether lard is used if that matters to you.", tags:["veg"]},
+      {name:"Shanghai breakfast", zh:"四大金刚", q:"t:Youtiao", desc:"The classic four: flatbread, fried dough sticks, a sticky-rice roll and soy milk.", tip:"Small street stalls, before 9am.", tags:["veg"]},
+      {name:"Red-braised pork", zh:"红烧肉", q:"Red braised pork belly", desc:"Pork belly slow-cooked in soy and sugar until sticky and glossy.", tip:"The signature of Shanghai home cooking.", tags:["pork"]},
+      {name:"Crab roe noodles", zh:"蟹黄面", q:"crab roe noodles", desc:"Noodles coated in rich crab roe sauce.", tip:"Pricey, but worth it once.", tags:[]},
+      {name:"Lanzhou beef noodles", zh:"兰州牛肉面", q:"Lanzhou beef noodles", desc:"Hand-pulled noodles in clear beef broth, usually made by Hui Muslim families.", tip:"Look for the green 清真 sign and watch them pull the dough.", tags:["halal"]},
+      {name:"Bubble tea", zh:"奶茶", q:"t:Bubble tea", desc:"The milk-tea scene is enormous. Try a new shop every day.", tip:"Order 少糖 (shǎo táng) for less sugar.", tags:["veg"]},
+      {name:"Scallion pancakes", zh:"葱油饼", q:"t:Scallion pancake", desc:"Flaky, crispy flatbreads with spring onions, fried on a griddle while you wait.", tip:"The famous stalls have long queues. Worth it.", tags:["veg"]},
+      {name:"Xinjiang lamb skewers", zh:"羊肉串", q:"Chuan lamb skewers cumin", desc:"Cumin and chilli lamb skewers grilled over coals, from Uyghur and Hui Muslim kitchens.", tip:"Look for 清真 restaurants with Xinjiang (新疆) in the name.", tags:["halal"]}
+    ],
+    cool:[
+      {name:"Starbucks Reserve Roastery", zh:"星巴克臻选烘焙工坊", cat:"cafe", q:"Starbucks Reserve Roastery Shanghai", lat:31.2296, lng:121.4565, desc:"One of the largest Starbucks in the world, with a two-storey copper roaster inside.", tip:"Weekday mornings are quietest."},
+      {name:"Former French Concession cafés", zh:"安福路", cat:"cafe", q:"Shanghai French Concession", lat:31.2149, lng:121.4440, desc:"Shanghai reportedly has more cafés than any other city, and Anfu Road is the centre of it.", tip:"Try Manner, a cheap and good coffee chain born in Shanghai."},
+      {name:"M50 art district", zh:"M50创意园", cat:"activity", q:"M50 Moganshan Road art district", lat:31.2500, lng:121.4480, desc:"Galleries and graffiti in old textile mills by Suzhou Creek.", tip:"Free, and great for photos."},
+      {name:"Lujiazui skyline views", zh:"陆家嘴", cat:"night", q:"t:Lujiazui", lat:31.2410, lng:121.4990, desc:"The forest of towers across the river, including the Oriental Pearl Tower.", tip:"Walk the elevated ring walkway at night."},
+      {name:"People’s Park marriage market", zh:"人民公园相亲角", cat:"activity", q:"People's Park Shanghai", lat:31.2325, lng:121.4720, desc:"On weekends, parents pin their children’s profiles (age, height, salary) to umbrellas to find them a match.", tip:"Weekend afternoons. Ask before taking photos."},
+      {name:"Shanghai Disneyland", zh:"上海迪士尼乐园", cat:"activity", q:"t:Shanghai Disneyland", lat:31.1440, lng:121.6570, desc:"Opened in 2016, with the biggest Disney castle in the world.", tip:"A full day. Buy tickets ahead on the official app."},
+      {name:"Bund Sightseeing Tunnel", zh:"外滩观光隧道", cat:"activity", q:"t:Bund Sightseeing Tunnel", lat:31.2408, lng:121.4905, desc:"A trippy ride in a glass pod under the Huangpu River, through a tunnel of flashing, colour-changing lights. It was China’s first pedestrian tunnel under the river.", tip:"Gloriously cheesy. Ride it one way and come back on the ferry."},
+      {name:"1933 Old Millfun", zh:"1933老场坊", cat:"activity", q:"1933 Old Millfun Shanghai", lat:31.2560, lng:121.4960, desc:"A former slaughterhouse turned creative space: a concrete maze of ramps, bridges and spiral stairs that cattle once walked.", tip:"Go for the photos. Quiet on weekdays."},
+      {name:"Propaganda Poster Art Centre", zh:"宣传画艺术中心", cat:"place", q:"Shanghai Propaganda Poster Art Centre", lat:31.2090, lng:121.4320, desc:"A hidden museum in the basement of an ordinary apartment block, packed with original Mao-era propaganda posters.", tip:"Hard to find. Show the guard at the gate the Chinese name."},
+      {name:"Jewish Refugees Museum", zh:"上海犹太难民纪念馆", cat:"place", q:"t:Shanghai Jewish Refugees Museum", lat:31.2565, lng:121.5070, desc:"The story of the Jewish refugees who escaped Europe and found shelter in Shanghai during World War II.", tip:"Pair it with a walk around the old lanes nearby."},
+      {name:"Huangpu River ferry", zh:"黄浦江轮渡", cat:"transport", q:"Huangpu River ferry Shanghai", lat:31.2330, lng:121.4930, desc:"The local commuter ferry across the river. Same skyline views as the tour boats, for a tiny fraction of the price.", tip:"Pay with the transport QR code in Alipay. A favourite local tip."},
+      {name:"Peace Hotel jazz bar", zh:"和平饭店爵士吧", cat:"night", q:"t:Peace Hotel", lat:31.2410, lng:121.4880, desc:"A 1920s Art Deco landmark on the Bund with an old-school jazz bar famous for its veteran house band.", tip:"Evenings only. Smart casual."}
+    ],
+    facts:[
+      "The metro is the longest in the world, at more than 800 km.",
+      "Its port has been the busiest container port on Earth for over a decade.",
+      "Pudong, where the skyscrapers are, was mostly farmland and warehouses until the 1990s.",
+      "Locals speak Shanghainese, a Wu dialect most Mandarin speakers can’t follow.",
+      "In Shanghainese, 阿拉 (ā lā) means “we”. You’ll hear it everywhere.",
+      "During World War II, Shanghai took in around 20,000 Jewish refugees from Europe when most countries wouldn’t.",
+      "1933 Old Millfun was built as a slaughterhouse. Today people go there for fashion shoots.",
+      "The Bund Sightseeing Tunnel was China’s first pedestrian tunnel under the Huangpu River."
+    ],
+    funny:[
+      "Parents run a weekly marriage market in People’s Park, advertising their kids like flats for rent.",
+      "Older residents used to pop out to the shops in pyjamas. A few still do.",
+      "The food is sweet. The pork is sweet. The fish is sweet. Somehow the soy sauce is sweet.",
+      "Rush-hour metro is a contact sport. Expect to be gently pushed onto the train.",
+      "The fanciest way across the river is a psychedelic light tunnel. The cheapest is a commuter ferry with the same view.",
+      "Traditional barbershops offer ear-cleaning as a relaxing treat. Brave people only."
+    ]
+  },
+  Chongqing:{
+    zh:"重庆", py:"Chóngqìng", color:"--cq", lat:29.5630, lng:106.5516, hero:"t:Hongyadong",
+    tag:"A mountain city built in 3D and fuelled by red-hot hotpot.",
+    intro:"Built on steep hills where the Yangtze and Jialing rivers meet. Roads stack on roads, trains run through buildings, and the ground floor is wherever you happen to be standing. Foggy, wild and very spicy. Locals call it the 8D city.",
+    kv:[["People","About 32 million (municipality)"],["Size","Roughly the size of Austria"],["Nicknames","Mountain City, Fog City, 8D City"],["Rivers","Yangtze and Jialing"]],
+    weather:[[10,6],[13,8],[18,11],[23,15],[27,19],[30,22],[34,25],[35,26],[29,22],[22,17],[17,12],[11,7]],
+    places:[
+      {name:"Hongyadong", zh:"洪崖洞", cat:"place", q:"t:Hongyadong", lat:29.5640, lng:106.5790, desc:"An 11-storey stilt-house complex on a cliff. At night it glows gold like a fantasy bathhouse.", tip:"Photograph it from across the river or from Qiansimen Bridge. The top entrance is on the 11th floor.", top:true},
+      {name:"Liziba station", zh:"李子坝", cat:"place", q:"Liziba station Chongqing", lat:29.5530, lng:106.5330, desc:"Monorail Line 2 runs straight through a residential building.", tip:"There’s a viewing platform underneath. Wait a few minutes for a train.", top:true},
+      {name:"Yangtze River Cableway", zh:"长江索道", cat:"activity", q:"Yangtze River Cableway Chongqing", lat:29.5560, lng:106.5835, desc:"A cable car across the Yangtze, running since 1987.", tip:"Queues get long. Go early or late."},
+      {name:"Jiefangbei", zh:"解放碑", cat:"shopping", q:"Jiefangbei Chongqing", lat:29.5570, lng:106.5770, desc:"The downtown pedestrian centre around the Liberation Monument, packed with malls and street food.", tip:"A good base for hotels, walkable to Hongyadong."},
+      {name:"Ciqikou old town", zh:"磁器口", cat:"place", q:"Ciqikou Chongqing", lat:29.5800, lng:106.4480, desc:"Old riverside streets with snack stalls, teahouses and the famous twisted mahua snacks.", tip:"Weekday mornings. Weekends are packed."},
+      {name:"Raffles City and Chaotianmen", zh:"来福士 · 朝天门", cat:"place", q:"t:Raffles City Chongqing", lat:29.5670, lng:106.5880, desc:"Where the two rivers meet in two colours of water. Raffles City has a horizontal glass skybridge on top.", tip:"Pair with Hongyadong on the same evening."},
+      {name:"Nanshan night view", zh:"南山一棵树观景台", cat:"night", q:"Chongqing skyline night Yuzhong", lat:29.5440, lng:106.6060, desc:"A mountain viewing platform with the classic panorama of the glowing peninsula.", tip:"Take a Didi up around sunset."},
+      {name:"Two rivers night cruise", zh:"两江游", cat:"night", q:"Chaotianmen Chongqing", lat:29.5655, lng:106.5865, desc:"An hour on the water around the peninsula after dark.", tip:"Book on Trip.com or at Chaotianmen."},
+      {name:"Eling Park", zh:"鹅岭公园", cat:"place", q:"Eling Park Chongqing", lat:29.5525, lng:106.5270, desc:"Hilltop park with river views over the layered city.", tip:"Peak 8D views. Bring a camera."},
+      {name:"Wulong Karst", zh:"武隆天生三桥", cat:"activity", q:"Wulong Karst", lat:29.4370, lng:107.7980, desc:"UNESCO-listed natural stone bridges and deep gorges, around three hours away.", tip:"A full day. Book a tour or take the train."},
+      {name:"Dazu Rock Carvings", zh:"大足石刻", cat:"place", q:"t:Dazu Rock Carvings", lat:29.7480, lng:105.7980, desc:"UNESCO Buddhist cliff carvings from the 9th to 13th centuries.", tip:"About two hours away. A quiet, slow day."}
+    ],
+    shows:[
+      {name:"Glamorous Chongqing drone show", zh:"魅力重庆无人机表演", cat:"night", q:"Drone light show", lat:29.5560, lng:106.5850, desc:"Thousands of drones draw the city’s landmarks, food and symbols in the sky over the rivers, with the skyscrapers lit up to match. About 18 minutes.", tip:"Most Saturday nights and on major holidays. Watch from Nanbin Road, Chaotianmen or Jiangbeizui.", top:true},
+      {name:"Sichuan opera face-changing", zh:"川剧变脸", cat:"night", q:"t:Bian lian", desc:"Performers swap brightly painted masks in a split second, with no visible trick. A secret art passed down in families.", tip:"Short shows run in teahouses and in Ciqikou old town."},
+      {name:"Hot springs", zh:"温泉", cat:"activity", q:"Chongqing hot springs", desc:"Chongqing calls itself China’s hot spring capital, with resorts in and around the city.", tip:"Perfect on a cold, foggy winter day."},
+      {name:"Hanfu in Ciqikou", zh:"磁器口汉服", cat:"activity", q:"Ciqikou Chongqing", lat:29.5800, lng:106.4480, desc:"Dress up in traditional clothing and wander the old town lanes for photos.", tip:"Studios at the entrance do hair and make-up too."},
+      {name:"Night photography walk", zh:"夜景", cat:"night", q:"Chongqing skyline night", lat:29.5640, lng:106.5790, desc:"The cyberpunk city at its best: neon, fog, bridges and layered streets. Start at Hongyadong, cross Qiansimen Bridge, end at Chaotianmen.", tip:"Go after 7pm. Bring a power bank."},
+      {name:"816 Underground Nuclear Plant", zh:"816地下核工程", cat:"activity", q:"816 Nuclear Military Plant", desc:"A once-secret Cold War nuclear plant hidden inside a mountain in Fuling, now open for tours. Described as one of the largest man-made caves in the world.", tip:"A full-day trip. Book a tour."}
+    ],
+    foods:[
+      {name:"Chongqing hotpot", zh:"重庆火锅", q:"Chongqing hot pot", desc:"Bubbling beef-tallow broth with chillies and numbing Sichuan pepper. Cook your own meat and veg.", tip:"Order a 鸳鸯锅, half spicy and half mild. Dip in sesame oil with garlic.", tags:["spicy"], top:true},
+      {name:"Xiao mian", zh:"重庆小面", q:"Chongqing noodles xiaomian", desc:"The city’s breakfast: noodles in chilli oil, garlic and Sichuan pepper.", tip:"Locals eat it on tiny stools at 8am.", tags:["spicy","veg"]},
+      {name:"Hot and sour noodles", zh:"酸辣粉", q:"Hot and sour noodles", desc:"Chewy sweet-potato noodles in a hot and sour broth with peanuts.", tip:"Cheap, fast and everywhere.", tags:["spicy","veg"]},
+      {name:"Lazi ji", zh:"辣子鸡", q:"Laziji chicken", desc:"Crispy chicken pieces hidden in a mountain of dried chillies.", tip:"Find the chicken. Leave the chillies.", tags:["spicy"]},
+      {name:"Chuan chuan xiang", zh:"串串香", q:"Chuan chuan xiang skewers", desc:"Skewer hotpot: pick sticks from the fridge, cook them, pay per stick.", tip:"Fun and social for a casual night.", tags:["spicy"]},
+      {name:"Grilled fish", zh:"万州烤鱼", q:"Wanzhou grilled fish", desc:"A whole grilled fish simmered in chilli broth with vegetables.", tip:"Choose mala, garlic or black bean.", tags:["spicy"]},
+      {name:"Mao xue wang", zh:"毛血旺", q:"Maoxuewang", desc:"A fiery stew of duck blood, tripe and more.", tip:"Only for adventurous eaters.", tags:["spicy"]},
+      {name:"Bing fen", zh:"冰粉", q:"Bingfen dessert jelly", desc:"Cold jelly with brown-sugar syrup, raisins and hawthorn.", tip:"Order it with hotpot to rescue your mouth.", tags:["veg"]},
+      {name:"Chen mahua", zh:"陈麻花", q:"Mahua fried dough twist", desc:"Crunchy twisted dough sticks in many flavours, from Ciqikou.", tip:"A great edible souvenir.", tags:["veg"]},
+      {name:"Fish with pickled greens", zh:"酸菜鱼", q:"Suancai fish", desc:"Tender fish slices in a sour, tangy pickled-mustard broth. Less fiery than most Chongqing dishes.", tip:"A good break from the chilli.", tags:[]}
+    ],
+    cool:[
+      {name:"Monorail Line 2", zh:"轻轨2号线", cat:"transport", q:"Line 2 Chongqing Rail Transit", lat:29.5550, lng:106.5420, desc:"A scenic ride along the Jialing River, through buildings and over hills.", tip:"Sit by a window and ride it end to end."},
+      {name:"Old teahouses", zh:"交通茶馆", cat:"cafe", q:"Sichuan teahouse", lat:29.5040, lng:106.5110, desc:"Jiaotong Teahouse in Huangjueping is an old-school hall where locals play cards and mahjong.", tip:"Order a cheap cup and watch the room."},
+      {name:"Huangjueping graffiti street", zh:"黄桷坪涂鸦街", cat:"activity", q:"Huangjueping graffiti street", lat:29.5050, lng:106.5125, desc:"Whole buildings painted by art students from the nearby fine-arts institute.", tip:"Pair with Jiaotong Teahouse."},
+      {name:"Chaotianmen Bridge", zh:"朝天门大桥", cat:"place", q:"t:Chaotianmen Bridge", lat:29.5860, lng:106.5980, desc:"One of the longest arch bridges in the world, in a city of thousands of bridges.", tip:"Best seen from the night cruise."},
+      {name:"Hotpot with a view", zh:"江景火锅", cat:"food", q:"Hot pot Sichuan", desc:"Many hotpot places sit high up or by the river with skyline views.", tip:"Search 江景火锅 on Dianping or Xiaohongshu."},
+      {name:"Haidilao", zh:"海底捞", cat:"food", q:"t:Haidilao", desc:"A hotpot chain famous for service: dancing noodle pullers, snacks while you wait, even manicures.", tip:"Ask for the 捞面 noodle dance."},
+      {name:"Air-raid shelter hotpot", zh:"防空洞火锅", cat:"food", q:"Chongqing air raid shelter", desc:"Eat hotpot inside the city’s old World War II bomb shelters: cool, cave-like tunnels carved into the rock.", tip:"Search 防空洞火锅 on Dianping. Some branches face the river near Hongyadong."},
+      {name:"Longmenhao and Xiahaoli", zh:"龙门浩 · 下浩里", cat:"activity", q:"Longmenhao Old Street Chongqing", lat:29.5585, lng:106.5895, desc:"Old streets on the south bank with yellow walls, blue tiles, graffiti murals and cafés, facing the downtown skyline.", tip:"Go late afternoon and stay for the lights across the river."},
+      {name:"Kuixing Building", zh:"奎星楼", cat:"place", q:"Kuixinglou Chongqing", lat:29.5600, lng:106.5770, desc:"The classic 8D building: its street entrance is reportedly on the 22nd floor, with another street at the bottom.", tip:"Take the lift down and walk out at ground level. Mind blown."},
+      {name:"Bayi Food Street", zh:"八一好吃街", cat:"food", q:"Jiefangbei Chongqing street food", lat:29.5560, lng:106.5760, desc:"A packed snack street off Jiefangbei: skewers, noodles, tofu pudding and cold jelly.", tip:"Go hungry after dark and share lots of small things."},
+      {name:"Fly restaurants", zh:"苍蝇馆子", cat:"food", q:"Chongqing street food noodles", desc:"Locals swear the best food is in tiny, scruffy hole-in-the-wall joints nicknamed “fly restaurants”. Sometimes the bench is the table.", tip:"If it’s shabby and full of locals, sit down."},
+      {name:"Chongqing Zoo pandas", zh:"重庆动物园", cat:"activity", q:"Chongqing Zoo", lat:29.5080, lng:106.5050, desc:"See giant pandas without leaving the city.", tip:"Go at opening time, when the pandas are awake and eating."}
+    ],
+    facts:[
+      "Chongqing was China’s wartime capital from 1938 to 1946.",
+      "The municipality is about the size of Austria, though most of it is countryside.",
+      "It’s called the bridge capital of China, with thousands of bridges over rivers and valleys.",
+      "Hotpot is said to come from Yangtze dock workers who cooked cheap offal in fiery broth.",
+      "It’s one of China’s “furnace cities”. Summers pass 35°C and people still eat hotpot.",
+      "In June 2025, 11,787 drones flew over the Yangtze here, a Guinness World Record for the largest drone image.",
+      "There’s a 2016 film, Chongqing Hot Pot, about friends who open a hotpot restaurant in an old bomb shelter.",
+      "Many of the city’s wartime air-raid shelters are now restaurants, cafés and bars."
+    ],
+    funny:[
+      "Walk in on the ground floor, take the lift up 20 floors, and walk out onto another street’s ground floor.",
+      "Your map app will say you’ve arrived while the place is six levels above you.",
+      "Almost nobody rides a bike here. The hills win.",
+      "Mild (微辣) in Chongqing is very hot anywhere else.",
+      "The Huangjuewan interchange has so many ramps that drivers loop it twice by accident.",
+      "Locals call the best places “fly restaurants”. The scruffier it looks, the better the food."
+    ]
+  }
+};
+
+const CHINA = {
+  basics:[
+    {i:"card", t:"Paying", d:"Almost everything is paid by QR code. Link your Visa or Mastercard to Alipay or WeChat Pay before you fly. Keep a little cash as a backup."},
+    {i:"wifi", t:"Internet", d:"Google, WhatsApp and Instagram are blocked on local networks. A roaming eSIM from home usually works around this."},
+    {i:"transport", t:"Getting around", d:"Metro is cheap and easy: scan the transport QR code in Alipay at the gate. Use Didi (inside Alipay) for taxis."},
+    {i:"globe", t:"Time difference", d:"China is 5 hours ahead of Riyadh, and the whole country uses one time zone."},
+    {i:"bolt", t:"Power", d:"Plugs are type A and I at 220V. Saudi type G plugs won’t fit, so bring a universal adaptor."},
+    {i:"drop", t:"Water", d:"Don’t drink tap water. Bottled water is everywhere, and hotels provide kettles."},
+    {i:"phone", t:"Emergency numbers", big:[["110","Police"],["120","Ambulance"],["119","Fire"]]}
+  ],
+  facts:[
+    "China spans about five geographic time zones but uses one official time, Beijing time.",
+    "Paper, printing, the compass and gunpowder are known as China’s four great inventions.",
+    "Fortune cookies aren’t Chinese. They took off in the United States.",
+    "The number 4 (sì) sounds like “death” (sǐ), so many buildings skip the 4th floor.",
+    "The number 8 sounds like “prosper”. The Beijing Olympics opened at 8:08pm on 8 August 2008.",
+    "Red stands for luck and joy: lanterns, wedding dresses, money envelopes.",
+    "Restaurants often bring hot water by default. Warm water is considered healthy.",
+    "Giant pandas live only in China, mostly in the mountains of Sichuan, next door to Chongqing.",
+    "Around Chinese New Year, hundreds of millions of people travel home: the largest yearly migration on Earth."
+  ],
+  funny:[
+    "Tones matter: mā is mum, má is hemp, mǎ is horse, mà is scold. So “mā mà mǎ” is mum scolds the horse.",
+    "520 (wǔ èr líng) sounds like “I love you” (wǒ ài nǐ). 20 May is an unofficial Valentine’s Day.",
+    "666 in internet slang means “smooth” or “awesome”.",
+    "In the evening, groups of aunties do synchronised square dancing in parks with big speakers.",
+    "KFC in China serves rice porridge, egg tarts and soy milk for breakfast.",
+    "Never give a clock as a gift. 送钟 sounds like attending a funeral.",
+    "Delivery is so fast you can get bubble tea to your hotel room in about 20 minutes.",
+    "Smart toilets may open their lids as you walk in. Some have more buttons than a TV remote.",
+    "People will often ask which country you’re from. 沙特 (Shātè) is Saudi Arabia."
+  ],
+  future:[
+    "China has the largest high-speed rail network in the world.",
+    "Green number plates mean electric or plug-in cars. You’ll see them everywhere.",
+    "Chinese brands like BYD are among the biggest electric car makers in the world.",
+    "Phone payments run everything, even the smallest street-food stall.",
+    "Power banks can be rented from machines in shops and returned anywhere in the city.",
+    "Robots deliver room service in many hotels. Don’t be surprised when one knocks.",
+    "Drone shows are replacing fireworks. Chongqing holds the world record.",
+    "Hanfu, traditional Han clothing, is back in fashion with young people. You’ll see it in every old town.",
+    "Livestream shopping is huge: sellers sell everything live on their phones, from lipstick to fruit."
+  ],
+  dos:["Hand over cards, money and gifts with both hands.","Learn nǐ hǎo and xièxie. People love it.","Carry tissues. Many public toilets have no paper, and squat toilets are common."],
+  donts:["Stand chopsticks upright in rice. It looks like funeral incense.","Tip. It isn’t expected in most places.","Take loud voices or pushing in queues personally. It’s rarely meant rudely."],
+  phrases:[
+    ["Hello","nǐ hǎo","你好"],["Thank you","xièxie","谢谢"],["How much?","duōshao qián?","多少钱？"],
+    ["Too expensive","tài guì le","太贵了"],["This one","zhège","这个"],["No chilli, please","bú yào là","不要辣"],
+    ["A little spicy","wēi là","微辣"],["I don’t eat pork","wǒ bù chī zhūròu","我不吃猪肉"],["Halal","qīngzhēn","清真"],
+    ["The bill, please","mǎidān","买单"],["Where’s the toilet?","cèsuǒ zài nǎr?","厕所在哪儿？"],["Delicious","hǎo chī","好吃"],
+    ["I’m from Saudi Arabia","wǒ láizì Shātè","我来自沙特"],["I love you","wǒ ài nǐ","我爱你"],["Cheers","gān bēi","干杯"]
+  ]
+};
+
+const BUY = [
+  {id:"silk", name:"Silk scarves and fabric", zh:"丝绸", q:"t:Silk", where:"South Bund Fabric Market, Shanghai", desc:"China is the home of silk: scarves, pyjamas, fabric by the metre."},
+  {id:"tailor", name:"Tailor-made qipao or suit", zh:"旗袍", q:"t:Cheongsam", where:"South Bund Fabric Market, Shanghai", desc:"Get measured, pick a fabric, collect it a few days later."},
+  {id:"tea", name:"Chinese tea", zh:"茶叶", q:"Longjing tea", where:"Tea shops in both cities", desc:"Longjing (green), Tieguanyin (oolong), Pu’er (aged). Taste before you buy."},
+  {id:"teaset", name:"Clay teapot", zh:"紫砂壶", q:"Yixing clay teapot", where:"Yu Garden bazaar, Ciqikou", desc:"Purple-clay Yixing teapots and porcelain cups."},
+  {id:"chop", name:"Name seal stamp", zh:"印章", q:"Seal (East Asia)", where:"Yu Garden, Tianzifang, Ciqikou", desc:"Your names carved in Chinese on a stone stamp. A good couple souvenir."},
+  {id:"hotpot", name:"Chongqing hotpot base", zh:"火锅底料", q:"Chongqing hot pot", where:"Any Chongqing supermarket", desc:"Vacuum-packed blocks of hotpot base. Check the ingredients (beef tallow)."},
+  {id:"pepper", name:"Sichuan pepper and chilli oil", zh:"花椒", q:"t:Sichuan pepper", where:"Chongqing markets", desc:"The numbing mala spice, far fresher than abroad."},
+  {id:"mahua", name:"Chen mahua snacks", zh:"陈麻花", q:"Mahua fried dough twist", where:"Ciqikou, Chongqing", desc:"Crunchy twisted dough sticks in many flavours."},
+  {id:"rabbit", name:"White Rabbit candy", zh:"大白兔", q:"White Rabbit candy", where:"Supermarkets", desc:"A Shanghai milk candy classic. The rice-paper wrapper is edible."},
+  {id:"feiyue", name:"Feiyue or Warrior sneakers", zh:"飞跃 · 回力", q:"Feiyue shoes", where:"Shops in Shanghai", desc:"Retro canvas sneakers with Shanghai roots. Cheap and iconic."},
+  {id:"fan", name:"Paper cuttings and fans", zh:"剪纸 · 扇子", q:"Chinese paper cutting", where:"Old towns", desc:"Light, pretty and easy to pack."},
+  {id:"knot", name:"Chinese knots and lanterns", zh:"中国结", q:"t:Chinese knotting", where:"Souvenir markets", desc:"Red good-luck decorations."},
+  {id:"calli", name:"Calligraphy brush set", zh:"毛笔", q:"Chinese calligraphy brush ink", where:"Fuzhou Road, Shanghai", desc:"Brush, ink stone and rice paper. Fun to try together."},
+  {id:"porcelain", name:"Blue and white porcelain", zh:"青花瓷", q:"Blue and white porcelain", where:"Museum shops", desc:"Classic ceramics. Wrap them well for the flight."},
+  {id:"popmart", name:"Pop Mart blind boxes", zh:"泡泡玛特", q:"Pop Mart", where:"Malls everywhere", desc:"China’s designer-toy craze. You never know which figure you’ll get."},
+  {id:"embro", name:"Shu embroidery", zh:"蜀绣", q:"Shu embroidery", where:"Shops in Chongqing", desc:"Fine silk embroidery from the Sichuan–Chongqing region."}
+];
+
+const PREP = [
+  {id:"visa", name:"Check visa rules for your passport", desc:"Rules change often. Check the Chinese embassy site."},
+  {id:"alipay", name:"Set up Alipay with your Visa or Mastercard", desc:"The key app for shops, taxis, metro and food."},
+  {id:"wechat", name:"Install WeChat and add WeChat Pay", desc:"Messaging, museum bookings and payments."},
+  {id:"esim", name:"Get a roaming eSIM or data plan", desc:"Google, WhatsApp and Instagram are blocked on local Wi-Fi."},
+  {id:"amap", name:"Download Amap (高德地图)", desc:"Much better than Google Maps in China, with an English mode."},
+  {id:"didi", name:"Didi for taxis", desc:"Also inside Alipay. Shows the price up front."},
+  {id:"trip", name:"Trip.com for trains, hotels and tickets", desc:"In English, including high-speed trains."},
+  {id:"dianping", name:"Dianping or Meituan for food reviews", desc:"Find the places locals rate."},
+  {id:"translate", name:"Offline translator", desc:"Download Chinese for offline use. Camera mode reads menus."},
+  {id:"adaptor", name:"Universal power adaptor", desc:"China uses type A and I plugs at 220V."},
+  {id:"address", name:"Hotel addresses in Chinese", desc:"Screenshot them to show taxi drivers."},
+  {id:"shoes", name:"Comfortable walking shoes", desc:"Chongqing is stairs, stairs, stairs."},
+  {id:"tissue", name:"Tissues and wet wipes", desc:"Many public toilets have no paper."},
+  {id:"passport", name:"Passport copy, photo and paper", desc:"Needed for trains, museums and hotels."},
+  {id:"flight", name:"Book Shanghai to Chongqing", desc:"A flight is about 2.5 to 3 hours. The train is longer but scenic."}
+];
+
+/* flatten guide items with ids */
+const ITEMS = [];
+for(const [city,g] of Object.entries(GUIDES)) for(const kind of Object.keys(KINDS)) g[kind].forEach((it,i) => { it.id = `${city}-${kind}-${i}`; it.city = city; it.kind = kind; if(!it.cat) it.cat = kind==="foods" ? "food" : kind==="shows" ? "activity" : "place"; ITEMS.push(it); });
+const itemById = id => ITEMS.find(x => x.id === id);
+const itemByName = n => ITEMS.find(x => x.name === n);
+
+/* =========================================================
+   STATE
+   ========================================================= */
+const KEY = "chinaTrip.v1";
+const uid = () => Math.random().toString(36).slice(2,9);
+const defaults = () => ({
+  title:"Our China Trip", travelers:"",
+  cities:[{id:uid(),name:"Shanghai",arrive:"",leave:""},{id:uid(),name:"Chongqing",arrive:"",leave:""}],
+  acts:[], buy:{}, prep:{}, custom:[]
+});
+let S;
+try{ S = Object.assign(defaults(), JSON.parse(localStorage.getItem(KEY)) || {}); }catch(e){ S = defaults(); }
+/* ---------- GitHub sync and owner-only editing ---------- */
+const GH = {owner:"Abdullah-dev-base", repo:"china-trip", path:"plan.json"};
+const ONLINE = /\.github\.io$/i.test(location.hostname);
+let TOKEN = ""; try{ TOKEN = localStorage.getItem("chinaTrip.ghToken") || ""; }catch(e){}
+let REMOTE_SHA = null, SYNC = "idle", syncTimer = null;
+const RO = () => ONLINE && !TOKEN;
+const planData = () => ({title:S.title, travelers:S.travelers, cities:S.cities, acts:S.acts, buy:S.buy, prep:S.prep, custom:S.custom});
+const save = () => {
+  try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){}
+  if(ONLINE && TOKEN){ clearTimeout(syncTimer); setSync("pending"); syncTimer = setTimeout(() => pushPlan(), 1200); }
+};
+const b64enc = str => { const b = new TextEncoder().encode(str); let s = ""; for(let i=0;i<b.length;i+=0x8000) s += String.fromCharCode.apply(null, b.subarray(i,i+0x8000)); return btoa(s); };
+const b64dec = str => new TextDecoder().decode(Uint8Array.from(atob(str.replace(/\s/g,"")), c => c.charCodeAt(0)));
+const ghHeaders = () => ({"Accept":"application/vnd.github+json", ...(TOKEN ? {"Authorization":`Bearer ${TOKEN}`} : {})});
+const contentsURL = () => `https://api.github.com/repos/${GH.owner}/${GH.repo}/contents/${GH.path}`;
+async function pullPlan(){
+  if(!ONLINE) return;
+  let data = null;
+  try{
+    const r = await fetch(`${contentsURL()}?t=${Date.now()}`, {headers:ghHeaders(), cache:"no-store"});
+    if(r.ok){ const j = await r.json(); REMOTE_SHA = j.sha; data = JSON.parse(b64dec(j.content)); }
+    else if(r.status === 404) REMOTE_SHA = null;
+    else if(r.status === 401 && TOKEN){ signOut(true); toast("Your sign-in expired. Sign in again to edit."); return pullPlan(); }
+  }catch(e){}
+  if(!data){ try{ const r = await fetch(`plan.json?t=${Date.now()}`, {cache:"no-store"}); if(r.ok) data = await r.json(); }catch(e){} }
+  if(data && Array.isArray(data.cities) && !(TOKEN && SYNC === "pending")){
+    S = Object.assign(defaults(), data);
+    try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){}
+    UI.day = null; renderAll();
+  }
+}
+async function pushPlan(retry = true){
+  setSync("saving");
+  try{
+    const body = {message:"Update trip plan", content:b64enc(JSON.stringify(planData(), null, 2))};
+    if(REMOTE_SHA) body.sha = REMOTE_SHA;
+    const r = await fetch(contentsURL(), {method:"PUT", headers:{...ghHeaders(), "Content-Type":"application/json"}, body:JSON.stringify(body)});
+    if(r.ok){ REMOTE_SHA = (await r.json()).content.sha; setSync("saved"); return; }
+    if((r.status === 409 || r.status === 422) && retry){
+      const g = await fetch(`${contentsURL()}?t=${Date.now()}`, {headers:ghHeaders(), cache:"no-store"});
+      REMOTE_SHA = g.ok ? (await g.json()).sha : null;
+      return pushPlan(false);
+    }
+    setSync("error");
+    toast(r.status === 401 || r.status === 403 || r.status === 404 ? "GitHub refused the save. Check your token can write to china-trip." : "Couldn’t save to GitHub. Your change is kept on this device.");
+  }catch(e){ setSync("error"); toast("No connection. Your change is kept on this device."); }
+}
+function setSync(s){ SYNC = s; renderAuth(); }
+function renderAuth(){
+  document.body.classList.toggle("ro", RO());
+  const t = $("#tripTitle"); if(t) t.readOnly = RO();
+  const el = $("#authBtn"); if(!el) return;
+  if(!ONLINE){ el.classList.add("hide"); return; }
+  el.classList.remove("hide");
+  if(RO()){ el.innerHTML = `${icon("lock",15)}<span>View only</span>`; el.title = "Only the owner can edit. Sign in"; }
+  else {
+    const lbl = {idle:"Signed in", pending:"Saving…", saving:"Saving…", saved:"Saved", error:"Not saved"}[SYNC];
+    el.innerHTML = `${icon(SYNC==="error"?"x":"check",15)}<span>${lbl}</span>`;
+    el.title = "Signed in as the owner. Click to sign out on this device";
+  }
+}
+function openAuth(){ $("#tokErr").textContent = ""; $("#tokIn").value = ""; $("#authBg").classList.add("on"); setTimeout(()=>$("#tokIn").focus(), 60); }
+async function signIn(){
+  const tok = $("#tokIn").value.trim(); if(!tok){ $("#tokErr").textContent = "Paste your token first."; return; }
+  $("#authGo").disabled = true; $("#tokErr").textContent = "";
+  try{
+    const r = await fetch(`https://api.github.com/repos/${GH.owner}/${GH.repo}`, {headers:{"Accept":"application/vnd.github+json","Authorization":`Bearer ${tok}`}});
+    if(r.status === 401) throw new Error("That token isn’t valid. Copy it again from GitHub.");
+    if(!r.ok) throw new Error("That token can’t see the china-trip repo. Pick it under Repository access.");
+    const j = await r.json();
+    if(j.permissions && j.permissions.push === false) throw new Error("This GitHub account can’t edit the china-trip repo.");
+    TOKEN = tok; try{ localStorage.setItem("chinaTrip.ghToken", tok); }catch(e){}
+    $("#authBg").classList.remove("on"); SYNC = "idle"; renderAll(); toast("Signed in. Your changes now save to GitHub.");
+    pullPlan();
+  }catch(e){ $("#tokErr").textContent = e.message || "Couldn’t reach GitHub. Try again."; }
+  $("#authGo").disabled = false;
+}
+function signOut(silent){ TOKEN = ""; try{ localStorage.removeItem("chinaTrip.ghToken"); }catch(e){} SYNC = "idle"; renderAll(); if(!silent) toast("Signed out. This device is view only now."); }
+const guard = () => { if(RO()){ toast("View only. Only the owner can make changes."); return true; } return false; };
+const UI = { view:"plan", day:null, mode:"day", guide:"Shanghai", list:"buy", mapCity:null, mapPlanOnly:false, convAmt:100, convFrom:"CNY" };
+let RATES = { SAR:0.52, USD:0.14, live:false };
+const WX = {};
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const enc = encodeURIComponent;
+const parseD = s => { const [y,m,d] = s.split("-").map(Number); return new Date(y, m-1, d); };
+const iso = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const longDate = s => parseD(s).toLocaleDateString("en-GB",{weekday:"long", day:"numeric", month:"long"});
+const shortDate = s => parseD(s).toLocaleDateString("en-GB",{weekday:"short", day:"numeric", month:"short"});
+const dm = s => parseD(s).toLocaleDateString("en-GB",{day:"numeric", month:"short"});
+const range = (a,b,long) => { const x = parseD(a), y = parseD(b), mo = d => d.toLocaleDateString("en-GB",{month:long?"long":"short"});
+  return x.getMonth()===y.getMonth() ? `${x.getDate()}–${y.getDate()} ${mo(y)}` : `${x.getDate()} ${mo(x)} – ${y.getDate()} ${mo(y)}`; };
+const toMin = t => { if(!t) return null; const [h,m] = t.split(":").map(Number); return h*60+m; };
+const fromMin = m => `${String(Math.floor(m/60)).padStart(2,"0")}:${String(m%60).padStart(2,"0")}`;
+const dur = (a,b) => { const x=toMin(a), y=toMin(b); if(x==null||y==null||y<=x) return ""; const d=y-x; return d>=60?`${Math.floor(d/60)}h${d%60?` ${d%60}m`:""}`:`${d}m`; };
+const guideFor = n => GUIDES[Object.keys(GUIDES).find(k => k.toLowerCase() === String(n||"").trim().toLowerCase())];
+const EXTRA = ["#12A594","#B7791F","#7B4FD6","#0E7C9B"];
+function cityColor(name){
+  const g = guideFor(name);
+  if(g) return getComputedStyle(document.documentElement).getPropertyValue(g.color).trim();
+  const others = S.cities.filter(c => !guideFor(c.name));
+  const i = others.findIndex(c => c.name === name);
+  return EXTRA[(i<0?0:i) % EXTRA.length];
+}
+const yen = n => "¥" + Math.round(n).toLocaleString("en-US");
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("on"); clearTimeout(toast.t); toast.t=setTimeout(()=>t.classList.remove("on"),2400); }
+function getDays(){
+  const map = new Map();
+  [...S.cities].filter(c => c.arrive && c.leave && c.leave >= c.arrive).sort((a,b)=>a.arrive.localeCompare(b.arrive)).forEach(c => {
+    for(let d = parseD(c.arrive); iso(d) <= c.leave; d.setDate(d.getDate()+1)){
+      const k = iso(d); if(!map.has(k)) map.set(k, []);
+      if(!map.get(k).includes(c.name)) map.get(k).push(c.name);
+    }
+  });
+  return [...map.entries()].sort((a,b)=>a[0].localeCompare(b[0])).map(([date,cities])=>({date,cities}));
+}
+const actsOn = date => S.acts.filter(a => a.date === date).sort((a,b)=>(a.start||"99").localeCompare(b.start||"99"));
+const inPlan = name => S.acts.some(a => a.title === name);
+const sugg = it => esc(JSON.stringify({city:it.city, title:it.name, cat:it.cat, place:it.name, zh:it.zh, notes:it.tip||"", lat:it.lat, lng:it.lng, q:it.q}));
+
+/* =========================================================
+   PHOTOS — real images from Wikipedia (free-licensed lead images)
+   ========================================================= */
+const PH_KEY = "chinaTrip.photos.v2";
+let PHOTOS = {}; try{ PHOTOS = JSON.parse(localStorage.getItem(PH_KEY)) || {}; }catch(e){}
+const phPending = {}; const phQueue = []; let phActive = 0;
+function phPump(){ while(phActive < 4 && phQueue.length){ const [q,res] = phQueue.shift(); phActive++; phFetch(q).then(res).finally(()=>{ phActive--; phPump(); }); } }
+async function phFetch(q){
+  const base = "https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=pageimages|info&inprop=url&piprop=thumbnail&pithumbsize=960";
+  const url = q.startsWith("t:") ? `${base}&redirects=1&titles=${enc(q.slice(2))}` : `${base}&generator=search&gsrnamespace=0&gsrlimit=4&gsrsearch=${enc(q)}`;
+  try{
+    const j = await (await fetch(url)).json();
+    const pages = Object.values((j.query && j.query.pages) || {}).sort((a,b)=>(a.index||0)-(b.index||0));
+    const p = pages.find(p => p.thumbnail);
+    const r = p ? {src:p.thumbnail.source, page:p.fullurl, title:p.title} : null;
+    PHOTOS[q] = r; try{ localStorage.setItem(PH_KEY, JSON.stringify(PHOTOS)); }catch(e){}
+    return r;
+  }catch(e){ return undefined; }
+}
+function getPhoto(q){
+  if(q in PHOTOS) return Promise.resolve(PHOTOS[q]);
+  if(!phPending[q]) phPending[q] = new Promise(res => { phQueue.push([q,res]); phPump(); }).finally(()=>{ delete phPending[q]; });
+  return phPending[q];
+}
+const small = src => src.replace(/\/\d+px-/, "/330px-");
+function applyPhoto(el, r){
+  if(!r || !r.src || el.querySelector("img")) return;
+  const img = new Image(); img.alt = ""; img.decoding = "async";
+  img.src = el.dataset.size === "s" ? small(r.src) : r.src;
+  img.onload = () => el.classList.add("loaded");
+  img.onerror = () => { if(img.src !== r.src) img.src = r.src; else img.remove(); };
+  el.appendChild(img);
+  if(el.dataset.credit) { const c = document.getElementById(el.dataset.credit); if(c) c.innerHTML = `Photo: <a href="${esc(r.page)}" target="_blank" rel="noopener">${esc(r.title)} on Wikipedia</a>`; }
+}
+const phObs = "IntersectionObserver" in window ? new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting){ phObs.unobserve(e.target); getPhoto(e.target.dataset.photo).then(r => applyPhoto(e.target, r)); } });
+}, {rootMargin:"400px"}) : null;
+function hydrate(root=document){
+  root.querySelectorAll("[data-photo]:not([data-ph])").forEach(el => {
+    el.dataset.ph = "1";
+    const q = el.dataset.photo; if(!q) return;
+    if(PHOTOS[q]) applyPhoto(el, PHOTOS[q]);
+    else if(phObs) phObs.observe(el); else getPhoto(q).then(r => applyPhoto(el, r));
+  });
+}
+const ph = (q, cls="", iconName="image", color, size) => `<div class="ph ${cls}" ${q?`data-photo="${esc(q)}"`:""} ${size?`data-size="${size}"`:""} ${color?`style="--c:${color}"`:""}><span class="ph-ic">${icon(iconName,22)}</span></div>`;
+
+/* =========================================================
+   HEADER / NAV / THEME
+   ========================================================= */
+const VIEWS = [["plan","Plan","plan"],["map","Map","map"],["guides","Guides","compass"],["basics","China 101","globe"],["lists","Lists","check"]];
+function renderNav(){ $("#nav").innerHTML = VIEWS.map(([v,l,i]) => `<button data-view="${v}" ${UI.view===v?'aria-current="page"':""}>${icon(i,19)}<span>${l}</span></button>`).join(""); }
+function renderHeader(){
+  if(document.activeElement !== $("#tripTitle")) $("#tripTitle").value = S.title;
+  document.title = `${S.title} · China Trip Planner`;
+  const days = getDays(), el = $("#count");
+  if(!days.length){ el.textContent = ""; return; }
+  const today = parseD(iso(new Date())), start = parseD(days[0].date), end = parseD(days.at(-1).date);
+  const diff = Math.round((start-today)/864e5);
+  if(diff > 0) el.innerHTML = `<b>${diff}</b> day${diff>1?"s":""} to go`;
+  else if(today <= end) el.innerHTML = `Day <b>${Math.round((today-start)/864e5)+1}</b> of ${days.length}`;
+  else el.textContent = "Trip complete";
+}
+function renderTheme(){
+  const dark = document.documentElement.dataset.theme === "dark";
+  $("#themeBtn").innerHTML = icon(dark?"sun":"moon", 19);
+  $("#themeBtn").setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
+  document.querySelector('meta[name="theme-color"]').content = dark ? "#111215" : "#F6F7F9";
+}
+function showView(v){
+  UI.view = v;
+  document.querySelectorAll(".view").forEach(s => s.classList.toggle("on", s.id === "v-"+v));
+  renderNav();
+  if(v === "map") renderMap();
+  window.scrollTo({top:0});
+  hydrate();
+}
+
+/* =========================================================
+   PLAN
+   ========================================================= */
+function renderPlan(){
+  const days = getDays();
+  if(days.length && !days.some(d => d.date === UI.day)){
+    const t = iso(new Date()); UI.day = (days.find(d => d.date === t) || days[0]).date;
+  }
+  let main;
+  if(days.length){
+    const i = days.findIndex(d => d.date === UI.day);
+    main = `
+      <div class="plan-head">
+        <div class="seg" role="group" aria-label="View">
+          <button data-mode="day" aria-pressed="${UI.mode==="day"}">By day</button>
+          <button data-mode="all" aria-pressed="${UI.mode==="all"}">Whole trip</button>
+        </div>
+        <button class="btn primary sm eo" data-add="${UI.mode==="day"?UI.day:days[0].date}">${icon("plus",16)} Add a stop</button>
+      </div>
+      ${UI.mode==="day" ? stripHTML(days) + dayHTML(days[i], i) : days.map((d,j) => dayHTML(d,j)).join("")}`;
+  } else {
+    main = `<div class="card empty">
+      <h2>When are you going?</h2>
+      <p>${RO()?"The trip dates haven’t been added yet. Check back soon.":"Add the dates you arrive in and leave each city. Your days will appear here, ready for food, cafés and places."}</p>
+      <div class="row">
+        <button class="btn primary eo" id="focusDates">Set dates</button>
+        <button class="btn eo" data-sample>Try a sample trip</button>
+      </div>
+    </div>`;
+  }
+  $("#v-plan").innerHTML = `<div class="plan"><div>${main}</div>${asideHTML(days)}</div>`;
+  renderHeader(); renderConv();
+}
+function stripHTML(days){
+  return `<div class="strip" role="tablist" aria-label="Trip days">${days.map((d,i) => {
+    const city = d.cities.at(-1), dt = parseD(d.date), sel = UI.day === d.date;
+    return `<button class="daychip" role="tab" data-day="${d.date}" style="--c:${cityColor(city)}" ${sel?'aria-current="true" aria-selected="true"':'aria-selected="false"'} aria-label="Day ${i+1}, ${longDate(d.date)}, ${esc(d.cities.join(" to "))}">
+      <small>Day ${i+1}</small>
+      <b>${dt.toLocaleDateString("en-GB",{weekday:"short"})} ${dt.getDate()}</b>
+      <span><i class="dot"></i>${esc(city)}</span>
+    </button>`;
+  }).join("")}</div>`;
+}
+function wxFor(city, date){
+  const g = guideFor(city); if(!g) return "";
+  const f = WX[city];
+  if(f && f.daily){ const i = f.daily.time.indexOf(date); if(i >= 0) return `${wxLabel(f.daily.weather_code[i])[1]}, ${Math.round(f.daily.temperature_2m_max[i])}° / ${Math.round(f.daily.temperature_2m_min[i])}°`; }
+  const m = parseD(date).getMonth(); return `Usually ${g.weather[m][0]}° / ${g.weather[m][1]}°`;
+}
+function dayHTML(d, i){
+  const city = d.cities.at(-1), color = cityColor(city), acts = actsOn(d.date);
+  const cityZh = (guideFor(city)||{}).zh || city;
+  let prevEnd = null;
+  const rows = acts.map(a => {
+    const s = toMin(a.start), e = toMin(a.end);
+    const overlap = prevEnd != null && s != null && s < prevEnd;
+    if(e != null) prevEnd = Math.max(prevEnd ?? 0, e);
+    const cat = CATS[a.cat] ? a.cat : "place", kw = a.zh || a.place;
+    const gq = a.lat ? `${a.lat},${a.lng}` : enc(`${a.place} ${city}`);
+    const it = itemByName(a.title);
+    return `<li class="stop ${a.done?"done":""}">
+      <div class="time">${a.start?esc(a.start):"–"}${a.start&&a.end?`<small>${dur(a.start,a.end)}</small>`:""}</div>
+      <div class="rail"><i></i></div>
+      <div class="body">
+        <div class="tx">
+          <h3>${esc(a.title)}</h3>
+          <div class="meta">
+            <span>${icon(cat,14)} ${CATS[cat].label}</span>
+            ${a.end?`<span>Until ${esc(a.end)}</span>`:""}
+            ${a.place?`<span>${icon("pin",14)} ${esc(a.place)}</span>`:""}
+            ${+a.cost?`<span>${yen(a.cost)}</span>`:""}
+            ${overlap?`<span class="warn">Overlaps the stop before</span>`:""}
+          </div>
+          ${a.notes?`<p class="notes">${esc(a.notes)}</p>`:""}
+          ${kw||a.lat?`<div class="links">
+            ${kw?`<a class="pill" target="_blank" rel="noopener" href="https://uri.amap.com/search?keyword=${enc(kw)}&city=${enc(cityZh)}&callnative=1">${icon("pin",14)} Amap</a>`:""}
+            <a class="pill" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${gq}">${icon("ext",14)} Google Maps</a>
+          </div>`:""}
+        </div>
+        ${a.q?`<div class="ph" data-photo="${esc(a.q)}" data-size="s" style="--c:${color}" ${it?`data-spot="${it.id}" title="See details"`:""}><span class="ph-ic">${icon(cat,18)}</span></div>`:""}
+      </div>
+      <div class="tools eo">
+        <button class="ibtn" data-done="${a.id}" aria-label="${a.done?"Mark as not done":"Mark as done"}" title="${a.done?"Mark as not done":"Mark as done"}">${icon(a.done?"undo":"check",17)}</button>
+        <button class="ibtn" data-edit="${a.id}" aria-label="Edit ${esc(a.title)}" title="Edit">${icon("edit",16)}</button>
+        <button class="ibtn" data-del="${a.id}" aria-label="Delete ${esc(a.title)}" title="Delete">${icon("trash",16)}</button>
+      </div>
+    </li>`;
+  }).join("");
+  const cities = d.cities.map(c => `<span><i class="dot" style="--c:${cityColor(c)}"></i>${esc(c)}</span>`).join(`<em>to</em>`);
+  return `<article class="daycard" style="--c:${color}">
+    <header class="dayhead">
+      <div><h2>Day ${i+1}</h2><p>${longDate(d.date)}</p></div>
+      <div class="dayinfo"><div class="cities">${cities}</div><div class="wx">${wxFor(city, d.date)}</div></div>
+    </header>
+    <ol class="stops">
+      ${rows}
+      <li class="stop add eo">
+        <div class="time"></div><div class="rail"><i></i></div>
+        <div class="body">${acts.length?"":`<p class="freeday">Nothing planned yet. Find ideas in <button class="addline" data-view="guides" style="display:inline;height:auto">Guides</button>.</p>`}<button class="addline" data-add="${d.date}">${icon("plus",16)} Add a stop</button></div>
+      </li>
+    </ol>
+  </article>`;
+}
+function asideHTML(days){
+  const inTrip = S.acts.filter(a => days.some(d => d.date === a.date));
+  const cost = inTrip.reduce((s,a) => s + (+a.cost||0), 0);
+  return `<aside class="aside card">
+    <section>
+      <h3>Cities and dates</h3>
+      ${S.cities.map(c => {
+        const n = c.arrive && c.leave && c.leave >= c.arrive ? Math.round((parseD(c.leave)-parseD(c.arrive))/864e5) : null;
+        return `<div class="city cityrow" data-id="${c.id}">
+          <div class="cityname"><i class="dot" style="--c:${cityColor(c.name)}"></i><input class="in" list="cityList" data-k="name" value="${esc(c.name)}" placeholder="City" aria-label="City name">
+            <button class="ibtn eo" data-rmcity="${c.id}" aria-label="Remove ${esc(c.name||"city")}" title="Remove city">${icon("trash",16)}</button></div>
+          <label class="field"><span>Arrive</span><input class="in" type="date" data-k="arrive" value="${c.arrive}"></label>
+          <label class="field"><span>Leave</span><input class="in" type="date" data-k="leave" value="${c.leave}" ${c.arrive?`min="${c.arrive}"`:""}></label>
+          ${n!=null?`<div class="nights">${n} night${n===1?"":"s"}</div>`:""}
+        </div>`;
+      }).join("")}
+      <datalist id="cityList">${["Shanghai","Chongqing","Chengdu","Beijing","Hangzhou","Xi'an","Guilin","Suzhou"].map(n=>`<option value="${n}">`).join("")}</datalist>
+      <button class="btn dashed block eo" id="addCity">${icon("plus",16)} Add a city</button>
+      <label class="field together"><span>Travelling together</span><input class="in" id="travelers" value="${esc(S.travelers)}" placeholder="Your names"></label>
+    </section>
+    <section>
+      <h3>At a glance</h3>
+      <div class="totals">
+        <div><b>${days.length}</b><span>Days</span></div>
+        <div><b>${inTrip.length}</b><span>Stops</span></div>
+        <div><b>${inTrip.filter(a=>a.done).length}</b><span>Done</span></div>
+      </div>
+      <p class="budget">Planned budget <b>${yen(cost)}</b>${cost?`, about ${Math.round(cost*RATES.SAR).toLocaleString("en-US")} SAR`:""}</p>
+    </section>
+    <section>
+      <h3>Currency <small>${RATES.live?"Today’s rate":"Approximate rate"}</small></h3>
+      <div class="conv">
+        <input class="in" id="convAmt" type="number" inputmode="decimal" value="${esc(UI.convAmt)}" aria-label="Amount">
+        <select class="in" id="convFrom" aria-label="Currency">${[["CNY","¥ CNY"],["SAR","SAR"],["USD","$ USD"]].map(([v,l])=>`<option value="${v}" ${UI.convFrom===v?"selected":""}>${l}</option>`).join("")}</select>
+      </div>
+      <div class="conv-out" id="convOut"></div>
+    </section>
+    <section>
+      <h3>Share and save</h3>
+      <div class="tools-grid">
+        <button class="btn primary full" id="shareBtn">${icon("share",16)} Share with my partner</button>
+        <button class="btn" id="icsBtn">${icon("cal",16)} Calendar</button>
+        <button class="btn" id="copyBtn">${icon("copy",16)} Copy text</button>
+        <button class="btn" id="printBtn">${icon("print",16)} Print</button>
+        <button class="btn eo" data-sample>${icon("spark",16)} Sample trip</button>
+        <button class="btn" id="exportBtn">${icon("down",16)} Backup</button>
+        <button class="btn eo" id="importBtn">${icon("up",16)} Restore</button>
+        <button class="btn ghost full danger eo" id="resetBtn">Clear everything</button>
+      </div>
+    </section>
+  </aside>`;
+}
+function renderConv(){
+  const el = $("#convOut"); if(!el) return;
+  UI.convAmt = $("#convAmt").value; UI.convFrom = $("#convFrom").value;
+  const amt = +UI.convAmt || 0, from = UI.convFrom;
+  const cny = from === "CNY" ? amt : amt / RATES[from];
+  const fmt = v => v.toLocaleString("en-US",{maximumFractionDigits:2});
+  const lbl = {CNY:"Yuan", SAR:"Riyal", USD:"Dollar"}, sym = {CNY:v=>`¥${fmt(v)}`, SAR:v=>`${fmt(v)} SAR`, USD:v=>`$${fmt(v)}`};
+  el.innerHTML = ["CNY","SAR","USD"].filter(c => c !== from).map(c => `<div><small>${lbl[c]}</small>${sym[c](c==="CNY"?cny:cny*RATES[c])}</div>`).join("");
+}
+
+/* =========================================================
+   GUIDES
+   ========================================================= */
+const TAGS = {pork:["tag-pork","Usually pork"], halal:["tag-halal","Halal option"], spicy:["tag-spicy","Spicy"], veg:["","Meat-free option"]};
+function spotCard(it){
+  const color = `var(${GUIDES[it.city].color})`, added = inPlan(it.name);
+  return `<div class="spot">
+    <div class="ph" data-photo="${esc(it.q||"")}" data-spot="${it.id}" style="--c:${color}" role="button" tabindex="0" aria-label="See ${esc(it.name)}"><span class="ph-ic">${icon(it.cat,22)}</span></div>
+    <div class="sc">
+      <div class="spot-h"><h3><span data-spot="${it.id}">${esc(it.name)}</span></h3><span class="zh">${esc(it.zh)}</span></div>
+      <p>${esc(it.desc)}</p>
+      ${it.tip?`<p class="tip"><b>Tip</b> ${esc(it.tip)}</p>`:""}
+      <div class="spot-f">
+        ${(it.tags||[]).map(t=>`<span class="tag ${TAGS[t][0]}">${TAGS[t][1]}</span>`).join("")}
+        <span class="grow"></span>
+        ${it.lat?`<button class="ibtn" data-showmap="${it.id}" aria-label="Show ${esc(it.name)} on the map" title="Show on map">${icon("map",17)}</button>`:""}
+        <button class="btn sm eo ${added?"added":""}" data-sugg="${sugg(it)}">${icon(added?"check":"plus",15)} ${added?"In plan":"Add to plan"}</button>
+      </div>
+    </div>
+  </div>`;
+}
+function renderGuides(){
+  const name = UI.guide, g = GUIDES[name], color = `var(${g.color})`;
+  const days = getDays().filter(d => d.cities.includes(name));
+  const m = days.length ? parseD(days[0].date).getMonth() : -1;
+  const now = WX[name] && WX[name].current;
+  $("#v-guides").innerHTML = `
+    <div class="seg" role="group" aria-label="City">${Object.keys(GUIDES).map(k=>`<button data-guide="${k}" aria-pressed="${k===name}">${k}</button>`).join("")}</div>
+    <div class="ghero">
+      <div>
+        <div class="gtitle"><h1>${name}</h1><span><span class="zh">${g.zh}</span>&nbsp; ${g.py}</span></div>
+        <p class="gtag">${esc(g.tag)}</p>
+        <p class="gintro">${esc(g.intro)}</p>
+        <dl class="kv">${g.kv.map(([k,v])=>`<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
+      </div>
+      <div class="card wxcard" style="--c:${color}">
+        <div class="ph" data-photo="${esc(g.hero)}" style="--c:${color}"><span class="ph-ic">${icon("image",22)}</span></div>
+        <div class="wxin">
+          ${now?`<div class="wxnow"><b>${Math.round(now.temperature_2m)}°</b><span>${wxLabel(now.weather_code)[1]}<br>right now in ${name}</span></div>`:""}
+          <h4>Typical weather</h4>
+          <p>${m>=0?`In ${MONTHS_LONG[m]}: around ${g.weather[m][0]}° by day and ${g.weather[m][1]}° at night`:"Highs by month. Add your dates to see your month."}</p>
+          <div class="bars">${g.weather.map((w,i)=>`<div class="${i===m?"hl":""}" title="${MONTHS_LONG[i]}: ${w[0]}° / ${w[1]}°"><em>${w[0]}°</em><i style="height:${Math.max(6,Math.round(w[0]/36*72))}px"></i>${MONTHS[i]}</div>`).join("")}</div>
+        </div>
+      </div>
+    </div>
+    <div class="sec">
+      <div class="sec-h"><h2>Places to visit</h2><p>${g.places.length} places</p></div>
+      <div class="cards">${g.places.map(spotCard).join("")}</div>
+    </div>
+    <div class="sec">
+      <div class="sec-h"><h2>Shows and experiences</h2><p>${g.shows.length} things to do</p></div>
+      <div class="cards">${g.shows.map(spotCard).join("")}</div>
+    </div>
+    <div class="sec">
+      <div class="sec-h"><h2>Food to try</h2><p>${g.foods.length} dishes</p></div>
+      <div class="cards">${g.foods.map(spotCard).join("")}</div>
+      <div class="note"><b>Eating halal?</b> Look for the green <span class="zh">清真</span> (qīngzhēn) sign on Lanzhou noodle and Xinjiang restaurants. They’re all over ${name}. Elsewhere, show “我不吃猪肉” (I don’t eat pork) when you order.</div>
+    </div>
+    <div class="sec">
+      <div class="sec-h"><h2>Cafés and cool spots</h2><p>${g.cool.length} spots</p></div>
+      <div class="cards">${g.cool.map(spotCard).join("")}</div>
+    </div>
+    <div class="sec cols">
+      <div><div class="sec-h"><h2>Good to know</h2></div><ul class="plain">${g.facts.map(f=>`<li>${esc(f)}</li>`).join("")}</ul></div>
+      <div><div class="sec-h"><h2>Only in ${name}</h2></div><ul class="plain">${g.funny.map(f=>`<li>${esc(f)}</li>`).join("")}</ul></div>
+    </div>`;
+}
+function openSpot(id){
+  const it = itemById(id); if(!it) return;
+  const g = GUIDES[it.city], added = inPlan(it.name);
+  $("#spotSheet").innerHTML = `
+    <button class="x" id="spotClose" aria-label="Close">${icon("x",18)}</button>
+    <div class="ph" data-credit="spotCredit" style="--c:var(${g.color})"><span class="ph-ic">${icon(it.cat,24)}</span></div>
+    <div class="sb">
+      <h2>${esc(it.name)} <span class="zh">${esc(it.zh)}</span></h2>
+      <p class="sub">${it.city}, ${it.kind==="foods"?"Food":CATS[it.cat].label}</p>
+      <p class="desc">${esc(it.desc)}</p>
+      ${it.tip?`<div class="tipbox"><b>Tip:</b> ${esc(it.tip)}</div>`:""}
+      ${it.tags&&it.tags.length?`<div class="tags">${it.tags.map(t=>`<span class="tag ${TAGS[t][0]}">${TAGS[t][1]}</span>`).join("")}</div>`:""}
+      <div class="acts">
+        <button class="btn primary eo" data-sugg="${sugg(it)}">${icon("plus",16)} ${added?"Add again":"Add to plan"}</button>
+        ${it.lat?`<button class="btn" data-showmap="${it.id}">${icon("map",16)} Show on map</button>`:""}
+        <a class="btn" target="_blank" rel="noopener" href="https://uri.amap.com/search?keyword=${enc(it.zh)}&city=${enc(g.zh)}&callnative=1">${icon("pin",16)} Amap</a>
+        <a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${it.lat?`${it.lat},${it.lng}`:enc(it.name+" "+it.city)}">${icon("ext",16)} Google Maps</a>
+      </div>
+      <p class="credit" id="spotCredit"></p>
+    </div>`;
+  $("#spotBg").classList.add("on");
+  const el = $("#spotSheet>.ph");
+  getPhoto(it.q).then(r => applyPhoto(el, r));
+}
+const closeSpot = () => $("#spotBg").classList.remove("on");
+
+/* =========================================================
+   CHINA 101
+   ========================================================= */
+function renderBasics(){
+  $("#v-basics").innerHTML = `
+    <div class="pagehead"><h1>China 101</h1><p>The basics, phrases, manners and a few things that will make you smile.</p></div>
+    <div class="sec" style="margin-top:28px">
+      <div class="sec-h"><h2>The basics</h2></div>
+      <div class="infogrid">${CHINA.basics.map(b => `<div class="card info"><div class="ico">${icon(b.i,18)}</div><h3>${b.t}</h3>${b.big?`<div class="big">${b.big.map(([n,l])=>`<b>${n}</b><span>${l}</span>`).join("")}</div>`:`<p>${esc(b.d)}</p>`}</div>`).join("")}</div>
+    </div>
+    <div class="sec">
+      <div class="sec-h"><h2>China does it differently</h2><p>Where China is ahead, creative or just surprising</p></div>
+      <ul class="plain">${CHINA.future.map(f=>`<li><span class="y">${icon("spark",18)}</span><span>${esc(f)}</span></li>`).join("")}</ul>
+    </div>
+    <div class="sec">
+      <div class="sec-h"><h2>Phrases</h2><p>Tap the arrows to show one full screen</p></div>
+      <div class="card phrases">${CHINA.phrases.map((p,i)=>`<div class="phrase">
+        <span class="en">${p[0]}</span><span class="py">${p[1]}</span><span class="hz">${p[2]}</span>
+        <button class="ibtn" data-phrase="${i}" aria-label="Show “${p[0]}” full screen" title="Show full screen">${icon("expand",16)}</button>
+      </div>`).join("")}</div>
+    </div>
+    <div class="sec cols">
+      <div><div class="sec-h"><h2>Do</h2></div><ul class="plain">${CHINA.dos.map(t=>`<li><span class="y">${icon("check",18)}</span><span>${esc(t)}</span></li>`).join("")}</ul></div>
+      <div><div class="sec-h"><h2>Don’t</h2></div><ul class="plain">${CHINA.donts.map(t=>`<li><span class="n">${icon("x",18)}</span><span>${esc(t)}</span></li>`).join("")}</ul></div>
+    </div>
+    <div class="sec cols">
+      <div><div class="sec-h"><h2>Interesting facts</h2></div><ul class="plain">${CHINA.facts.map(f=>`<li>${esc(f)}</li>`).join("")}</ul></div>
+      <div><div class="sec-h"><h2>Funny and quirky</h2></div><ul class="plain">${CHINA.funny.map(f=>`<li>${esc(f)}</li>`).join("")}</ul></div>
+    </div>`;
+}
+
+/* =========================================================
+   LISTS
+   ========================================================= */
+function renderLists(){
+  const isBuy = UI.list === "buy";
+  const list = isBuy ? BUY : PREP.concat(S.custom.map(c=>({id:c.id, name:c.name, desc:"", custom:true})));
+  const store = isBuy ? S.buy : S.prep;
+  const done = list.filter(x => store[x.id]).length;
+  $("#v-lists").innerHTML = `
+    <div class="listhead">
+      <div class="seg" role="group" aria-label="List">
+        <button data-list="buy" aria-pressed="${isBuy}">Souvenirs to buy</button>
+        <button data-list="prep" aria-pressed="${!isBuy}">Before we fly</button>
+      </div>
+    </div>
+    <div class="progress"><span>${done} of ${list.length} done</span><div><i style="width:${list.length?done/list.length*100:0}%"></i></div></div>
+    ${isBuy?`<p class="hint">In markets (not malls), start at 30 to 40% of the asking price and be ready to walk away.</p>`:""}
+    <div class="card checks">${list.map(x=>`<label class="check ${store[x.id]?"on":""} ${isBuy?"withph":""}">
+      <input type="checkbox" data-check="${x.id}" ${store[x.id]?"checked":""}>
+      ${isBuy?`<div class="ph" data-photo="${esc(x.q)}" data-size="s"><span class="ph-ic">${icon("shopping",16)}</span></div>`:""}
+      <div class="t"><b>${esc(x.name)}</b>${x.zh?`<span class="zh">${x.zh}</span>`:""}
+        ${x.desc||x.where?`<p>${esc(x.desc)}${x.where?` Where: ${esc(x.where)}.`:""}</p>`:""}</div>
+      ${x.custom?`<button class="ibtn eo" data-rmcustom="${x.id}" aria-label="Remove ${esc(x.name)}">${icon("trash",16)}</button>`:""}
+    </label>`).join("")}</div>
+    ${!isBuy?`<div class="addrow eo"><input class="in" id="customItem" placeholder="Add something to the list"><button class="btn primary" id="addCustom">Add</button></div>`:""}`;
+}
+
+/* =========================================================
+   MAP TAB
+   ========================================================= */
+let map, tiles, layer, leafletP;
+function loadLeaflet(){
+  if(window.L) return Promise.resolve();
+  if(leafletP) return leafletP;
+  leafletP = new Promise((res, rej) => {
+    const css = document.createElement("link"); css.rel="stylesheet"; css.href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"; document.head.appendChild(css);
+    const s = document.createElement("script"); s.src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"; s.onload=res; s.onerror=()=>{leafletP=null;rej();}; document.head.appendChild(s);
+  });
+  return leafletP;
+}
+function tileLayer(){
+  const dark = document.documentElement.dataset.theme === "dark";
+  return L.tileLayer(`https://{s}.basemaps.cartocdn.com/${dark?"dark_all":"rastertiles/voyager"}/{z}/{x}/{y}{r}.png`, {
+    maxZoom:19, subdomains:"abcd",
+    attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>'
+  });
+}
+function mapShell(){
+  $("#v-map").innerHTML = `
+    <div class="pagehead"><div><h1>Map</h1><p>Every place from the guides, plus your own stops</p></div></div>
+    <div class="mapbar">
+      <div class="seg" role="group" aria-label="City">
+        <button data-mapcity="all" aria-pressed="${UI.mapCity==="all"}">Both</button>
+        ${Object.keys(GUIDES).map(k=>`<button data-mapcity="${k}" aria-pressed="${UI.mapCity===k}">${k}</button>`).join("")}
+      </div>
+      <div class="seg" role="group" aria-label="Show">
+        <button data-mapplan="0" aria-pressed="${!UI.mapPlanOnly}">All places</button>
+        <button data-mapplan="1" aria-pressed="${UI.mapPlanOnly}">Our stops</button>
+      </div>
+    </div>
+    <div class="mapwrap"><div id="map"></div><div class="mapmsg" id="mapMsg">Loading map…</div></div>
+    <div class="maplegend">
+      ${Object.keys(GUIDES).map(k=>`<span><i style="background:var(${GUIDES[k].color})"></i>${k}</span>`).join("")}
+      <span><i class="ring"></i>In our plan</span>
+      <span class="muted">Pins are approximate. Use Amap for directions in China.</span>
+    </div>`;
+  if(map){ map.remove(); map = null; }
+}
+async function renderMap(focusId){
+  if(!UI.mapCity){ const d = getDays().find(x => x.date === UI.day); const c = d && d.cities.at(-1); UI.mapCity = GUIDES[c] ? c : "Shanghai"; }
+  if(!$("#map")) mapShell();
+  try{ await loadLeaflet(); }catch(e){ $("#mapMsg").textContent = "The map couldn’t load. Check your connection and open this tab again."; return; }
+  $("#mapMsg").style.display = "none";
+  if(!map){
+    map = L.map("map", {zoomControl:true}); tiles = tileLayer().addTo(map);
+    layer = L.layerGroup().addTo(map);
+    map.on("popupopen", e => hydrate(e.popup.getElement()));
+  }
+  setTimeout(()=>map.invalidateSize(), 0);
+  layer.clearLayers();
+  const pts = []; let focus = null;
+  const pop = it => `${ph(it.q,"","image",`var(${GUIDES[it.city].color})`)}<div class="pb"><h4>${esc(it.name)} <span class="zh">${esc(it.zh||"")}</span></h4><p>${esc(it.desc)}</p>
+    <div class="links"><button class="pill eo" data-sugg="${sugg(it)}">${icon("plus",14)} Add to plan</button><button class="pill" data-spot="${it.id}">Details</button></div></div>`;
+  if(!UI.mapPlanOnly){
+    ITEMS.filter(s => s.lat && (UI.mapCity==="all" || s.city===UI.mapCity)).forEach(s => {
+      const col = cityColor(s.city), on = inPlan(s.name);
+      const m = L.circleMarker([s.lat,s.lng], {radius:on?9:7, color:on?col:"#fff", weight:on?4:2, fillColor:on?"#fff":col, fillOpacity:1}).bindPopup(pop(s), {maxWidth:260, minWidth:240}).bindTooltip(s.name,{direction:"top",offset:[0,-6]});
+      layer.addLayer(m); pts.push([s.lat,s.lng]); if(focusId && s.id === focusId) focus = m;
+    });
+  }
+  const days = getDays();
+  S.acts.filter(a => a.lat).forEach(a => {
+    const d = days.find(x => x.date === a.date); if(!d) return;
+    const city = d.cities.at(-1);
+    if(UI.mapCity!=="all" && city!==UI.mapCity) return;
+    if(!UI.mapPlanOnly && itemByName(a.title)) return;
+    const col = cityColor(city), idx = days.indexOf(d)+1;
+    const m = L.marker([a.lat,a.lng], {icon:L.divIcon({className:"", html:`<div class="mk" style="background:${col}">${idx}</div>`, iconSize:[26,26], iconAnchor:[13,13]})})
+      .bindTooltip(`Day ${idx}: ${a.title}`,{direction:"top",offset:[0,-12]});
+    layer.addLayer(m); pts.push([a.lat,a.lng]);
+  });
+  if(focus){ map.setView(focus.getLatLng(), 15); focus.openPopup(); }
+  else if(pts.length) map.fitBounds(pts, {padding:[40,40], maxZoom:14});
+  else { const g = GUIDES[UI.mapCity] || GUIDES.Shanghai; map.setView([g.lat,g.lng], 11); }
+}
+
+/* =========================================================
+   ADD / EDIT STOP SHEET
+   ========================================================= */
+let editing = null, sCat = "food", sExtra = {};
+function openSheet(o = {}){
+  const days = getDays();
+  if(!days.length){ toast("Add your city dates first"); showView("plan"); setTimeout(()=>{ const el=document.querySelector('.cityrow input[type=date]'); el&&el.focus(); },80); return; }
+  const a = o.id ? S.acts.find(x => x.id === o.id) : null;
+  editing = a ? a.id : null;
+  sExtra = a ? {zh:a.zh, lat:a.lat, lng:a.lng, q:a.q} : {zh:o.zh, lat:o.lat, lng:o.lng, q:o.q};
+  sCat = a ? a.cat : (o.cat || "food");
+  let date = a ? a.date : o.date;
+  if(!date && o.city){ const d = days.find(d => d.cities.includes(o.city) && (d.date === UI.day)) || days.find(d => d.cities.includes(o.city)); date = d && d.date; }
+  if(!date) date = UI.day || days[0].date;
+  $("#sTitle").textContent = a ? "Edit stop" : "Add a stop";
+  $("#sSave").textContent = a ? "Save changes" : "Save stop";
+  $("#sDate").innerHTML = days.map((d,i)=>`<option value="${d.date}" ${d.date===date?"selected":""}>Day ${i+1}: ${shortDate(d.date)}, ${esc(d.cities.join(" to "))}</option>`).join("")
+    + (a && !days.some(d=>d.date===a.date) ? `<option value="${a.date}" selected>${shortDate(a.date)} (outside trip dates)</option>` : "");
+  $("#sName").value = a ? a.title : (o.title || "");
+  $("#sPlace").value = a ? (a.place||"") : (o.zh ? `${o.zh} ${o.place||""}`.trim() : (o.place||""));
+  $("#sNotes").value = a ? (a.notes||"") : (o.notes || "");
+  $("#sCost").value = a ? (a.cost||"") : "";
+  if(a){ $("#sStart").value = a.start||""; $("#sEnd").value = a.end||""; }
+  else { const last = actsOn(date).filter(x=>x.end).sort((x,y)=>y.end.localeCompare(x.end))[0]; const s = last ? toMin(last.end) : 600; $("#sStart").value = fromMin(s); $("#sEnd").value = fromMin(Math.min(s+90, 1439)); }
+  $("#sCats").innerHTML = Object.entries(CATS).map(([k,c])=>`<button type="button" data-cat="${k}" aria-pressed="${k===sCat}">${icon(k,15)} ${c.label}</button>`).join("");
+  closeSpot();
+  $("#sheetBg").classList.add("on");
+  setTimeout(()=>$("#sName").focus(), 60);
+}
+function closeSheet(){ $("#sheetBg").classList.remove("on"); editing = null; }
+function saveSheet(){
+  const title = $("#sName").value.trim();
+  if(!title){ $("#sName").focus(); toast("Give the stop a name"); return; }
+  const data = {date:$("#sDate").value, start:$("#sStart").value, end:$("#sEnd").value, cat:sCat, title, place:$("#sPlace").value.trim(), notes:$("#sNotes").value.trim(), cost:$("#sCost").value, ...sExtra};
+  const wasEdit = !!editing;
+  if(editing) Object.assign(S.acts.find(a=>a.id===editing), data); else S.acts.push({id:uid(), done:false, ...data});
+  UI.day = data.date; save(); closeSheet(); renderAll();
+  toast(wasEdit ? "Changes saved" : `Added to day ${getDays().findIndex(d=>d.date===data.date)+1}`);
+}
+
+/* =========================================================
+   SAMPLE, SHARE, CALENDAR, BACKUP
+   ========================================================= */
+function loadSample(){
+  if(S.acts.length && !confirm("Replace your dates and stops with a sample trip?")) return;
+  const t = new Date(); t.setDate(t.getDate()+30);
+  const d = n => { const x = new Date(t); x.setDate(x.getDate()+n); return iso(x); };
+  S.cities = [{id:uid(),name:"Shanghai",arrive:d(0),leave:d(4)},{id:uid(),name:"Chongqing",arrive:d(4),leave:d(8)}];
+  const A = (day,start,end,cat,title,place,notes="",cost="",ref) => {
+    const s = itemByName(ref || title);
+    return {id:uid(),date:d(day),start,end,cat,title,place,notes,cost,done:false, ...(s?{zh:s.zh,lat:s.lat,lng:s.lng,q:s.q}:{})};
+  };
+  S.acts = [
+    A(0,"14:00","15:00","transport","Maglev train","磁悬浮 Longyang Road","From Pudong Airport, then metro to the hotel","50"),
+    A(0,"16:00","17:30","hotel","Check in and rest","Hotel near People’s Square"),
+    A(0,"19:00","21:00","night","Nanjing Road","南京路","Walk to the Bund. Lights are on until about 10pm"),
+    A(0,"21:00","22:00","place","The Bund","外滩","Photos of the Pudong skyline"),
+    A(1,"07:30","08:15","food","Shanghai breakfast","Street stall near the hotel","Flatbread, fried dough, sticky-rice roll, soy milk","20"),
+    A(1,"09:00","11:30","place","Yu Garden","豫园","Arrive at opening time","40"),
+    A(1,"12:00","13:00","food","Xiaolongbao","豫园商城","Sip the soup first","80"),
+    A(1,"15:00","17:00","cafe","Former French Concession cafés","安福路","Try Manner Coffee","60"),
+    A(1,"19:30","20:30","night","Huangpu River night cruise","十六铺码头 Shiliupu","","120"),
+    A(2,"10:00","12:30","place","Shanghai Tower","上海中心大厦","Pick the clearest day","180"),
+    A(2,"14:00","16:30","activity","Wukang Road","武康路","Slow walk and photos"),
+    A(3,"09:00","14:00","place","Zhujiajiao water town","朱家角","Boat ride through the canals","100"),
+    A(3,"19:00","20:30","food","Lanzhou beef noodles","Look for 清真","Halal and delicious","40"),
+    A(4,"10:00","13:00","transport","Fly to Chongqing","Hongqiao to Jiangbei Airport","About 2.5 to 3 hours"),
+    A(4,"19:00","21:30","night","Hongyadong","洪崖洞","Photos from Qiansimen Bridge"),
+    A(5,"08:00","08:30","food","Xiao mian","Street stall","Say 微辣 for mild","15"),
+    A(5,"09:30","10:30","place","Liziba station","李子坝","Watch the train go through the building"),
+    A(5,"11:00","12:00","activity","Yangtze River Cableway","长江索道","","30"),
+    A(5,"19:00","21:00","food","Chongqing hotpot","江景火锅","Split pot (鸳鸯锅) plus bing fen for dessert","250"),
+    A(6,"09:00","12:00","place","Ciqikou old town","磁器口","Buy Chen mahua"),
+    A(6,"15:00","17:00","cafe","Old teahouses","交通茶馆","Then walk the graffiti street"),
+    A(6,"19:00","20:30","night","Nanshan night view","南山","Take a Didi up at sunset","30"),
+    A(7,"08:00","18:00","activity","Wulong Karst","武隆","Day trip. Book a tour ahead","400"),
+    A(8,"10:00","12:00","shopping","Jiefangbei","解放碑","Last souvenirs: hotpot base and Sichuan pepper"),
+    A(8,"14:00","16:00","transport","Head to the airport","江北机场")
+  ];
+  UI.day = d(0); UI.mode = "day";
+  save(); renderAll(); toast("Sample trip loaded. Change anything you like.");
+}
+const b64u = bytes => { let s=""; for(let i=0;i<bytes.length;i+=0x8000) s += String.fromCharCode.apply(null, bytes.subarray(i,i+0x8000)); return btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""); };
+const unb64u = str => { const s = atob(str.replace(/-/g,"+").replace(/_/g,"/")); const b = new Uint8Array(s.length); for(let i=0;i<s.length;i++) b[i]=s.charCodeAt(i); return b; };
+async function encodePlan(){
+  const raw = new TextEncoder().encode(JSON.stringify({t:S.title, v:S.travelers, c:S.cities, a:S.acts}));
+  if("CompressionStream" in window){ const buf = await new Response(new Blob([raw]).stream().pipeThrough(new CompressionStream("deflate-raw"))).arrayBuffer(); return "z" + b64u(new Uint8Array(buf)); }
+  return "j" + b64u(raw);
+}
+async function decodePlan(code){
+  const bytes = unb64u(code.slice(1));
+  const txt = code[0] === "z" ? await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream("deflate-raw"))).text() : new TextDecoder().decode(bytes);
+  const p = JSON.parse(txt); if(!Array.isArray(p.c) || !Array.isArray(p.a)) throw new Error("bad"); return p;
+}
+async function sharePlan(){
+  if(!getDays().length){ toast("Add your dates before sharing"); return; }
+  if(ONLINE){ const url = location.origin + location.pathname;
+    if(navigator.share){ try{ await navigator.share({title:S.title, text:"Here’s our China trip plan", url}); return; }catch(e){ if(e.name === "AbortError") return; } }
+    copyText(url, "Link copied. Anyone with it can view the plan, but only you can edit."); return; }
+  const url = location.origin + location.pathname + "#plan=" + await encodePlan();
+  if(navigator.share){ try{ await navigator.share({title:S.title, text:"Here’s our China trip plan", url}); return; }catch(e){ if(e.name === "AbortError") return; } }
+  copyText(url, "Share link copied. Send it to your partner.");
+}
+async function checkShared(){
+  const m = location.hash.match(/plan=([\w-]+)/); if(!m) return;
+  if(RO()){ clearShared(); return; }
+  try{
+    const p = await decodePlan(m[1]);
+    $("#sharedBanner").innerHTML = `<div class="banner card"><p><b>${p.v?esc(p.v):"Someone"}</b> shared “${esc(p.t||"a trip")}” with you: ${p.a.length} stops.</p>
+      <div style="display:flex;gap:8px"><button class="btn sm ghost" id="sharedNo">Keep mine</button><button class="btn sm primary" id="sharedYes">Open this plan</button></div></div>`;
+    $("#sharedYes").onclick = () => { Object.assign(S, {title:p.t||S.title, travelers:p.v||"", cities:p.c, acts:p.a}); UI.day = null; save(); clearShared(); renderAll(); showView("plan"); toast("Shared plan opened"); };
+    $("#sharedNo").onclick = clearShared;
+  }catch(e){ toast("That share link is incomplete. Ask for it again."); clearShared(); }
+}
+function clearShared(){ $("#sharedBanner").innerHTML = ""; history.replaceState(null, "", location.pathname + location.search); }
+function exportICS(){
+  const days = getDays(), acts = S.acts.filter(a => a.start && days.some(d => d.date === a.date));
+  if(!acts.length){ toast("Add stops with times first"); return; }
+  const utc = (date, t) => { const [y,m,d] = date.split("-").map(Number); const [h,mi] = t.split(":").map(Number); return new Date(Date.UTC(y, m-1, d, h-8, mi)).toISOString().replace(/[-:]/g,"").replace(/\.\d{3}/,""); };
+  const escI = s => String(s||"").replace(/\\/g,"\\\\").replace(/\n/g,"\\n").replace(/,/g,"\\,").replace(/;/g,"\\;");
+  const stamp = new Date().toISOString().replace(/[-:]/g,"").replace(/\.\d{3}/,"");
+  const lines = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//China Trip Planner//EN","CALSCALE:GREGORIAN","X-WR-CALNAME:"+escI(S.title)];
+  acts.forEach(a => { const end = a.end && toMin(a.end) > toMin(a.start) ? a.end : fromMin(Math.min(toMin(a.start)+60, 1439));
+    lines.push("BEGIN:VEVENT","UID:"+a.id+"@china-trip","DTSTAMP:"+stamp,"DTSTART:"+utc(a.date,a.start),"DTEND:"+utc(a.date,end),"SUMMARY:"+escI(a.title), ...(a.place?["LOCATION:"+escI(a.place)]:[]), ...(a.notes?["DESCRIPTION:"+escI(a.notes)]:[]), "END:VEVENT"); });
+  lines.push("END:VCALENDAR");
+  download(lines.join("\r\n"), "china-trip.ics", "text/calendar");
+  toast("Calendar file saved. Open it to add the stops.");
+}
+function planText(){
+  const days = getDays(); let out = `${S.title}${S.travelers?` (${S.travelers})`:""}\n`;
+  S.cities.filter(c=>c.arrive&&c.leave).forEach(c => out += `${c.name}: ${shortDate(c.arrive)} to ${shortDate(c.leave)}\n`);
+  days.forEach((d,i) => { out += `\nDay ${i+1}, ${longDate(d.date)} (${d.cities.join(" to ")})\n`; const acts = actsOn(d.date); if(!acts.length) out += "  Free day\n"; acts.forEach(a => out += `  ${a.start||"--:--"}${a.end?`–${a.end}`:""}  ${a.title}${a.place?` @ ${a.place}`:""}\n`); });
+  return out;
+}
+function copyText(txt, msg){
+  const ok = () => toast(msg);
+  const fallback = () => { const t=document.createElement("textarea"); t.value=txt; t.style.position="fixed"; t.style.opacity="0"; document.body.appendChild(t); t.select(); try{ document.execCommand("copy"); ok(); }catch(e){ toast("Couldn’t copy. Select and copy it manually."); } t.remove(); };
+  if(navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(txt).then(ok, fallback); else fallback();
+}
+function download(content, name, type){ const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([content],{type})); a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href), 1000); }
+
+/* =========================================================
+   LIVE DATA
+   ========================================================= */
+function wxLabel(c){
+  if(c===0) return ["☀️","Clear"]; if(c<=2) return ["🌤️","Partly cloudy"]; if(c===3) return ["☁️","Cloudy"];
+  if(c<=48) return ["🌫️","Foggy"]; if(c<=57) return ["🌦️","Drizzle"]; if(c<=67) return ["🌧️","Rain"];
+  if(c<=77) return ["🌨️","Snow"]; if(c<=82) return ["🌧️","Showers"]; return ["⛈️","Storms"];
+}
+async function loadWeather(){
+  await Promise.all(Object.entries(GUIDES).map(async ([name,g]) => {
+    try{ const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${g.lat}&longitude=${g.lng}&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Asia%2FShanghai&forecast_days=16`); if(r.ok) WX[name] = await r.json(); }catch(e){}
+  }));
+  if(Object.keys(WX).length){ renderPlan(); renderGuides(); hydrate(); }
+}
+async function loadRates(){
+  try{ const c = JSON.parse(localStorage.getItem("chinaTrip.rates")||"null"); if(c && Date.now() - c.at < 12*3600e3){ RATES = {...c.r, live:true}; return; } }catch(e){}
+  try{ const j = await (await fetch("https://open.er-api.com/v6/latest/CNY")).json();
+    if(j.result === "success" && j.rates.SAR){ RATES = {SAR:j.rates.SAR, USD:j.rates.USD, live:true}; try{ localStorage.setItem("chinaTrip.rates", JSON.stringify({at:Date.now(), r:{SAR:j.rates.SAR, USD:j.rates.USD}})); }catch(e){} }
+  }catch(e){}
+}
+
+/* =========================================================
+   EVENTS
+   ========================================================= */
+function renderAll(){ renderAuth(); renderNav(); renderTheme(); renderHeader(); renderPlan(); renderGuides(); renderBasics(); renderLists(); if(UI.view==="map") renderMap(); hydrate(); }
+
+$("#tripTitle").addEventListener("input", e => { if(RO()) return; S.title = e.target.value || "Our China Trip"; save(); document.title = `${S.title} · China Trip Planner`; });
+$("#tripTitle").addEventListener("keydown", e => { if(e.key === "Enter") e.target.blur(); });
+$("#themeBtn").addEventListener("click", () => {
+  const t = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+  document.documentElement.dataset.theme = t; try{ localStorage.setItem("chinaTrip.theme", t); }catch(e){}
+  renderAll();
+  if(map){ map.removeLayer(tiles); tiles = tileLayer().addTo(map); }
+});
+
+document.addEventListener("click", e => {
+  const t = e.target.closest("button, [data-sample], [data-spot]"); if(!t) return;
+  const ds = t.dataset;
+  const EDIT_IDS = ["addCity","resetBtn","importBtn","addCustom","focusDates","sSave"];
+  if((ds.sugg || ds.add || ds.edit || ds.del || ds.done || ds.rmcity || ds.rmcustom || "sample" in ds || EDIT_IDS.includes(t.id)) && guard()) return;
+  if(ds.sugg){ e.stopPropagation(); if(map) map.closePopup(); openSheet(JSON.parse(ds.sugg)); return; }
+  if(ds.view){ showView(ds.view); return; }
+  if(ds.day){ UI.day = ds.day; UI.mode = "day"; renderPlan(); hydrate(); return; }
+  if(ds.mode){ UI.mode = ds.mode; renderPlan(); hydrate(); return; }
+  if(ds.add){ openSheet({date:ds.add}); return; }
+  if(ds.edit){ openSheet({id:ds.edit}); return; }
+  if(ds.del){ const a = S.acts.find(x=>x.id===ds.del); if(a && confirm(`Delete “${a.title}”?`)){ S.acts = S.acts.filter(x=>x.id!==a.id); save(); renderAll(); toast("Stop deleted"); } return; }
+  if(ds.done){ const a = S.acts.find(x=>x.id===ds.done); a.done = !a.done; save(); renderPlan(); hydrate(); return; }
+  if(ds.spot){ if(map) map.closePopup(); openSpot(ds.spot); return; }
+  if(ds.showmap){ const it = itemById(ds.showmap); closeSpot(); UI.mapCity = it.city; UI.mapPlanOnly = false; showView("map"); mapShell(); renderMap(it.id); return; }
+  if(ds.guide){ UI.guide = ds.guide; renderGuides(); hydrate(); return; }
+  if(ds.list){ UI.list = ds.list; renderLists(); hydrate(); return; }
+  if(ds.mapcity){ UI.mapCity = ds.mapcity; mapShell(); renderMap(); return; }
+  if(ds.mapplan){ UI.mapPlanOnly = ds.mapplan === "1"; mapShell(); renderMap(); return; }
+  if(ds.cat){ sCat = ds.cat; document.querySelectorAll("#sCats button").forEach(b => b.setAttribute("aria-pressed", b.dataset.cat === sCat)); return; }
+  if(ds.phrase){ const p = CHINA.phrases[+ds.phrase]; const bp = $("#bigPhrase"); bp.innerHTML = `<div class="hz">${p[2]}</div><div class="py">${p[1]}</div><div>${p[0]}</div><small>Tap anywhere to close</small>`; bp.classList.add("on"); return; }
+  if(ds.rmcity){ const c = S.cities.find(x=>x.id===ds.rmcity); if(confirm(`Remove ${c.name||"this city"}? Stops on its days are kept.`)){ S.cities = S.cities.filter(x=>x.id!==c.id); save(); renderAll(); } return; }
+  if(ds.rmcustom){ e.preventDefault(); S.custom = S.custom.filter(c=>c.id!==ds.rmcustom); delete S.prep[ds.rmcustom]; save(); renderLists(); return; }
+  if("sample" in ds){ loadSample(); return; }
+  switch(t.id){
+    case "addCity": { const last = [...S.cities].filter(c=>c.leave).sort((a,b)=>b.leave.localeCompare(a.leave))[0]; S.cities.push({id:uid(), name:"", arrive:last?last.leave:"", leave:""}); save(); renderAll(); const ins = document.querySelectorAll(`#v-${UI.view} .cityrow input[data-k="name"]`); if(ins.length) ins[ins.length-1].focus(); break; }
+    case "focusDates": { const el = document.querySelector('.cityrow input[type=date]'); if(el){ el.scrollIntoView({block:"center"}); el.focus(); try{ el.showPicker(); }catch(_){} } break; }
+    case "shareBtn": sharePlan(); break;
+    case "icsBtn": exportICS(); break;
+    case "copyBtn": if(!getDays().length){ toast("Add your dates first"); break; } copyText(planText(), "Plan copied. Paste it into WhatsApp or anywhere."); break;
+    case "printBtn": { const m = UI.mode, v = UI.view; UI.mode = "all"; renderPlan(); showView("plan"); setTimeout(()=>{ window.print(); UI.mode = m; renderPlan(); showView(v); }, 300); break; }
+    case "exportBtn": download(JSON.stringify(S,null,2), "china-trip-backup.json", "application/json"); toast("Backup saved"); break;
+    case "importBtn": $("#importFile").click(); break;
+    case "resetBtn": if(confirm("Clear all dates, stops and checklists?")){ S = defaults(); UI.day = null; save(); renderAll(); toast("Everything cleared"); } break;
+    case "addCustom": { const v = $("#customItem").value.trim(); if(v){ S.custom.push({id:"c_"+uid(), name:v}); save(); renderLists(); $("#customItem").focus(); } break; }
+    case "authBtn": if(RO()) openAuth(); else if(confirm("Sign out on this device? You can sign in again any time.")) signOut(); break;
+    case "authGo": signIn(); break;
+    case "authCancel": $("#authBg").classList.remove("on"); break;
+    case "sCancel": closeSheet(); break;
+    case "sSave": saveSheet(); break;
+    case "spotClose": closeSpot(); break;
+  }
+});
+document.addEventListener("keydown", e => {
+  if(e.key === "Enter" && e.target.dataset && e.target.dataset.spot && e.target.tagName !== "BUTTON"){ openSpot(e.target.dataset.spot); return; }
+  if(e.target.id === "customItem" && e.key === "Enter") $("#addCustom").click();
+  if(e.target.id === "tokIn" && e.key === "Enter") signIn();
+  if(e.key === "Escape") $("#authBg").classList.remove("on");
+  if(e.key === "Escape"){ $("#bigPhrase").classList.remove("on"); closeSpot(); }
+  if(!$("#sheetBg").classList.contains("on")) return;
+  if(e.key === "Escape") closeSheet();
+  if(e.key === "Enter" && e.target.tagName !== "TEXTAREA" && e.target.tagName !== "BUTTON") saveSheet();
+});
+document.addEventListener("change", e => {
+  const el = e.target, row = el.closest(".cityrow");
+  if((row || el.id === "travelers" || el.dataset.check) && RO()){ guard(); renderAll(); return; }
+  if(row && el.dataset.k){ const c = S.cities.find(x=>x.id===row.dataset.id); c[el.dataset.k] = el.value.trim(); if(el.dataset.k === "arrive" && c.leave && c.leave < c.arrive) c.leave = c.arrive; UI.day = null; save(); renderAll(); return; }
+  if(el.id === "travelers"){ S.travelers = el.value.trim(); save(); return; }
+  if(el.dataset.check){ const store = UI.list === "buy" ? S.buy : S.prep; store[el.dataset.check] = el.checked; save(); renderLists(); hydrate(); return; }
+  if(el.id === "convFrom") renderConv();
+});
+document.addEventListener("input", e => { if(e.target.id === "convAmt") renderConv(); });
+$("#sheetBg").addEventListener("click", e => { if(e.target.id === "sheetBg") closeSheet(); });
+$("#spotBg").addEventListener("click", e => { if(e.target.id === "spotBg") closeSpot(); });
+$("#authBg").addEventListener("click", e => { if(e.target.id === "authBg") $("#authBg").classList.remove("on"); });
+$("#bigPhrase").addEventListener("click", () => $("#bigPhrase").classList.remove("on"));
+$("#importFile").addEventListener("change", e => {
+  const f = e.target.files[0]; if(!f) return; const r = new FileReader();
+  r.onload = () => { try{ const d = JSON.parse(r.result); if(!Array.isArray(d.cities) || !Array.isArray(d.acts)) throw 0; S = Object.assign(defaults(), d); UI.day = null; save(); renderAll(); toast("Backup restored"); }catch(_){ toast("That file isn’t a trip backup"); } e.target.value = ""; };
+  r.readAsText(f);
+});
+window.addEventListener("hashchange", checkShared);
+
+/* boot */
+renderAll();
+showView("plan");
+checkShared();
+loadRates().then(() => { renderPlan(); hydrate(); });
+loadWeather();
+pullPlan();
+</script>
+</body>
+</html>

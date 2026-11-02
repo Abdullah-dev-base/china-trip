@@ -1,0 +1,12 @@
+{
+  "name": "China Trip Planner",
+  "short_name": "China Trip",
+  "description": "Shanghai & Chongqing: day-by-day plan, city guides, map and checklists.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#F4F5F7",
+  "theme_color": "#1A1C22",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

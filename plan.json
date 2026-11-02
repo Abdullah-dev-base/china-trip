@@ -1,0 +1,22 @@
+{
+  "title": "Our China Trip",
+  "travelers": "",
+  "cities": [
+    {
+      "id": "sh",
+      "name": "Shanghai",
+      "arrive": "",
+      "leave": ""
+    },
+    {
+      "id": "cq",
+      "name": "Chongqing",
+      "arrive": "",
+      "leave": ""
+    }
+  ],
+  "acts": [],
+  "buy": {},
+  "prep": {},
+  "custom": []
+}

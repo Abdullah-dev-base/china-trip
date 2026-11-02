@@ -13,7 +13,7 @@ A planner for our Shanghai and Chongqing trip. It's a single page with no build 
 - **Calendar:** download a `.ics` file with every stop at the right China time.
 - **Light and dark mode.**
 
-Anyone with the link can view the plan. Only the owner can edit: sign in with a fine-grained GitHub token that can write to this repo, and every change is saved to `plan.json` here.
+Anyone with the link can view the plan. Only the owner can edit. The first time, sign in with a fine-grained GitHub token (the site gives a pre-filled link) and choose a password. After that, any device signs in with just the password. The token is stored in `auth.json` encrypted with that password (AES-GCM, PBKDF2), and every change is saved to `plan.json`.
 
 ## Services used
 

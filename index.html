@@ -448,6 +448,7 @@ body.ro .stops>.stop:last-child .rail::before{bottom:auto;height:28px}
 .check .where{display:flex;align-items:center;gap:4px;margin-top:4px;color:var(--ink-2);font-weight:600;font-size:13px}
 .progress{margin-top:20px}
 .hide{display:none!important}
+.link{border:0;background:none;padding:0;cursor:pointer;color:var(--sh);font-weight:700;font-size:14px}
 .listhead{margin-top:20px}
 .trip-meta{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:10px;font-size:13.5px;font-weight:700;color:var(--ink)}
 .trip-meta span{display:inline-flex;align-items:center;gap:6px}
@@ -507,15 +508,24 @@ footer{max-width:1120px;margin:0 auto;padding:0 var(--pad) 40px;color:var(--mute
 <div class="sheet-bg" id="authBg">
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="authTitle">
     <h2 id="authTitle">Sign in to edit</h2>
-    <p class="muted" style="font-size:14.5px">Only you can change this plan. Everyone else sees it read-only. Paste a GitHub access token that can save to your <b>china-trip</b> repo. It stays on this device only.</p>
-    <ol class="steps">
-      <li>Open <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub token settings</a> (fine-grained token).</li>
-      <li>Repository access: <b>Only select repositories</b>, then pick <b>china-trip</b>.</li>
-      <li>Permissions: <b>Contents</b>, set to <b>Read and write</b>.</li>
-      <li>Generate the token, copy it and paste it here.</li>
-    </ol>
-    <label class="field" style="margin-top:16px"><span>Access token</span><input class="in" type="password" id="tokIn" placeholder="github_pat_…" autocomplete="off" spellcheck="false"></label>
-    <p class="tokerr" id="tokErr"></p>
+    <div id="authPw">
+      <p class="muted" style="font-size:14.5px">Only you can change this plan. Everyone else sees it read-only.</p>
+      <label class="field" style="margin-top:16px"><span>Password</span><input class="in" type="password" id="pwIn" autocomplete="current-password"></label>
+      <p class="tokerr" id="pwErr"></p>
+      <button class="link" id="useToken" style="margin-top:4px">Use a GitHub token instead</button>
+    </div>
+    <div id="authTok">
+      <p class="muted" style="font-size:14.5px">Only you can change this plan. You only need to do this once. After that you can use a password on any device.</p>
+      <ol class="steps">
+        <li><a id="tokLink" href="#" target="_blank" rel="noopener">Tap here to open GitHub</a>. Everything is filled in for you.</li>
+        <li>Under <b>Repository access</b>, choose <b>Only select repositories</b> and pick <b>china-trip</b>.</li>
+        <li>Scroll down, tap <b>Generate token</b>, copy it and paste it below.</li>
+      </ol>
+      <label class="field" style="margin-top:16px"><span>Token</span><input class="in" type="password" id="tokIn" placeholder="github_pat_…" autocomplete="off" spellcheck="false"></label>
+      <label class="field" style="margin-top:12px"><span>Choose a password for your other devices</span><input class="in" type="password" id="newPw" autocomplete="new-password" placeholder="At least 10 characters"></label>
+      <p class="muted" style="font-size:13px;margin-top:6px">Next time, on any phone or computer, you just type this password.</p>
+      <p class="tokerr" id="tokErr"></p>
+    </div>
     <div class="sheet-foot"><button class="btn ghost" id="authCancel">Cancel</button><button class="btn primary" id="authGo">Sign in</button></div>
   </div>
 </div>
@@ -909,20 +919,82 @@ function renderAuth(){
     el.title = "Signed in as the owner. Click to sign out on this device";
   }
 }
-function openAuth(){ $("#tokErr").textContent = ""; $("#tokIn").value = ""; $("#authBg").classList.add("on"); setTimeout(()=>$("#tokIn").focus(), 60); }
-async function signIn(){
-  const tok = $("#tokIn").value.trim(); if(!tok){ $("#tokErr").textContent = "Paste your token first."; return; }
-  $("#authGo").disabled = true; $("#tokErr").textContent = "";
+const TOKEN_LINK = "https://github.com/settings/personal-access-tokens/new?name=China+trip+planner&description=Lets+the+China+trip+website+save+the+plan&target_name=" + GH.owner + "&expires_in=366&contents=write";
+let AUTH_MODE = "tok", AUTH_BLOB = null, AUTH_SHA = null;
+const u8b64 = u => { let s = ""; for(let i=0;i<u.length;i++) s += String.fromCharCode(u[i]); return btoa(s); };
+const b64u8 = b => Uint8Array.from(atob(b), c => c.charCodeAt(0));
+async function pwKey(pw, salt){
+  const base = await crypto.subtle.importKey("raw", new TextEncoder().encode(pw), "PBKDF2", false, ["deriveKey"]);
+  return crypto.subtle.deriveKey({name:"PBKDF2", salt, iterations:310000, hash:"SHA-256"}, base, {name:"AES-GCM", length:256}, false, ["encrypt","decrypt"]);
+}
+async function lockToken(tok, pw){
+  const salt = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12));
+  const ct = await crypto.subtle.encrypt({name:"AES-GCM", iv}, await pwKey(pw, salt), new TextEncoder().encode(tok));
+  return {v:1, salt:u8b64(salt), iv:u8b64(iv), ct:u8b64(new Uint8Array(ct))};
+}
+async function unlockToken(blob, pw){
+  const pt = await crypto.subtle.decrypt({name:"AES-GCM", iv:b64u8(blob.iv)}, await pwKey(pw, b64u8(blob.salt)), b64u8(blob.ct));
+  return new TextDecoder().decode(pt);
+}
+const authURL = () => `https://api.github.com/repos/${GH.owner}/${GH.repo}/contents/auth.json`;
+async function loadAuthBlob(){
   try{
-    const r = await fetch(`https://api.github.com/repos/${GH.owner}/${GH.repo}`, {headers:{"Accept":"application/vnd.github+json","Authorization":`Bearer ${tok}`}});
-    if(r.status === 401) throw new Error("That token isn’t valid. Copy it again from GitHub.");
-    if(!r.ok) throw new Error("That token can’t see the china-trip repo. Pick it under Repository access.");
-    const j = await r.json();
-    if(j.permissions && j.permissions.push === false) throw new Error("This GitHub account can’t edit the china-trip repo.");
-    TOKEN = tok; try{ localStorage.setItem("chinaTrip.ghToken", tok); }catch(e){}
-    $("#authBg").classList.remove("on"); SYNC = "idle"; renderAll(); toast("Signed in. Your changes now save to GitHub.");
-    pullPlan();
-  }catch(e){ $("#tokErr").textContent = e.message || "Couldn’t reach GitHub. Try again."; }
+    const r = await fetch(`${authURL()}?t=${Date.now()}`, {headers:{"Accept":"application/vnd.github+json"}, cache:"no-store"});
+    if(r.ok){ const j = await r.json(); AUTH_SHA = j.sha; AUTH_BLOB = JSON.parse(b64dec(j.content)); return; }
+    if(r.status === 404){ AUTH_BLOB = null; AUTH_SHA = null; return; }
+  }catch(e){}
+  try{ const r = await fetch(`auth.json?t=${Date.now()}`, {cache:"no-store"}); if(r.ok) AUTH_BLOB = await r.json(); }catch(e){}
+}
+async function saveAuthBlob(tok, pw){
+  const blob = await lockToken(tok, pw);
+  const body = {message:"Update sign-in", content:b64enc(JSON.stringify(blob))};
+  if(AUTH_SHA) body.sha = AUTH_SHA;
+  const r = await fetch(authURL(), {method:"PUT", headers:{"Accept":"application/vnd.github+json","Authorization":`Bearer ${tok}`,"Content-Type":"application/json"}, body:JSON.stringify(body)});
+  if(r.ok){ AUTH_SHA = (await r.json()).content.sha; AUTH_BLOB = blob; return true; }
+  return false;
+}
+function setAuthMode(m){
+  AUTH_MODE = m;
+  $("#authPw").classList.toggle("hide", m !== "pw"); $("#authTok").classList.toggle("hide", m !== "tok");
+  $("#pwErr").textContent = ""; $("#tokErr").textContent = "";
+  setTimeout(() => (m === "pw" ? $("#pwIn") : $("#tokIn")).focus(), 60);
+}
+async function openAuth(){
+  $("#tokLink").href = TOKEN_LINK;
+  ["#pwIn","#tokIn","#newPw"].forEach(x => $(x).value = "");
+  $("#authBg").classList.add("on");
+  setAuthMode(AUTH_BLOB ? "pw" : "tok");
+  await loadAuthBlob();
+  if($("#authBg").classList.contains("on") && !$("#pwIn").value && !$("#tokIn").value) setAuthMode(AUTH_BLOB ? "pw" : "tok");
+}
+async function checkToken(tok){
+  const r = await fetch(`https://api.github.com/repos/${GH.owner}/${GH.repo}`, {headers:{"Accept":"application/vnd.github+json","Authorization":`Bearer ${tok}`}});
+  if(r.status === 401) throw new Error("That token isn’t valid or has expired. Make a new one with the link above.");
+  if(!r.ok) throw new Error("That token can’t see the china-trip repo. Pick it under Repository access.");
+  const j = await r.json();
+  if(j.permissions && j.permissions.push === false) throw new Error("This GitHub account can’t edit the china-trip repo.");
+}
+function finishSignIn(tok, msg){
+  TOKEN = tok; try{ localStorage.setItem("chinaTrip.ghToken", tok); }catch(e){}
+  $("#authBg").classList.remove("on"); SYNC = "idle"; renderAll(); toast(msg); pullPlan();
+}
+async function signIn(){
+  $("#authGo").disabled = true;
+  try{
+    if(AUTH_MODE === "pw"){
+      const pw = $("#pwIn").value; if(!pw) throw new Error("Type your password.");
+      let tok; try{ tok = await unlockToken(AUTH_BLOB, pw); }catch(e){ throw new Error("Wrong password. Try again."); }
+      try{ await checkToken(tok); }catch(e){ setAuthMode("tok"); throw new Error("Your saved sign-in has expired. Make a new token once, and set your password again."); }
+      finishSignIn(tok, "Signed in. Your changes now save to GitHub.");
+    } else {
+      const tok = $("#tokIn").value.trim(), pw = $("#newPw").value;
+      if(!tok) throw new Error("Paste your token first.");
+      if(pw && pw.length < 10) throw new Error("Use at least 10 characters for the password.");
+      await checkToken(tok);
+      let saved = false; if(pw) saved = await saveAuthBlob(tok, pw);
+      finishSignIn(tok, pw ? (saved ? "Signed in. From now on, just use your password on any device." : "Signed in, but the password couldn’t be saved. Try again later.") : "Signed in. Your changes now save to GitHub.");
+    }
+  }catch(e){ $(AUTH_MODE === "pw" ? "#pwErr" : "#tokErr").textContent = e.message || "Couldn’t reach GitHub. Try again."; }
   $("#authGo").disabled = false;
 }
 function signOut(silent){ TOKEN = ""; try{ localStorage.removeItem("chinaTrip.ghToken"); }catch(e){} SYNC = "idle"; renderAll(); if(!silent) toast("Signed out. This device is view only now."); }
@@ -1699,6 +1771,7 @@ document.addEventListener("click", e => {
     case "addCustom": { const v = $("#customItem").value.trim(); if(v){ S.custom.push({id:"c_"+uid(), name:v}); save(); renderLists(); $("#customItem").focus(); } break; }
     case "authBtn": if(RO()) openAuth(); else if(confirm("Sign out on this device? You can sign in again any time.")) signOut(); break;
     case "authGo": signIn(); break;
+    case "useToken": setAuthMode("tok"); break;
     case "authCancel": $("#authBg").classList.remove("on"); break;
     case "sCancel": closeSheet(); break;
     case "sSave": saveSheet(); break;
@@ -1708,7 +1781,7 @@ document.addEventListener("click", e => {
 document.addEventListener("keydown", e => {
   if(e.key === "Enter" && e.target.dataset && e.target.dataset.spot && e.target.tagName !== "BUTTON"){ openSpot(e.target.dataset.spot); return; }
   if(e.target.id === "customItem" && e.key === "Enter") $("#addCustom").click();
-  if(e.target.id === "tokIn" && e.key === "Enter") signIn();
+  if((e.target.id === "tokIn" || e.target.id === "pwIn" || e.target.id === "newPw") && e.key === "Enter") signIn();
   if(e.key === "Escape") $("#authBg").classList.remove("on");
   if(e.key === "Escape"){ $("#bigPhrase").classList.remove("on"); closeSpot(); }
   if(!$("#sheetBg").classList.contains("on")) return;

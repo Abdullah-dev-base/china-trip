@@ -6,7 +6,7 @@ A planner for our Shanghai and Chongqing trip. It's a single page with no build 
 
 - **Plan:** set the dates for each city and the days are created for you. Add stops (food, cafés, sights, activities, shopping, nights out, transport, hotel) with times, places, notes and a budget. Each stop gets a photo and Amap and Google Maps links. A side panel holds your dates, totals, a currency converter and the share and backup tools.
 - **Map:** every place from the guides plus your own stops, with photos in the pins.
-- **Guides:** Shanghai and Chongqing with photos: places to visit, shows and experiences, food to try, and cafés and cool spots, with filters. Tap a photo for details.
+- **Guides:** Shanghai and Chongqing with photos: places to visit, shows and experiences, day trips (with travel times), food to try, and cafés and cool spots, with filters. Tap a photo for details.
 - **China 101:** three tabs. Essentials (payments, internet, transport, emergency numbers, manners), Phrases you can show full screen, and Fun facts about China, Shanghai and Chongqing.
 - **Lists:** a before-we-fly checklist grouped into documents, money and phone, apps and packing, and souvenirs grouped by where to buy them.
 - **Share:** "Share with my partner" creates a link that has the whole plan inside it.

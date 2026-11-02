@@ -449,6 +449,8 @@ body.ro .stops>.stop:last-child .rail::before{bottom:auto;height:28px}
 .progress{margin-top:20px}
 .hide{display:none!important}
 .listhead{margin-top:20px}
+.trip-meta{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:10px;font-size:13.5px;font-weight:700;color:var(--ink)}
+.trip-meta span{display:inline-flex;align-items:center;gap:6px}
 footer{max-width:1120px;margin:0 auto;padding:0 var(--pad) 40px;color:var(--muted);font-size:13px}
 @media (max-width:899px){footer{padding-bottom:120px}}
 </style>
@@ -543,6 +545,7 @@ const IC = {
   sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>',
   moon:'<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
   plus:'<path d="M12 5v14M5 12h14"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
   lock:'<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
   x:'<path d="M18 6 6 18M6 6l12 12"/>',
   check:'<path d="M20 6 9 17l-5-5"/>',
@@ -577,7 +580,7 @@ const CATS = {
   food:{label:"Food"}, cafe:{label:"Café"}, place:{label:"Sightseeing"}, activity:{label:"Activity"},
   shopping:{label:"Shopping"}, night:{label:"Night out"}, transport:{label:"Transport"}, hotel:{label:"Hotel"}
 };
-const KINDS = {places:"Sights", shows:"Shows & experiences", foods:"Food", cool:"Cafés & spots"};
+const KINDS = {places:"Sights", shows:"Shows & experiences", trips:"Day trips", foods:"Food", cool:"Cafés & spots"};
 const MONTHS = ["J","F","M","A","M","J","J","A","S","O","N","D"];
 const MONTHS_LONG = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
@@ -597,7 +600,6 @@ const GUIDES = {
       {name:"Xintiandi", zh:"新天地", cat:"night", q:"Xintiandi Shanghai", lat:31.2196, lng:121.4747, desc:"Restored stone-gate houses with stylish restaurants and terraces.", tip:"Good for a nicer dinner date."},
       {name:"Nanjing Road", zh:"南京路步行街", cat:"shopping", q:"t:Nanjing Road", lat:31.2355, lng:121.4790, desc:"The famous pedestrian shopping street, glowing with neon at night. It ends at the Bund.", tip:"Walk it after dark from People’s Square to the river."},
       {name:"Huangpu River night cruise", zh:"黄浦江游船", cat:"night", q:"t:Huangpu River", lat:31.2290, lng:121.4975, desc:"See both skylines lit up from the water.", tip:"Boats leave from Shiliupu Wharf. Between 7 and 9pm is best."},
-      {name:"Zhujiajiao water town", zh:"朱家角", cat:"place", q:"Zhujiajiao water town", lat:31.1085, lng:121.0530, desc:"An old canal town about an hour away, with stone bridges, boats and riverside snacks.", tip:"Half-day trip. Take a small boat through the canals."},
       {name:"Shanghai Museum", zh:"上海博物馆", cat:"place", q:"t:Shanghai Museum", lat:31.2283, lng:121.4753, desc:"World-class bronzes, ceramics, jade and calligraphy. Free entry at People’s Square.", tip:"Reserve ahead on the museum’s WeChat account and bring your passport."},
       {name:"Jing’an Temple", zh:"静安寺", cat:"place", q:"Jing'an Temple Shanghai", lat:31.2236, lng:121.4458, desc:"A golden Buddhist temple squeezed between glass skyscrapers.", tip:"Lovely at dusk. The metro station is right beside it."},
       {name:"Maglev train", zh:"磁悬浮", cat:"transport", q:"t:Shanghai maglev train", lat:31.2033, lng:121.5590, desc:"A magnetic floating train between Pudong Airport and Longyang Road. About 30 km in roughly 8 minutes.", tip:"Take it from the airport just for the ride. Watch the speed screen."}
@@ -610,6 +612,10 @@ const GUIDES = {
       {name:"Chinese EV showrooms", zh:"新能源汽车展厅", cat:"shopping", q:"Xiaomi SU7", desc:"China leads the world in electric cars. Brands like Xiaomi, BYD, NIO and Li Auto have showrooms in malls where you can sit in cars with fridges, massage seats and giant screens.", tip:"Free to walk in. Look for them on Nanjing Road and in big malls."},
       {name:"Shanghai Astronomy Museum", zh:"上海天文馆", cat:"place", q:"t:Shanghai Astronomy Museum", lat:30.9140, lng:121.9060, desc:"One of the largest astronomy museums in the world, with a striking building designed around the movement of the sun, moon and stars.", tip:"It’s far out in Lingang. Plan half a day."},
       {name:"Foot massage", zh:"足疗", cat:"activity", q:"Foot reflexology", desc:"Chinese foot and body massage is everywhere and affordable. Perfect after a day of walking.", tip:"Look on Dianping for 足疗 near your hotel. Many are open late."}
+    ],
+    trips:[
+      {name:"Suzhou", zh:"苏州", cat:"activity", q:"t:Humble Administrator's Garden", lat:31.3245, lng:120.6290, far:"About 30 min by high-speed train", stay:"Full day", desc:"The city of classical gardens. Walk through UNESCO-listed gardens like the Humble Administrator’s Garden, then the canal street of Pingjiang Road.", tip:"Trains leave Shanghai Hongqiao every few minutes. Book garden tickets online the day before, and see the Suzhou Museum next door."},
+      {name:"Hangzhou", zh:"杭州", cat:"activity", q:"t:West Lake", lat:30.2460, lng:120.1510, far:"About 1 hour by high-speed train", stay:"Full day", desc:"West Lake is one of China’s most famous views: willow-lined causeways, pagodas and boats. Above the city, the Longjing tea villages grow China’s best-known green tea.", tip:"Rent bikes to ride around the lake, then take a taxi up to Longjing village to sip tea among the fields."}
     ],
     foods:[
       {name:"Xiaolongbao", zh:"小笼包", q:"t:Xiaolongbao", desc:"Soup dumplings: hot broth sealed inside a thin, pleated skin.", tip:"Put it on a spoon, bite a small hole, sip the soup, then eat.", tags:["pork"], top:true},
@@ -672,17 +678,19 @@ const GUIDES = {
       {name:"Raffles City and Chaotianmen", zh:"来福士 · 朝天门", cat:"place", q:"t:Raffles City Chongqing", lat:29.5670, lng:106.5880, desc:"Where the two rivers meet in two colours of water. Raffles City has a horizontal glass skybridge on top.", tip:"Pair with Hongyadong on the same evening."},
       {name:"Nanshan night view", zh:"南山一棵树观景台", cat:"night", q:"Chongqing skyline night Yuzhong", lat:29.5440, lng:106.6060, desc:"A mountain viewing platform with the classic panorama of the glowing peninsula.", tip:"Take a Didi up around sunset."},
       {name:"Two rivers night cruise", zh:"两江游", cat:"night", q:"Chaotianmen Chongqing", lat:29.5655, lng:106.5865, desc:"An hour on the water around the peninsula after dark.", tip:"Book on Trip.com or at Chaotianmen."},
-      {name:"Eling Park", zh:"鹅岭公园", cat:"place", q:"Eling Park Chongqing", lat:29.5525, lng:106.5270, desc:"Hilltop park with river views over the layered city.", tip:"Peak 8D views. Bring a camera."},
-      {name:"Wulong Karst", zh:"武隆天生三桥", cat:"activity", q:"Wulong Karst", lat:29.4370, lng:107.7980, desc:"UNESCO-listed natural stone bridges and deep gorges, around three hours away.", tip:"A full day. Book a tour or take the train."},
-      {name:"Dazu Rock Carvings", zh:"大足石刻", cat:"place", q:"t:Dazu Rock Carvings", lat:29.7480, lng:105.7980, desc:"UNESCO Buddhist cliff carvings from the 9th to 13th centuries.", tip:"About two hours away. A quiet, slow day."}
+      {name:"Eling Park", zh:"鹅岭公园", cat:"place", q:"Eling Park Chongqing", lat:29.5525, lng:106.5270, desc:"Hilltop park with river views over the layered city.", tip:"Peak 8D views. Bring a camera."}
     ],
     shows:[
       {name:"Glamorous Chongqing drone show", zh:"魅力重庆无人机表演", cat:"night", q:"Drone light show", lat:29.5560, lng:106.5850, desc:"Thousands of drones draw the city’s landmarks, food and symbols in the sky over the rivers, with the skyscrapers lit up to match. About 18 minutes.", tip:"Most Saturday nights and on major holidays. Watch from Nanbin Road, Chaotianmen or Jiangbeizui.", top:true},
       {name:"Sichuan opera face-changing", zh:"川剧变脸", cat:"night", q:"t:Bian lian", desc:"Performers swap brightly painted masks in a split second, with no visible trick. A secret art passed down in families.", tip:"Short shows run in teahouses and in Ciqikou old town."},
       {name:"Hot springs", zh:"温泉", cat:"activity", q:"Chongqing hot springs", desc:"Chongqing calls itself China’s hot spring capital, with resorts in and around the city.", tip:"Perfect on a cold, foggy winter day."},
       {name:"Hanfu in Ciqikou", zh:"磁器口汉服", cat:"activity", q:"Ciqikou Chongqing", lat:29.5800, lng:106.4480, desc:"Dress up in traditional clothing and wander the old town lanes for photos.", tip:"Studios at the entrance do hair and make-up too."},
-      {name:"Night photography walk", zh:"夜景", cat:"night", q:"Chongqing skyline night", lat:29.5640, lng:106.5790, desc:"The cyberpunk city at its best: neon, fog, bridges and layered streets. Start at Hongyadong, cross Qiansimen Bridge, end at Chaotianmen.", tip:"Go after 7pm. Bring a power bank."},
-      {name:"816 Underground Nuclear Plant", zh:"816地下核工程", cat:"activity", q:"816 Nuclear Military Plant", desc:"A once-secret Cold War nuclear plant hidden inside a mountain in Fuling, now open for tours. Described as one of the largest man-made caves in the world.", tip:"A full-day trip. Book a tour."}
+      {name:"Night photography walk", zh:"夜景", cat:"night", q:"Chongqing skyline night", lat:29.5640, lng:106.5790, desc:"The cyberpunk city at its best: neon, fog, bridges and layered streets. Start at Hongyadong, cross Qiansimen Bridge, end at Chaotianmen.", tip:"Go after 7pm. Bring a power bank."}
+    ],
+    trips:[
+      {name:"Chengdu pandas", zh:"成都大熊猫繁育研究基地", cat:"activity", q:"t:Chengdu Research Base of Giant Panda Breeding", lat:30.7340, lng:104.1460, far:"About 1 to 1.5 hours by high-speed train", stay:"Full day", desc:"See dozens of giant pandas munching bamboo, plus cubs and red pandas. Then explore Chengdu: Kuanzhai Alley, teahouses and its own style of hotpot.", tip:"Take an early train. Pandas are most active in the morning, and they nap after lunch. Bring your passport for tickets."},
+      {name:"Wulong Karst", zh:"武隆天生三桥", cat:"activity", q:"Wulong Karst Three Natural Bridges", lat:29.4370, lng:107.7980, far:"About 40 min by high-speed train", stay:"Full day", desc:"UNESCO-listed giant stone bridges over a deep gorge, the largest natural bridge cluster on Earth. Used as a filming location for Transformers: Age of Extinction.", tip:"Take the train from Chongqing East to Wulong South, then the scenic shuttle bus. Wear good shoes: lots of steps."},
+      {name:"Fairy Mountain", zh:"仙女山", cat:"activity", q:"Xiannüshan Fairy Mountain Wulong", lat:29.4290, lng:107.7300, far:"About 40 min by train, plus a short taxi", stay:"Half day, pair with Wulong", desc:"High grassy meadows about 2,000 metres up, with forest and a little scenic train. Nicknamed the “Switzerland of the East”. It can snow in winter.", tip:"Combine it with Wulong Karst, ideally with one night in Wulong. Bring a warm jacket, it’s much colder than the city."}
     ],
     foods:[
       {name:"Chongqing hotpot", zh:"重庆火锅", q:"Chongqing hot pot", desc:"Bubbling beef-tallow broth with chillies and numbing Sichuan pepper. Cook your own meat and veg.", tip:"Order a 鸳鸯锅, half spicy and half mild. Dip in sesame oil with garlic.", tags:["spicy"], top:true},
@@ -824,7 +832,7 @@ const PREP = [
 
 /* flatten guide items with ids */
 const ITEMS = [];
-for(const [city,g] of Object.entries(GUIDES)) for(const kind of Object.keys(KINDS)) g[kind].forEach((it,i) => { it.id = `${city}-${kind}-${i}`; it.city = city; it.kind = kind; if(!it.cat) it.cat = kind==="foods" ? "food" : kind==="shows" ? "activity" : "place"; ITEMS.push(it); });
+for(const [city,g] of Object.entries(GUIDES)) for(const kind of Object.keys(KINDS)) g[kind].forEach((it,i) => { it.id = `${city}-${kind}-${i}`; it.city = city; it.kind = kind; if(!it.cat) it.cat = kind==="foods" ? "food" : kind==="places" ? "place" : "activity"; ITEMS.push(it); });
 const itemById = id => ITEMS.find(x => x.id === id);
 const itemByName = n => ITEMS.find(x => x.name === n);
 
@@ -1117,7 +1125,7 @@ function dayHTML(d, i){
           </div>
           ${a.notes?`<p class="notes">${esc(a.notes)}</p>`:""}
           ${kw||a.lat?`<div class="links">
-            ${kw?`<a class="pill" target="_blank" rel="noopener" href="https://uri.amap.com/search?keyword=${enc(kw)}&city=${enc(cityZh)}&callnative=1">${icon("pin",14)} Amap</a>`:""}
+            ${kw?`<a class="pill" target="_blank" rel="noopener" href="https://uri.amap.com/search?keyword=${enc(kw)}${it&&it.kind==="trips"?"":`&city=${enc(cityZh)}`}&callnative=1">${icon("pin",14)} Amap</a>`:""}
             <a class="pill" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${gq}">${icon("ext",14)} Google Maps</a>
           </div>`:""}
         </div>
@@ -1219,6 +1227,7 @@ function spotCard(it){
       <div class="spot-h"><h3><span data-spot="${it.id}">${esc(it.name)}</span></h3><span class="zh">${esc(it.zh)}</span></div>
       <p>${esc(it.desc)}</p>
       ${it.tip?`<p class="tip"><b>Tip</b> ${esc(it.tip)}</p>`:""}
+      ${it.far?`<div class="trip-meta"><span>${icon("transport",14)} ${esc(it.far)}</span><span>${icon("clock",14)} ${esc(it.stay)}</span></div>`:""}
       <div class="spot-f">
         ${(it.tags||[]).map(t=>`<span class="tag ${TAGS[t][0]}">${TAGS[t][1]}</span>`).join("")}
         <span class="grow"></span>
@@ -1231,6 +1240,7 @@ function spotCard(it){
 const SECTIONS = [
   {k:"places", title:"Places to visit", unit:"places"},
   {k:"shows", title:"Shows and experiences", unit:"things to do"},
+  {k:"trips", title:"Day trips", unit:"trips"},
   {k:"foods", title:"Food to try", unit:"dishes"},
   {k:"cool", title:"Cafés and cool spots", unit:"spots"}
 ];
@@ -1281,14 +1291,15 @@ function openSpot(id){
     <div class="ph" data-credit="spotCredit" style="--c:var(${g.color})"><span class="ph-ic">${icon(it.cat,24)}</span></div>
     <div class="sb">
       <h2>${esc(it.name)} <span class="zh">${esc(it.zh)}</span></h2>
-      <p class="sub">${it.city}, ${it.kind==="foods"?"Food":CATS[it.cat].label}</p>
+      <p class="sub">${it.kind==="trips"?`Day trip from ${it.city}`:`${it.city}, ${it.kind==="foods"?"Food":CATS[it.cat].label}`}</p>
+      ${it.far?`<div class="trip-meta"><span>${icon("transport",14)} ${esc(it.far)}</span><span>${icon("clock",14)} ${esc(it.stay)}</span></div>`:""}
       <p class="desc">${esc(it.desc)}</p>
       ${it.tip?`<div class="tipbox"><b>Tip:</b> ${esc(it.tip)}</div>`:""}
       ${it.tags&&it.tags.length?`<div class="tags">${it.tags.map(t=>`<span class="tag ${TAGS[t][0]}">${TAGS[t][1]}</span>`).join("")}</div>`:""}
       <div class="acts">
         <button class="btn primary eo" data-sugg="${sugg(it)}">${icon("plus",16)} ${added?"Add again":"Add to plan"}</button>
         ${it.lat?`<button class="btn" data-showmap="${it.id}">${icon("map",16)} Show on map</button>`:""}
-        <a class="btn" target="_blank" rel="noopener" href="https://uri.amap.com/search?keyword=${enc(it.zh)}&city=${enc(g.zh)}&callnative=1">${icon("pin",16)} Amap</a>
+        <a class="btn" target="_blank" rel="noopener" href="https://uri.amap.com/search?keyword=${enc(it.zh)}${it.kind==="trips"?"":`&city=${enc(g.zh)}`}&callnative=1">${icon("pin",16)} Amap</a>
         <a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${it.lat?`${it.lat},${it.lng}`:enc(it.name+" "+it.city)}">${icon("ext",16)} Google Maps</a>
       </div>
       <p class="credit" id="spotCredit"></p>
@@ -1452,7 +1463,7 @@ async function renderMap(focusId){
     ITEMS.filter(s => s.lat && (UI.mapCity==="all" || s.city===UI.mapCity)).forEach(s => {
       const col = cityColor(s.city), on = inPlan(s.name);
       const m = L.circleMarker([s.lat,s.lng], {radius:on?9:7, color:on?col:"#fff", weight:on?4:2, fillColor:on?"#fff":col, fillOpacity:1}).bindPopup(pop(s), {maxWidth:260, minWidth:240}).bindTooltip(s.name,{direction:"top",offset:[0,-6]});
-      layer.addLayer(m); pts.push([s.lat,s.lng]); if(focusId && s.id === focusId) focus = m;
+      layer.addLayer(m); if(s.kind !== "trips") pts.push([s.lat,s.lng]); if(focusId && s.id === focusId) focus = m;
     });
   }
   const days = getDays();
@@ -1535,7 +1546,7 @@ function loadSample(){
     A(1,"19:30","20:30","night","Huangpu River night cruise","十六铺码头 Shiliupu","","120"),
     A(2,"10:00","12:30","place","Shanghai Tower","上海中心大厦","Pick the clearest day","180"),
     A(2,"14:00","16:30","activity","Wukang Road","武康路","Slow walk and photos"),
-    A(3,"09:00","14:00","place","Zhujiajiao water town","朱家角","Boat ride through the canals","100"),
+    A(3,"08:30","18:00","activity","Suzhou","苏州","Day trip: gardens and Pingjiang Road","150"),
     A(3,"19:00","20:30","food","Lanzhou beef noodles","Look for 清真","Halal and delicious","40"),
     A(4,"10:00","13:00","transport","Fly to Chongqing","Hongqiao to Jiangbei Airport","About 2.5 to 3 hours"),
     A(4,"19:00","21:30","night","Hongyadong","洪崖洞","Photos from Qiansimen Bridge"),

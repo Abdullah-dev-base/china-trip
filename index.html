@@ -419,6 +419,36 @@ body.ro .stops>.stop:last-child .rail::before{bottom:auto;height:28px}
 .steps{margin:14px 0 0;padding-left:20px;font-size:14.5px;color:var(--ink-2);display:grid;gap:6px}
 .steps a{color:var(--sh);font-weight:700}
 .tokerr{color:var(--cq);font-size:14px;margin-top:8px;min-height:1em}
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px}
+.chips::-webkit-scrollbar{display:none}
+.chips button{height:36px;flex:none;border:1px solid var(--line-2);background:var(--surface);border-radius:999px;padding:0 14px;cursor:pointer;font-weight:700;font-size:14px;color:var(--ink-2);display:inline-flex;align-items:center;gap:6px}
+.chips button:hover{background:var(--surface-2)}
+.chips button span{color:var(--muted);font-weight:600}
+.chips button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.chips button[aria-pressed="true"] span{color:color-mix(in srgb,var(--bg) 70%,transparent)}
+.filterbar{position:sticky;top:64px;z-index:5;background:var(--bg);margin-top:36px;padding:12px 0;border-bottom:1px solid var(--line)}
+.filterbar+.sec{margin-top:24px}
+.morelink{margin-top:48px;width:100%;display:flex;align-items:center;gap:14px;text-align:left;padding:18px 20px;border:1px solid var(--line);background:var(--surface);border-radius:16px;cursor:pointer;color:var(--ink)}
+.morelink:hover{background:var(--surface-2)}
+.morelink>span{flex:1;display:flex;flex-direction:column}
+.morelink b{font-size:15.5px}
+.morelink small{font-size:13.5px;color:var(--muted)}
+.rows{overflow:hidden}
+.rows .row{display:flex;gap:12px;align-items:flex-start;padding:14px 20px;font-size:15px;color:var(--ink-2)}
+.rows .row+.row{border-top:1px solid var(--line)}
+.rows .row b{color:var(--ink)}
+.rows .y{color:var(--ok);flex:none;margin-top:2px}
+.rows .n{color:var(--cq);flex:none;margin-top:2px}
+.rows .fc{flex:none;width:92px;display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--ink-2);margin-top:3px}
+@media (max-width:600px){.rows .row{flex-direction:column;gap:4px;padding:14px 16px}.rows .row .y,.rows .row .n{display:none}.rows .fc{width:auto}}
+.lgroup{margin-top:24px}
+.lgroup-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px}
+.lgroup-h h3{font-size:16px}
+.lgroup-h span{font-size:13.5px;font-weight:600;color:var(--muted)}
+.check .where{display:flex;align-items:center;gap:4px;margin-top:4px;color:var(--ink-2);font-weight:600;font-size:13px}
+.progress{margin-top:20px}
+.hide{display:none!important}
+.listhead{margin-top:20px}
 footer{max-width:1120px;margin:0 auto;padding:0 var(--pad) 40px;color:var(--muted);font-size:13px}
 @media (max-width:899px){footer{padding-bottom:120px}}
 </style>
@@ -756,40 +786,40 @@ const CHINA = {
 };
 
 const BUY = [
-  {id:"silk", name:"Silk scarves and fabric", zh:"丝绸", q:"t:Silk", where:"South Bund Fabric Market, Shanghai", desc:"China is the home of silk: scarves, pyjamas, fabric by the metre."},
-  {id:"tailor", name:"Tailor-made qipao or suit", zh:"旗袍", q:"t:Cheongsam", where:"South Bund Fabric Market, Shanghai", desc:"Get measured, pick a fabric, collect it a few days later."},
-  {id:"tea", name:"Chinese tea", zh:"茶叶", q:"Longjing tea", where:"Tea shops in both cities", desc:"Longjing (green), Tieguanyin (oolong), Pu’er (aged). Taste before you buy."},
-  {id:"teaset", name:"Clay teapot", zh:"紫砂壶", q:"Yixing clay teapot", where:"Yu Garden bazaar, Ciqikou", desc:"Purple-clay Yixing teapots and porcelain cups."},
-  {id:"chop", name:"Name seal stamp", zh:"印章", q:"Seal (East Asia)", where:"Yu Garden, Tianzifang, Ciqikou", desc:"Your names carved in Chinese on a stone stamp. A good couple souvenir."},
-  {id:"hotpot", name:"Chongqing hotpot base", zh:"火锅底料", q:"Chongqing hot pot", where:"Any Chongqing supermarket", desc:"Vacuum-packed blocks of hotpot base. Check the ingredients (beef tallow)."},
-  {id:"pepper", name:"Sichuan pepper and chilli oil", zh:"花椒", q:"t:Sichuan pepper", where:"Chongqing markets", desc:"The numbing mala spice, far fresher than abroad."},
-  {id:"mahua", name:"Chen mahua snacks", zh:"陈麻花", q:"Mahua fried dough twist", where:"Ciqikou, Chongqing", desc:"Crunchy twisted dough sticks in many flavours."},
-  {id:"rabbit", name:"White Rabbit candy", zh:"大白兔", q:"White Rabbit candy", where:"Supermarkets", desc:"A Shanghai milk candy classic. The rice-paper wrapper is edible."},
-  {id:"feiyue", name:"Feiyue or Warrior sneakers", zh:"飞跃 · 回力", q:"Feiyue shoes", where:"Shops in Shanghai", desc:"Retro canvas sneakers with Shanghai roots. Cheap and iconic."},
-  {id:"fan", name:"Paper cuttings and fans", zh:"剪纸 · 扇子", q:"Chinese paper cutting", where:"Old towns", desc:"Light, pretty and easy to pack."},
-  {id:"knot", name:"Chinese knots and lanterns", zh:"中国结", q:"t:Chinese knotting", where:"Souvenir markets", desc:"Red good-luck decorations."},
-  {id:"calli", name:"Calligraphy brush set", zh:"毛笔", q:"Chinese calligraphy brush ink", where:"Fuzhou Road, Shanghai", desc:"Brush, ink stone and rice paper. Fun to try together."},
-  {id:"porcelain", name:"Blue and white porcelain", zh:"青花瓷", q:"Blue and white porcelain", where:"Museum shops", desc:"Classic ceramics. Wrap them well for the flight."},
-  {id:"popmart", name:"Pop Mart blind boxes", zh:"泡泡玛特", q:"Pop Mart", where:"Malls everywhere", desc:"China’s designer-toy craze. You never know which figure you’ll get."},
-  {id:"embro", name:"Shu embroidery", zh:"蜀绣", q:"Shu embroidery", where:"Shops in Chongqing", desc:"Fine silk embroidery from the Sichuan–Chongqing region."}
+  {id:"silk", g:"sh", name:"Silk scarves and fabric", zh:"丝绸", q:"t:Silk", where:"South Bund Fabric Market, Shanghai", desc:"China is the home of silk: scarves, pyjamas, fabric by the metre."},
+  {id:"tailor", g:"sh", name:"Tailor-made qipao or suit", zh:"旗袍", q:"t:Cheongsam", where:"South Bund Fabric Market, Shanghai", desc:"Get measured, pick a fabric, collect it a few days later."},
+  {id:"tea", g:"any", name:"Chinese tea", zh:"茶叶", q:"Longjing tea", where:"Tea shops in both cities", desc:"Longjing (green), Tieguanyin (oolong), Pu’er (aged). Taste before you buy."},
+  {id:"teaset", g:"any", name:"Clay teapot", zh:"紫砂壶", q:"Yixing clay teapot", where:"Yu Garden bazaar, Ciqikou", desc:"Purple-clay Yixing teapots and porcelain cups."},
+  {id:"chop", g:"any", name:"Name seal stamp", zh:"印章", q:"Seal (East Asia)", where:"Yu Garden, Tianzifang, Ciqikou", desc:"Your names carved in Chinese on a stone stamp. A good couple souvenir."},
+  {id:"hotpot", g:"cq", name:"Chongqing hotpot base", zh:"火锅底料", q:"Chongqing hot pot", where:"Any Chongqing supermarket", desc:"Vacuum-packed blocks of hotpot base. Check the ingredients (beef tallow)."},
+  {id:"pepper", g:"cq", name:"Sichuan pepper and chilli oil", zh:"花椒", q:"t:Sichuan pepper", where:"Chongqing markets", desc:"The numbing mala spice, far fresher than abroad."},
+  {id:"mahua", g:"cq", name:"Chen mahua snacks", zh:"陈麻花", q:"Mahua fried dough twist", where:"Ciqikou, Chongqing", desc:"Crunchy twisted dough sticks in many flavours."},
+  {id:"rabbit", g:"sh", name:"White Rabbit candy", zh:"大白兔", q:"White Rabbit candy", where:"Supermarkets", desc:"A Shanghai milk candy classic. The rice-paper wrapper is edible."},
+  {id:"feiyue", g:"sh", name:"Feiyue or Warrior sneakers", zh:"飞跃 · 回力", q:"Feiyue shoes", where:"Shops in Shanghai", desc:"Retro canvas sneakers with Shanghai roots. Cheap and iconic."},
+  {id:"fan", g:"any", name:"Paper cuttings and fans", zh:"剪纸 · 扇子", q:"Chinese paper cutting", where:"Old towns", desc:"Light, pretty and easy to pack."},
+  {id:"knot", g:"any", name:"Chinese knots and lanterns", zh:"中国结", q:"t:Chinese knotting", where:"Souvenir markets", desc:"Red good-luck decorations."},
+  {id:"calli", g:"sh", name:"Calligraphy brush set", zh:"毛笔", q:"Chinese calligraphy brush ink", where:"Fuzhou Road, Shanghai", desc:"Brush, ink stone and rice paper. Fun to try together."},
+  {id:"porcelain", g:"any", name:"Blue and white porcelain", zh:"青花瓷", q:"Blue and white porcelain", where:"Museum shops", desc:"Classic ceramics. Wrap them well for the flight."},
+  {id:"popmart", g:"any", name:"Pop Mart blind boxes", zh:"泡泡玛特", q:"Pop Mart", where:"Malls everywhere", desc:"China’s designer-toy craze. You never know which figure you’ll get."},
+  {id:"embro", g:"cq", name:"Shu embroidery", zh:"蜀绣", q:"Shu embroidery", where:"Shops in Chongqing", desc:"Fine silk embroidery from the Sichuan–Chongqing region."}
 ];
 
 const PREP = [
-  {id:"visa", name:"Check visa rules for your passport", desc:"Rules change often. Check the Chinese embassy site."},
-  {id:"alipay", name:"Set up Alipay with your Visa or Mastercard", desc:"The key app for shops, taxis, metro and food."},
-  {id:"wechat", name:"Install WeChat and add WeChat Pay", desc:"Messaging, museum bookings and payments."},
-  {id:"esim", name:"Get a roaming eSIM or data plan", desc:"Google, WhatsApp and Instagram are blocked on local Wi-Fi."},
-  {id:"amap", name:"Download Amap (高德地图)", desc:"Much better than Google Maps in China, with an English mode."},
-  {id:"didi", name:"Didi for taxis", desc:"Also inside Alipay. Shows the price up front."},
-  {id:"trip", name:"Trip.com for trains, hotels and tickets", desc:"In English, including high-speed trains."},
-  {id:"dianping", name:"Dianping or Meituan for food reviews", desc:"Find the places locals rate."},
-  {id:"translate", name:"Offline translator", desc:"Download Chinese for offline use. Camera mode reads menus."},
-  {id:"adaptor", name:"Universal power adaptor", desc:"China uses type A and I plugs at 220V."},
-  {id:"address", name:"Hotel addresses in Chinese", desc:"Screenshot them to show taxi drivers."},
-  {id:"shoes", name:"Comfortable walking shoes", desc:"Chongqing is stairs, stairs, stairs."},
-  {id:"tissue", name:"Tissues and wet wipes", desc:"Many public toilets have no paper."},
-  {id:"passport", name:"Passport copy, photo and paper", desc:"Needed for trains, museums and hotels."},
-  {id:"flight", name:"Book Shanghai to Chongqing", desc:"A flight is about 2.5 to 3 hours. The train is longer but scenic."}
+  {id:"visa", g:"docs", name:"Check visa rules for your passport", desc:"Rules change often. Check the Chinese embassy site."},
+  {id:"alipay", g:"money", name:"Set up Alipay with your Visa or Mastercard", desc:"The key app for shops, taxis, metro and food."},
+  {id:"wechat", g:"money", name:"Install WeChat and add WeChat Pay", desc:"Messaging, museum bookings and payments."},
+  {id:"esim", g:"money", name:"Get a roaming eSIM or data plan", desc:"Google, WhatsApp and Instagram are blocked on local Wi-Fi."},
+  {id:"amap", g:"apps", name:"Download Amap (高德地图)", desc:"Much better than Google Maps in China, with an English mode."},
+  {id:"didi", g:"apps", name:"Didi for taxis", desc:"Also inside Alipay. Shows the price up front."},
+  {id:"trip", g:"apps", name:"Trip.com for trains, hotels and tickets", desc:"In English, including high-speed trains."},
+  {id:"dianping", g:"apps", name:"Dianping or Meituan for food reviews", desc:"Find the places locals rate."},
+  {id:"translate", g:"apps", name:"Offline translator", desc:"Download Chinese for offline use. Camera mode reads menus."},
+  {id:"adaptor", g:"pack", name:"Universal power adaptor", desc:"China uses type A and I plugs at 220V."},
+  {id:"address", g:"docs", name:"Hotel addresses in Chinese", desc:"Screenshot them to show taxi drivers."},
+  {id:"shoes", g:"pack", name:"Comfortable walking shoes", desc:"Chongqing is stairs, stairs, stairs."},
+  {id:"tissue", g:"pack", name:"Tissues and wet wipes", desc:"Many public toilets have no paper."},
+  {id:"passport", g:"docs", name:"Passport copy, photo and paper", desc:"Needed for trains, museums and hotels."},
+  {id:"flight", g:"docs", name:"Book Shanghai to Chongqing", desc:"A flight is about 2.5 to 3 hours. The train is longer but scenic."}
 ];
 
 /* flatten guide items with ids */
@@ -889,7 +919,7 @@ async function signIn(){
 }
 function signOut(silent){ TOKEN = ""; try{ localStorage.removeItem("chinaTrip.ghToken"); }catch(e){} SYNC = "idle"; renderAll(); if(!silent) toast("Signed out. This device is view only now."); }
 const guard = () => { if(RO()){ toast("View only. Only the owner can make changes."); return true; } return false; };
-const UI = { view:"plan", day:null, mode:"day", guide:"Shanghai", list:"buy", mapCity:null, mapPlanOnly:false, convAmt:100, convFrom:"CNY" };
+const UI = { view:"plan", day:null, mode:"day", guide:"Shanghai", list:"prep", filter:"all", c101:"essentials", fcity:"all", mapCity:null, mapPlanOnly:false, convAmt:100, convFrom:"CNY" };
 let RATES = { SAR:0.52, USD:0.14, live:false };
 const WX = {};
 
@@ -1198,11 +1228,19 @@ function spotCard(it){
     </div>
   </div>`;
 }
+const SECTIONS = [
+  {k:"places", title:"Places to visit", unit:"places"},
+  {k:"shows", title:"Shows and experiences", unit:"things to do"},
+  {k:"foods", title:"Food to try", unit:"dishes"},
+  {k:"cool", title:"Cafés and cool spots", unit:"spots"}
+];
 function renderGuides(){
   const name = UI.guide, g = GUIDES[name], color = `var(${g.color})`;
   const days = getDays().filter(d => d.cities.includes(name));
   const m = days.length ? parseD(days[0].date).getMonth() : -1;
   const now = WX[name] && WX[name].current;
+  const total = SECTIONS.reduce((n,s) => n + g[s.k].length, 0);
+  const shown = UI.filter === "all" ? SECTIONS : SECTIONS.filter(s => s.k === UI.filter);
   $("#v-guides").innerHTML = `
     <div class="seg" role="group" aria-label="City">${Object.keys(GUIDES).map(k=>`<button data-guide="${k}" aria-pressed="${k===name}">${k}</button>`).join("")}</div>
     <div class="ghero">
@@ -1222,27 +1260,18 @@ function renderGuides(){
         </div>
       </div>
     </div>
-    <div class="sec">
-      <div class="sec-h"><h2>Places to visit</h2><p>${g.places.length} places</p></div>
-      <div class="cards">${g.places.map(spotCard).join("")}</div>
+    <div class="filterbar">
+      <div class="chips" role="group" aria-label="Show">
+        <button data-filter="all" aria-pressed="${UI.filter==="all"}">All <span>${total}</span></button>
+        ${SECTIONS.map(s=>`<button data-filter="${s.k}" aria-pressed="${UI.filter===s.k}">${KINDS[s.k]} <span>${g[s.k].length}</span></button>`).join("")}
+      </div>
     </div>
-    <div class="sec">
-      <div class="sec-h"><h2>Shows and experiences</h2><p>${g.shows.length} things to do</p></div>
-      <div class="cards">${g.shows.map(spotCard).join("")}</div>
-    </div>
-    <div class="sec">
-      <div class="sec-h"><h2>Food to try</h2><p>${g.foods.length} dishes</p></div>
-      <div class="cards">${g.foods.map(spotCard).join("")}</div>
-      <div class="note"><b>Eating halal?</b> Look for the green <span class="zh">清真</span> (qīngzhēn) sign on Lanzhou noodle and Xinjiang restaurants. They’re all over ${name}. Elsewhere, show “我不吃猪肉” (I don’t eat pork) when you order.</div>
-    </div>
-    <div class="sec">
-      <div class="sec-h"><h2>Cafés and cool spots</h2><p>${g.cool.length} spots</p></div>
-      <div class="cards">${g.cool.map(spotCard).join("")}</div>
-    </div>
-    <div class="sec cols">
-      <div><div class="sec-h"><h2>Good to know</h2></div><ul class="plain">${g.facts.map(f=>`<li>${esc(f)}</li>`).join("")}</ul></div>
-      <div><div class="sec-h"><h2>Only in ${name}</h2></div><ul class="plain">${g.funny.map(f=>`<li>${esc(f)}</li>`).join("")}</ul></div>
-    </div>`;
+    ${shown.map(s => `<div class="sec">
+      <div class="sec-h"><h2>${s.title}</h2><p>${g[s.k].length} ${s.unit}</p></div>
+      <div class="cards">${g[s.k].map(spotCard).join("")}</div>
+      ${s.k==="foods"?`<div class="note"><b>Eating halal?</b> Look for the green <span class="zh">清真</span> (qīngzhēn) sign on Lanzhou noodle and Xinjiang restaurants. They’re all over ${name}. Elsewhere, show “我不吃猪肉” (I don’t eat pork) when you order.</div>`:""}
+    </div>`).join("")}
+    <button class="morelink" data-factcity="${name}">${icon("spark",18)}<span><b>Fun facts about ${name}</b><small>Funny, surprising and good-to-know things, in China 101</small></span>${icon("arrow",18)}</button>`;
 }
 function openSpot(id){
   const it = itemById(id); if(!it) return;
@@ -1273,59 +1302,94 @@ const closeSpot = () => $("#spotBg").classList.remove("on");
 /* =========================================================
    CHINA 101
    ========================================================= */
+const FACT_KINDS = [
+  {k:"fact", title:"Good to know"},
+  {k:"funny", title:"Funny and quirky"},
+  {k:"future", title:"China does it differently"}
+];
+function allFacts(){
+  const out = [];
+  CHINA.facts.forEach(t => out.push({t, c:"China", k:"fact"}));
+  CHINA.funny.forEach(t => out.push({t, c:"China", k:"funny"}));
+  CHINA.future.forEach(t => out.push({t, c:"China", k:"future"}));
+  for(const [c,g] of Object.entries(GUIDES)){ g.facts.forEach(t => out.push({t, c, k:"fact"})); g.funny.forEach(t => out.push({t, c, k:"funny"})); }
+  return out;
+}
 function renderBasics(){
-  $("#v-basics").innerHTML = `
-    <div class="pagehead"><h1>China 101</h1><p>The basics, phrases, manners and a few things that will make you smile.</p></div>
-    <div class="sec" style="margin-top:28px">
-      <div class="sec-h"><h2>The basics</h2></div>
+  const tab = UI.c101;
+  let body = "";
+  if(tab === "essentials"){
+    body = `
       <div class="infogrid">${CHINA.basics.map(b => `<div class="card info"><div class="ico">${icon(b.i,18)}</div><h3>${b.t}</h3>${b.big?`<div class="big">${b.big.map(([n,l])=>`<b>${n}</b><span>${l}</span>`).join("")}</div>`:`<p>${esc(b.d)}</p>`}</div>`).join("")}</div>
-    </div>
-    <div class="sec">
-      <div class="sec-h"><h2>China does it differently</h2><p>Where China is ahead, creative or just surprising</p></div>
-      <ul class="plain">${CHINA.future.map(f=>`<li><span class="y">${icon("spark",18)}</span><span>${esc(f)}</span></li>`).join("")}</ul>
-    </div>
-    <div class="sec">
-      <div class="sec-h"><h2>Phrases</h2><p>Tap the arrows to show one full screen</p></div>
+      <div class="sec">
+        <div class="sec-h"><h2>Manners</h2><p>Small things that go a long way</p></div>
+        <div class="card rows">
+          ${CHINA.dos.map(t=>`<div class="row"><span class="y">${icon("check",18)}</span><span><b>Do:</b> ${esc(t)}</span></div>`).join("")}
+          ${CHINA.donts.map(t=>`<div class="row"><span class="n">${icon("x",18)}</span><span><b>Don’t:</b> ${esc(t)}</span></div>`).join("")}
+        </div>
+      </div>`;
+  } else if(tab === "phrases"){
+    body = `
+      <p class="hint">Tap the arrows to show a phrase full screen, so a driver or waiter can read it.</p>
       <div class="card phrases">${CHINA.phrases.map((p,i)=>`<div class="phrase">
         <span class="en">${p[0]}</span><span class="py">${p[1]}</span><span class="hz">${p[2]}</span>
         <button class="ibtn" data-phrase="${i}" aria-label="Show “${p[0]}” full screen" title="Show full screen">${icon("expand",16)}</button>
-      </div>`).join("")}</div>
+      </div>`).join("")}</div>`;
+  } else {
+    const facts = allFacts().filter(f => UI.fcity === "all" || f.c === UI.fcity);
+    const counts = c => allFacts().filter(f => c === "all" || f.c === c).length;
+    body = `
+      <div class="chips" role="group" aria-label="Show facts about" style="margin-bottom:8px">
+        ${["all","China","Shanghai","Chongqing"].map(c=>`<button data-fcity="${c}" aria-pressed="${UI.fcity===c}">${c==="all"?"All":c} <span>${counts(c)}</span></button>`).join("")}
+      </div>
+      ${FACT_KINDS.map(k => { const list = facts.filter(f => f.k === k.k); if(!list.length) return "";
+        return `<div class="sec" style="margin-top:28px">
+          <div class="sec-h"><h2>${k.title}</h2><p>${list.length}</p></div>
+          <div class="card rows">${list.map(f => `<div class="row">${UI.fcity!=="all"?"":`<span class="fc" style="--c:${f.c==="China"?"var(--muted)":`var(${GUIDES[f.c].color})`}"><i class="dot"></i>${f.c}</span>`}<span>${esc(f.t)}</span></div>`).join("")}</div>
+        </div>`; }).join("")}`;
+  }
+  $("#v-basics").innerHTML = `
+    <div class="pagehead"><h1>China 101</h1><p>Everything to know before you go, in one place.</p></div>
+    <div class="seg" role="group" aria-label="Section" style="margin:20px 0 24px">
+      <button data-c101="essentials" aria-pressed="${tab==="essentials"}">Essentials</button>
+      <button data-c101="phrases" aria-pressed="${tab==="phrases"}">Phrases</button>
+      <button data-c101="facts" aria-pressed="${tab==="facts"}">Fun facts</button>
     </div>
-    <div class="sec cols">
-      <div><div class="sec-h"><h2>Do</h2></div><ul class="plain">${CHINA.dos.map(t=>`<li><span class="y">${icon("check",18)}</span><span>${esc(t)}</span></li>`).join("")}</ul></div>
-      <div><div class="sec-h"><h2>Don’t</h2></div><ul class="plain">${CHINA.donts.map(t=>`<li><span class="n">${icon("x",18)}</span><span>${esc(t)}</span></li>`).join("")}</ul></div>
-    </div>
-    <div class="sec cols">
-      <div><div class="sec-h"><h2>Interesting facts</h2></div><ul class="plain">${CHINA.facts.map(f=>`<li>${esc(f)}</li>`).join("")}</ul></div>
-      <div><div class="sec-h"><h2>Funny and quirky</h2></div><ul class="plain">${CHINA.funny.map(f=>`<li>${esc(f)}</li>`).join("")}</ul></div>
-    </div>`;
+    ${body}`;
 }
 
 /* =========================================================
    LISTS
    ========================================================= */
+const BUY_GROUPS = [["sh","From Shanghai"],["cq","From Chongqing"],["any","Anywhere in China"]];
+const PREP_GROUPS = [["docs","Documents and bookings"],["money","Money and phone"],["apps","Apps to download"],["pack","Packing"],["mine","Your own items"]];
 function renderLists(){
   const isBuy = UI.list === "buy";
-  const list = isBuy ? BUY : PREP.concat(S.custom.map(c=>({id:c.id, name:c.name, desc:"", custom:true})));
+  const list = isBuy ? BUY : PREP.concat(S.custom.map(c=>({id:c.id, name:c.name, desc:"", g:"mine", custom:true})));
   const store = isBuy ? S.buy : S.prep;
   const done = list.filter(x => store[x.id]).length;
+  const groups = (isBuy ? BUY_GROUPS : PREP_GROUPS).map(([k,label]) => ({k, label, items:list.filter(x => x.g === k)})).filter(gr => gr.items.length);
+  const row = x => `<label class="check ${store[x.id]?"on":""} ${isBuy?"withph":""}">
+      <input type="checkbox" data-check="${x.id}" ${store[x.id]?"checked":""}>
+      ${isBuy?`<div class="ph" data-photo="${esc(x.q)}" data-size="s"><span class="ph-ic">${icon("shopping",16)}</span></div>`:""}
+      <div class="t"><b>${esc(x.name)}</b>${x.zh?`<span class="zh">${x.zh}</span>`:""}
+        ${x.desc?`<p>${esc(x.desc)}</p>`:""}
+        ${x.where?`<p class="where">${icon("pin",13)} ${esc(x.where)}</p>`:""}</div>
+      ${x.custom?`<button class="ibtn eo" data-rmcustom="${x.id}" aria-label="Remove ${esc(x.name)}">${icon("trash",16)}</button>`:""}
+    </label>`;
   $("#v-lists").innerHTML = `
+    <div class="pagehead"><h1>Lists</h1><p>${isBuy?"Things worth bringing home, by where to find them":"Everything to sort out before the flight"}</p></div>
     <div class="listhead">
       <div class="seg" role="group" aria-label="List">
-        <button data-list="buy" aria-pressed="${isBuy}">Souvenirs to buy</button>
         <button data-list="prep" aria-pressed="${!isBuy}">Before we fly</button>
+        <button data-list="buy" aria-pressed="${isBuy}">Souvenirs to buy</button>
       </div>
     </div>
     <div class="progress"><span>${done} of ${list.length} done</span><div><i style="width:${list.length?done/list.length*100:0}%"></i></div></div>
     ${isBuy?`<p class="hint">In markets (not malls), start at 30 to 40% of the asking price and be ready to walk away.</p>`:""}
-    <div class="card checks">${list.map(x=>`<label class="check ${store[x.id]?"on":""} ${isBuy?"withph":""}">
-      <input type="checkbox" data-check="${x.id}" ${store[x.id]?"checked":""}>
-      ${isBuy?`<div class="ph" data-photo="${esc(x.q)}" data-size="s"><span class="ph-ic">${icon("shopping",16)}</span></div>`:""}
-      <div class="t"><b>${esc(x.name)}</b>${x.zh?`<span class="zh">${x.zh}</span>`:""}
-        ${x.desc||x.where?`<p>${esc(x.desc)}${x.where?` Where: ${esc(x.where)}.`:""}</p>`:""}</div>
-      ${x.custom?`<button class="ibtn eo" data-rmcustom="${x.id}" aria-label="Remove ${esc(x.name)}">${icon("trash",16)}</button>`:""}
-    </label>`).join("")}</div>
-    ${!isBuy?`<div class="addrow eo"><input class="in" id="customItem" placeholder="Add something to the list"><button class="btn primary" id="addCustom">Add</button></div>`:""}`;
+    ${groups.map(gr => { const d = gr.items.filter(x => store[x.id]).length;
+      return `<div class="lgroup"><div class="lgroup-h"><h3>${gr.label}</h3><span>${d} of ${gr.items.length}</span></div><div class="card checks">${gr.items.map(row).join("")}</div></div>`; }).join("")}
+    ${!isBuy?`<div class="addrow eo"><input class="in" id="customItem" placeholder="Add your own item"><button class="btn primary" id="addCustom">Add</button></div>`:""}`;
 }
 
 /* =========================================================
@@ -1598,8 +1662,12 @@ document.addEventListener("click", e => {
   if(ds.done){ const a = S.acts.find(x=>x.id===ds.done); a.done = !a.done; save(); renderPlan(); hydrate(); return; }
   if(ds.spot){ if(map) map.closePopup(); openSpot(ds.spot); return; }
   if(ds.showmap){ const it = itemById(ds.showmap); closeSpot(); UI.mapCity = it.city; UI.mapPlanOnly = false; showView("map"); mapShell(); renderMap(it.id); return; }
-  if(ds.guide){ UI.guide = ds.guide; renderGuides(); hydrate(); return; }
+  if(ds.guide){ UI.guide = ds.guide; UI.filter = "all"; renderGuides(); hydrate(); return; }
   if(ds.list){ UI.list = ds.list; renderLists(); hydrate(); return; }
+  if(ds.filter){ UI.filter = ds.filter; renderGuides(); hydrate(); return; }
+  if(ds.c101){ UI.c101 = ds.c101; renderBasics(); return; }
+  if(ds.fcity){ UI.fcity = ds.fcity; renderBasics(); return; }
+  if(ds.factcity){ UI.c101 = "facts"; UI.fcity = ds.factcity; renderBasics(); showView("basics"); return; }
   if(ds.mapcity){ UI.mapCity = ds.mapcity; mapShell(); renderMap(); return; }
   if(ds.mapplan){ UI.mapPlanOnly = ds.mapplan === "1"; mapShell(); renderMap(); return; }
   if(ds.cat){ sCat = ds.cat; document.querySelectorAll("#sCats button").forEach(b => b.setAttribute("aria-pressed", b.dataset.cat === sCat)); return; }

@@ -487,6 +487,18 @@ footer{max-width:1120px;margin:0 auto;padding:0 var(--pad) 40px;color:var(--mute
 .visitmeta span{color:var(--ink-2)}
 .visitmeta>div:last-child:nth-child(odd){grid-column:1/-1}
 @media(max-width:420px){.visitmeta{grid-template-columns:minmax(0,1fr)}.visitmeta>div:last-child:nth-child(odd){grid-column:auto}}
+
+/* A compact, consistent visual language for guide cards and category filters. */
+.guide-art{background:linear-gradient(150deg,color-mix(in srgb,var(--c) 17%,var(--surface-2)),color-mix(in srgb,var(--c) 8%,var(--surface)))}
+.guide-art .ph-ic{color:var(--c)!important;opacity:.92}
+.guide-art .ph-label{position:absolute;bottom:12px;left:12px;right:12px;text-align:center;font-size:10px;letter-spacing:.065em;text-transform:uppercase;font-weight:800;color:var(--c)}
+.guide-art.loaded .ph-label{display:none}
+.guide-art.loaded::after{content:"";position:absolute;inset:0;pointer-events:none;border:1px solid color-mix(in srgb,var(--c) 18%,transparent)}
+.group-tag{color:var(--gc);background:color-mix(in srgb,var(--gc) 10%,var(--surface));font-size:11px;font-weight:800;border-radius:99px;padding:4px 9px;display:inline-flex;align-items:center;gap:5px;align-self:flex-start;margin:6px 0 5px}
+.chips button[data-filter]{display:inline-flex;gap:6px;align-items:center}
+.chips button[data-filter]:not([data-filter="all"]){color:var(--gc)}
+.chips button[data-filter][aria-pressed="true"]{box-shadow:inset 0 -2px 0 var(--gc,var(--sh))}
+.sec-h h2{display:flex;align-items:center;gap:9px}
 </style>
 </head>
 <body>
@@ -927,6 +939,29 @@ for(const [city,g] of Object.entries(GUIDES)) for(const kind of Object.keys(KIND
 const itemById = id => ITEMS.find(x => x.id === id);
 const itemByName = n => ITEMS.find(x => x.name === n);
 
+/* Category-only presentation layer: source guide groups and persistent item IDs stay unchanged. */
+const GUIDE_GROUPS = [{"k":"sights","label":"Sights & places","icon":"place","color":"#456CC1"},{"k":"activities","label":"Activities & theme parks","icon":"activity","color":"#D68A32"},{"k":"shows","label":"Shows & experiences","icon":"ticket","color":"#9557B9"},{"k":"daytrips","label":"Day trips","icon":"transport","color":"#419E70"},{"k":"shopping","label":"Shopping & brands","icon":"shopping","color":"#CB5886"},{"k":"cafes","label":"Cafés & desserts","icon":"cafe","color":"#9B7351"},{"k":"food","label":"Food & restaurants","icon":"food","color":"#D26747"},{"k":"nightlife","label":"Nightlife & views","icon":"night","color":"#5455B4"},{"k":"transport","label":"Unique transport","icon":"transport","color":"#2D9299"}];
+const GUIDE_GROUP_OVERRIDES = {"Wukang Road":"sights","Yuyuan Bazaar & Nine-Turn Bridge":"sights","Former French Concession heritage walk":"sights","Sinan Mansions":"sights","Panlong Tiandi water-town shopping district":"sights","Tianzifang":"sights","Eling Second Factory":"sights","Mountain City Trail":"sights","M50 art district":"sights","1933 Old Millfun":"sights","Longmenhao and Xiahaoli":"sights","Shanghai Disneyland":"activities","Shanghai LEGOLAND Resort":"activities","Shanghai Haichang Ocean Park":"activities","Shanghai Happy Valley":"activities","Shanghai Wild Animal Park":"activities","Shanghai Film Park":"activities","Shanghai Astronomy Museum":"activities","Shanghai L+SNOW — indoor skiing & snow park":"activities","Shanghai Greenhouse — Expo Culture Park":"activities","Shanghai Civil Defense Museum — disaster simulator":"activities","Fantasy Space — Shimao Plaza":"activities","Big Earthquake 5D show — Shanghai Romance Park":"shows","Shanghai Eternal Love":"shows","ERA: Intersection of Time":"shows","Xuyan — Immersive Imperial Feast (Shanghai flagship)":"shows","Taste of China — immersive Hanfu banquet":"shows","Shanghai International Light Festival (2026)":"shows","Glamorous Chongqing drone show":"shows","Chongqing 1949 immersive show":"shows","Sichuan opera face-changing":"shows","Traditional Chinese tea ceremony — Tianzifang":"shows","Hanfu photoshoot":"activities","Hanfu in Ciqikou":"activities","Foot massage":"activities","Night photography walk":"activities","Hot springs":"activities","Huangpu River night cruise":"nightlife","Two rivers night cruise":"nightlife","Shanghai Tower":"sights","Oriental Pearl Tower":"sights","North Bund waterfront":"sights","Raffles City Exploration Deck":"sights","Lujiazui skyline views":"sights","Nanshan night view":"sights","Huangpu River ferry":"transport","Maglev train":"transport","Monorail Line 2":"transport","Bund Sightseeing Tunnel":"transport","Yangtze River Cableway":"transport","Crown Grand Escalator":"transport","Peace Hotel jazz bar":"nightlife","VUE Bar — Hyatt on the Bund":"nightlife","FLAIR — Ritz-Carlton Pudong rooftop":"nightlife","The Captain rooftop bar":"nightlife","Tea at Huxinting Teahouse":"cafes","Warehouse No. 3 restaurant":"food","Chipmunk Snacks — Shanghai Disneyland":"food","Hotpot with a view":"food","Haidilao":"food","Air-raid shelter hotpot":"food","Fly restaurants":"food","Bayi Food Street":"food","Chinese EV showrooms":"shopping","Middle Huaihai Road shopping street":"shopping","Guanyinqiao pedestrian street":"shopping","M50 creative park":"sights"};
+const VERIFIED_PLACE_PHOTOS = {"The Bund":"t:The Bund","Shanghai Tower":"t:Shanghai Tower","Yu Garden":"t:Yu Garden","Wukang Road":"t:Wukang Mansion","Tianzifang":"t:Tianzifang","Xintiandi":"t:Xintiandi","Nanjing Road":"t:Nanjing Road","Shanghai Museum":"t:Shanghai Museum","Jing’an Temple":"t:Jing'an Temple","Oriental Pearl Tower":"t:Oriental Pearl Tower","Maglev train":"t:Shanghai maglev train","Shanghai Disneyland":"t:Shanghai Disneyland","Shanghai Astronomy Museum":"t:Shanghai Astronomy Museum","1933 Old Millfun":"t:1933 Old Millfun","Zhujiajiao ancient water town":"t:Zhujiajiao","Suzhou":"t:Suzhou","Hangzhou":"t:Hangzhou","Hongyadong":"zh:洪崖洞","Liziba station":"t:Liziba station","Yangtze River Cableway":"t:Yangtze River Cableway","Jiefangbei":"t:Jiefangbei","Ciqikou old town":"t:Ciqikou","Raffles City and Chaotianmen":"t:Raffles City Chongqing","Chengdu pandas":"t:Chengdu Research Base of Giant Panda Breeding","Wulong Karst":"t:Wulong Karst","Shanghai Happy Valley":"t:Happy Valley Shanghai","Shanghai LEGOLAND Resort":"t:Legoland Shanghai Resort","Chongqing Zoo pandas":"t:Chongqing Zoo"};
+const SAFE_PHOTO_QUERIES = new Set(Object.values(VERIFIED_PLACE_PHOTOS).concat(["t:Lujiazui|zh:陆家嘴","t:Hongyadong"]));
+const guideGroup = it => {
+  if(GUIDE_GROUP_OVERRIDES[it.name]) return GUIDE_GROUP_OVERRIDES[it.name];
+  if(it.kind==="trips") return "daytrips";
+  if(it.kind==="foods" || it.cat==="food") return "food";
+  if(it.cat==="cafe") return "cafes";
+  if(it.cat==="transport") return "transport";
+  if(it.cat==="shopping") return "shopping";
+  if(it.cat==="night") return "nightlife";
+  if(it.kind==="shows") return "shows";
+  if(it.cat==="activity") return "activities";
+  return "sights";
+};
+const groupInfo = it => GUIDE_GROUPS.find(g=>g.k===guideGroup(it)) || GUIDE_GROUPS[0];
+const groupColor = it => groupInfo(it).color;
+const verifiedPhotoQuery = it => VERIFIED_PLACE_PHOTOS[it.name] || "";
+const guideGroupItems = (city,group) => ITEMS.filter(it=>it.city===city && (!group || group==="all" || guideGroup(it)===group));
+
+
 /* =========================================================
    STATE
    ========================================================= */
@@ -1128,7 +1163,7 @@ const sugg = it => esc(JSON.stringify({city:it.city, title:it.name, cat:it.cat, 
 /* =========================================================
    PHOTOS — real images from Wikipedia (free-licensed lead images)
    ========================================================= */
-const PH_KEY = "chinaTrip.photos.v3";
+const PH_KEY = "chinaTrip.photos.v4";
 let PHOTOS = {}; try{ PHOTOS = JSON.parse(localStorage.getItem(PH_KEY)) || {}; }catch(e){}
 const phPending = {}; const phQueue = []; let phActive = 0;
 function phPump(){ while(phActive < 4 && phQueue.length){ const [q,res] = phQueue.shift(); phActive++; phFetch(q).then(res).finally(()=>{ phActive--; phPump(); }); } }
@@ -1156,6 +1191,7 @@ async function phFetch(q){
   return result;
 }
 function getPhoto(q){
+  if(!q || !SAFE_PHOTO_QUERIES.has(q)) return Promise.resolve(null);
   if(q in PHOTOS) return Promise.resolve(PHOTOS[q]);
   if(!phPending[q]) phPending[q] = new Promise(res => { phQueue.push([q,res]); phPump(); }).finally(()=>{ delete phPending[q]; });
   return phPending[q];
@@ -1163,7 +1199,7 @@ function getPhoto(q){
 const small = src => src.replace(/\/\d+px-/, "/330px-");
 function applyPhoto(el, r){
   if(!r || !r.src || el.querySelector("img")) return;
-  const img = new Image(); img.alt = ""; img.decoding = "async";
+  const img = new Image(); img.alt = el.dataset.photoAlt || (r.title ? `Photograph: ${r.title}` : "Photograph of attraction"); img.decoding = "async";
   img.src = el.dataset.size === "s" ? small(r.src) : r.src;
   img.onload = () => el.classList.add("loaded");
   img.onerror = () => { if(img.src !== r.src) img.src = r.src; else img.remove(); };
@@ -1402,9 +1438,9 @@ const linkPills = (L, book, size=14) => `<a class="pill" target="_blank" rel="no
 function spotCard(it){
   const color = `var(${GUIDES[it.city].color})`, added = inPlan(it.name);
   return `<div class="spot">
-    <div class="ph" data-photo="${esc(it.q||"")}" data-spot="${it.id}" style="--c:${color}" role="button" tabindex="0" aria-label="See ${esc(it.name)}"><span class="ph-ic">${icon(it.cat,22)}</span></div>
+    <div class="ph guide-art" data-photo="${esc(verifiedPhotoQuery(it))}" data-photo-alt="${esc(it.name)}" data-spot="${it.id}" style="--c:${groupColor(it)}" role="button" tabindex="0" aria-label="See ${esc(it.name)}"><span class="ph-ic">${icon(groupInfo(it).icon,46)}</span><span class="ph-label">${esc(groupInfo(it).label)}</span></div>
     <div class="sc">
-      <div class="spot-h"><h3><span data-spot="${it.id}">${esc(it.name)}</span></h3><span class="zh">${esc(it.zh)}</span></div>
+      <div class="spot-h"><h3><span data-spot="${it.id}">${esc(it.name)}</span></h3><span class="zh">${esc(it.zh)}</span></div><div class="group-tag" style="--gc:${groupColor(it)}">${icon(groupInfo(it).icon,14)} ${esc(groupInfo(it).label)}</div>
       <p>${esc(it.desc)}</p>
       ${it.tip?`<p class="tip"><b>Tip</b> ${esc(it.tip)}</p>`:""}
       ${it.far?`<div class="trip-meta"><span>${icon("transport",14)} ${esc(it.far)}</span><span>${icon("clock",14)} ${esc(it.stay)}</span></div>`:""}
@@ -1419,20 +1455,15 @@ function spotCard(it){
     </div>
   </div>`;
 }
-const SECTIONS = [
-  {k:"places", title:"Places to visit", unit:"places"},
-  {k:"shows", title:"Shows and experiences", unit:"things to do"},
-  {k:"trips", title:"Day trips", unit:"trips"},
-  {k:"foods", title:"Food to try", unit:"dishes"},
-  {k:"cool", title:"Cafés and cool spots", unit:"spots"}
-];
+const SECTIONS = GUIDE_GROUPS;
 function renderGuides(){
   const name = UI.guide, g = GUIDES[name], color = `var(${g.color})`;
   const days = getDays().filter(d => d.cities.includes(name));
   const m = days.length ? parseD(days[0].date).getMonth() : -1;
   const now = WX[name] && WX[name].current;
-  const total = SECTIONS.reduce((n,s) => n + g[s.k].length, 0);
-  const shown = UI.filter === "all" ? SECTIONS : SECTIONS.filter(s => s.k === UI.filter);
+  const present = GUIDE_GROUPS.map(section=>({...section,items:guideGroupItems(name,section.k)})).filter(section=>section.items.length);
+  const total = present.reduce((n,section)=>n+section.items.length,0);
+  const shown = UI.filter==="all" ? present : present.filter(section=>section.k===UI.filter);
   $("#v-guides").innerHTML = `
     <div class="seg" role="group" aria-label="City">${Object.keys(GUIDES).map(k=>`<button data-guide="${k}" aria-pressed="${k===name}">${k}</button>`).join("")}</div>
     <div class="ghero">
@@ -1455,13 +1486,13 @@ function renderGuides(){
     <div class="filterbar">
       <div class="chips" role="group" aria-label="Show">
         <button data-filter="all" aria-pressed="${UI.filter==="all"}">All <span>${total}</span></button>
-        ${SECTIONS.map(s=>`<button data-filter="${s.k}" aria-pressed="${UI.filter===s.k}">${KINDS[s.k]} <span>${g[s.k].length}</span></button>`).join("")}
+        ${present.map(section=>`<button data-filter="${section.k}" aria-pressed="${UI.filter===section.k}" style="--gc:${section.color}">${icon(section.icon,15)} ${section.label} <span>${section.items.length}</span></button>`).join("")}
       </div>
     </div>
     ${shown.map(s => `<div class="sec">
-      <div class="sec-h"><h2>${s.title}</h2><p>${g[s.k].length} ${s.unit}</p></div>
-      <div class="cards">${g[s.k].map(spotCard).join("")}</div>
-      ${s.k==="foods"?`<div class="note"><b>Eating halal?</b> Look for the green <span class="zh">清真</span> (qīngzhēn) sign on Lanzhou noodle and Xinjiang restaurants. They’re all over ${name}. Elsewhere, show “我不吃猪肉” (I don’t eat pork) when you order.</div>`:""}
+      <div class="sec-h"><h2>${icon(s.icon,20)} ${esc(s.label)}</h2><p>${s.items.length} places</p></div>
+      <div class="cards">${s.items.map(spotCard).join("")}</div>
+      ${s.k==="food"?`<div class="note"><b>Eating halal?</b> Look for the green <span class="zh">清真</span> (qīngzhēn) sign on Lanzhou noodle and Xinjiang restaurants. They’re all over ${name}. Elsewhere, show “我不吃猪肉” (I don’t eat pork) when you order.</div>`:""}
     </div>`).join("")}
     <button class="morelink" data-factcity="${name}">${icon("spark",18)}<span><b>Fun facts about ${name}</b><small>Funny, surprising and good-to-know things, in China 101</small></span>${icon("arrow",18)}</button>`;
 }
@@ -1470,8 +1501,9 @@ function openSpot(id){
   const g = GUIDES[it.city], added = inPlan(it.name);
   $("#spotSheet").innerHTML = `
     <button class="x" id="spotClose" aria-label="Close">${icon("x",18)}</button>
-    <div class="ph" data-credit="spotCredit" style="--c:var(${g.color})"><span class="ph-ic">${icon(it.cat,24)}</span></div>
+    <div class="ph guide-art" data-photo-alt="${esc(it.name)}" data-credit="spotCredit" style="--c:${groupColor(it)}"><span class="ph-ic">${icon(groupInfo(it).icon,58)}</span><span class="ph-label">${esc(groupInfo(it).label)}</span></div>
     <div class="sb">
+      <div class="group-tag" style="--gc:${groupColor(it)}">${icon(groupInfo(it).icon,14)} ${esc(groupInfo(it).label)}</div>
       <h2>${esc(it.name)} <span class="zh">${esc(it.zh)}</span></h2>
       <p class="sub">${it.kind==="trips"?`Day trip from ${it.city}`:`${it.city}, ${it.kind==="foods"?"Food":CATS[it.cat].label}`}</p>
       ${it.far?`<div class="trip-meta"><span>${icon("transport",14)} ${esc(it.far)}</span><span>${icon("clock",14)} ${esc(it.stay)}</span></div>`:""}
@@ -1489,7 +1521,7 @@ function openSpot(id){
     </div>`;
   $("#spotBg").classList.add("on");
   const el = $("#spotSheet>.ph");
-  getPhoto(it.q).then(r => applyPhoto(el, r));
+  getPhoto(verifiedPhotoQuery(it)).then(r => applyPhoto(el, r));
 }
 const closeSpot = () => $("#spotBg").classList.remove("on");
 

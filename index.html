@@ -119,6 +119,7 @@ a.pill:hover,button.pill:hover{background:var(--surface-2);color:var(--ink)}
 .daychip span{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--ink-2);line-height:16px;white-space:nowrap;overflow:hidden}
 .daychip[aria-current="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
 .daychip[aria-current="true"] small,.daychip[aria-current="true"] span{color:color-mix(in srgb,var(--bg) 75%,transparent)}
+@media (min-width:760px){.strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));overflow:visible;margin-left:0;padding:0}.daychip{width:auto;min-width:0}.chips{flex-wrap:wrap;overflow:visible}}
 
 .daycard{margin-top:16px;background:var(--surface);border:1px solid var(--line);border-radius:16px}
 .daycard+.daycard{margin-top:16px}

@@ -448,6 +448,8 @@ body.ro .stops>.stop:last-child .rail::before{bottom:auto;height:28px}
 .check .where{display:flex;align-items:center;gap:4px;margin-top:4px;color:var(--ink-2);font-weight:600;font-size:13px}
 .progress{margin-top:20px}
 .hide{display:none!important}
+.spot .links{margin-top:10px}
+.pill.book,.btn.book{border-color:color-mix(in srgb,var(--ok) 40%,transparent);color:var(--ok)}
 .link{border:0;background:none;padding:0;cursor:pointer;color:var(--sh);font-weight:700;font-size:14px}
 .listhead{margin-top:20px}
 .trip-meta{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:10px;font-size:13.5px;font-weight:700;color:var(--ink)}
@@ -555,6 +557,8 @@ const IC = {
   sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>',
   moon:'<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
   plus:'<path d="M12 5v14M5 12h14"/>',
+  apple:'<path d="M12 20.5c-1.2 0-2-.7-3.2-.7s-2.1.7-3.2.7C3.7 20.5 2 16.8 2 13.6 2 10.4 4 8.7 6 8.7c1.2 0 2.2.8 3 .8s1.9-.9 3.3-.9c1.1 0 2.4.5 3.2 1.6-2.8 1.6-2.3 5.6.5 6.7-.5 1.4-1.6 3.6-3 3.6Z"/><path d="M12 8.5c-.2-1.9 1.4-4 3.5-4.2.2 2.1-1.6 4.1-3.5 4.2Z"/>',
+  ticket:'<path d="M3 9a2 2 0 0 0 0 6v3a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-3a2 2 0 0 0 0-6V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1Z"/><path d="M14 5v2M14 11v2M14 17v2"/>',
   clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
   lock:'<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
   x:'<path d="M18 6 6 18M6 6l12 12"/>',
@@ -596,76 +600,76 @@ const MONTHS_LONG = ["January","February","March","April","May","June","July","A
 
 const GUIDES = {
   Shanghai:{
-    zh:"上海", py:"Shànghǎi", color:"--sh", lat:31.2304, lng:121.4737, hero:"t:Lujiazui",
+    zh:"上海", py:"Shànghǎi", color:"--sh", lat:31.2304, lng:121.4737, hero:"t:Lujiazui|zh:陆家嘴",
     tag:"Neon skyline, 1920s glamour, and the best breakfast in China.",
     intro:"China’s biggest city and its money capital. Old riverside banks face a skyline of towers, and quiet lanes of plane trees hide cafés in 1930s villas. Go up 600 metres at night, then eat soup dumplings at 7am.",
     kv:[["People","About 25 million"],["Tallest building","Shanghai Tower, 632 m"],["Metro","The longest network in the world"],["Name means","“Upon the sea”"]],
     weather:[[8,2],[10,3],[14,6],[20,11],[25,16],[28,21],[32,25],[32,25],[28,21],[23,16],[17,10],[11,4]],
     places:[
-      {name:"The Bund", zh:"外滩", cat:"place", q:"t:The Bund", lat:31.2400, lng:121.4903, desc:"Riverside promenade of grand 1920s banks and hotels, facing the Pudong skyline across the Huangpu River.", tip:"Go after sunset when the lights come on, then come back at 7am to watch locals doing tai chi.", top:true},
-      {name:"Shanghai Tower", zh:"上海中心大厦", cat:"place", q:"t:Shanghai Tower", lat:31.2335, lng:121.5055, desc:"China’s tallest building, a twisting 632 m tower. The observation deck is around 546 m up.", tip:"Pick a clear day. The lift is one of the fastest in the world.", top:true},
-      {name:"Yu Garden", zh:"豫园", cat:"place", q:"t:Yu Garden", lat:31.2272, lng:121.4921, desc:"A Ming-dynasty garden from the 1500s with rockeries, koi ponds, a zigzag bridge and a famous teahouse.", tip:"Arrive at opening time. The bazaar around it is full of snacks."},
-      {name:"Wukang Road", zh:"武康路", cat:"activity", q:"Wukang Mansion Shanghai", lat:31.2047, lng:121.4373, desc:"Leafy streets of old villas, boutiques and cafés in the former French Concession. Wukang Mansion looks like a ship’s bow.", tip:"The best area for a slow walk. Rent a shared bike in Alipay."},
-      {name:"Tianzifang", zh:"田子坊", cat:"shopping", q:"Tianzifang Shanghai", lat:31.2087, lng:121.4686, desc:"A maze of old stone-gate alleys turned into tiny shops, galleries and snack stalls.", tip:"Touristy but fun. Get lost on purpose."},
-      {name:"Xintiandi", zh:"新天地", cat:"night", q:"Xintiandi Shanghai", lat:31.2196, lng:121.4747, desc:"Restored stone-gate houses with stylish restaurants and terraces.", tip:"Good for a nicer dinner date."},
-      {name:"Nanjing Road", zh:"南京路步行街", cat:"shopping", q:"t:Nanjing Road", lat:31.2355, lng:121.4790, desc:"The famous pedestrian shopping street, glowing with neon at night. It ends at the Bund.", tip:"Walk it after dark from People’s Square to the river."},
-      {name:"Huangpu River night cruise", zh:"黄浦江游船", cat:"night", q:"t:Huangpu River", lat:31.2290, lng:121.4975, desc:"See both skylines lit up from the water.", tip:"Boats leave from Shiliupu Wharf. Between 7 and 9pm is best."},
+      {name:"The Bund", zh:"外滩", cat:"place", q:"t:The Bund|zh:外滩", lat:31.2400, lng:121.4903, desc:"Riverside promenade of grand 1920s banks and hotels, facing the Pudong skyline across the Huangpu River.", tip:"Go after sunset when the lights come on, then come back at 7am to watch locals doing tai chi.", top:true},
+      {name:"Shanghai Tower", zh:"上海中心大厦", cat:"place", q:"t:Shanghai Tower", lat:31.2335, lng:121.5055, book:{url:"https://www.trip.com/travel-guide/attraction/shanghai/shanghai-tower-24591219/", label:"Tickets on Trip.com"}, desc:"China’s tallest building, a twisting 632 m tower. The observation deck is around 546 m up.", tip:"Pick a clear day. The lift is one of the fastest in the world.", top:true},
+      {name:"Yu Garden", zh:"豫园", cat:"place", q:"t:Yu Garden|zh:豫园", lat:31.2272, lng:121.4921, desc:"A Ming-dynasty garden from the 1500s with rockeries, koi ponds, a zigzag bridge and a famous teahouse.", tip:"Arrive at opening time. The bazaar around it is full of snacks."},
+      {name:"Wukang Road", zh:"武康路", cat:"activity", q:"zh:武康大楼|t:Wukang Mansion", lat:31.2047, lng:121.4373, desc:"Leafy streets of old villas, boutiques and cafés in the former French Concession. Wukang Mansion looks like a ship’s bow.", tip:"The best area for a slow walk. Rent a shared bike in Alipay."},
+      {name:"Tianzifang", zh:"田子坊", cat:"shopping", q:"t:Tianzifang|zh:田子坊", lat:31.2087, lng:121.4686, desc:"A maze of old stone-gate alleys turned into tiny shops, galleries and snack stalls.", tip:"Touristy but fun. Get lost on purpose."},
+      {name:"Xintiandi", zh:"新天地", cat:"night", q:"t:Xintiandi|zh:新天地 (上海)", lat:31.2196, lng:121.4747, desc:"Restored stone-gate houses with stylish restaurants and terraces.", tip:"Good for a nicer dinner date."},
+      {name:"Nanjing Road", zh:"南京路步行街", cat:"shopping", q:"t:Nanjing Road (Shanghai)|zh:南京路", lat:31.2355, lng:121.4790, desc:"The famous pedestrian shopping street, glowing with neon at night. It ends at the Bund.", tip:"Walk it after dark from People’s Square to the river."},
+      {name:"Huangpu River night cruise", zh:"黄浦江游船", cat:"night", q:"t:Huangpu River|zh:黄浦江", lat:31.2290, lng:121.4975, desc:"See both skylines lit up from the water.", tip:"Boats leave from Shiliupu Wharf. Between 7 and 9pm is best."},
       {name:"Shanghai Museum", zh:"上海博物馆", cat:"place", q:"t:Shanghai Museum", lat:31.2283, lng:121.4753, desc:"World-class bronzes, ceramics, jade and calligraphy. Free entry at People’s Square.", tip:"Reserve ahead on the museum’s WeChat account and bring your passport."},
-      {name:"Jing’an Temple", zh:"静安寺", cat:"place", q:"Jing'an Temple Shanghai", lat:31.2236, lng:121.4458, desc:"A golden Buddhist temple squeezed between glass skyscrapers.", tip:"Lovely at dusk. The metro station is right beside it."},
-      {name:"Oriental Pearl Tower", zh:"东方明珠塔", cat:"place", q:"Oriental Pearl Tower Shanghai", lat:31.2397, lng:121.4998, desc:"Iconic futuristic TV tower with panoramic observation decks and a glass-floor viewing experience.", tip:"Choose a clear day and check ticketed deck availability."},
-      {name:"North Bund waterfront", zh:"北外滩", cat:"night", q:"North Bund Shanghai", lat:31.2511, lng:121.5036, desc:"Riverside promenade with dramatic views of Lujiazui and the Bund skyline.", tip:"Best around blue hour and after dark."},
+      {name:"Jing’an Temple", zh:"静安寺", cat:"place", q:"t:Jing'an Temple|zh:静安寺", lat:31.2236, lng:121.4458, desc:"A golden Buddhist temple squeezed between glass skyscrapers.", tip:"Lovely at dusk. The metro station is right beside it."},
+      {name:"Oriental Pearl Tower", zh:"东方明珠塔", cat:"place", q:"t:Oriental Pearl Tower", lat:31.2397, lng:121.4998, desc:"Iconic futuristic TV tower with panoramic observation decks and a glass-floor viewing experience.", tip:"Choose a clear day and check ticketed deck availability."},
+      {name:"North Bund waterfront", zh:"北外滩", cat:"night", q:"zh:北外滩|t:North Bund", lat:31.2511, lng:121.5036, desc:"Riverside promenade with dramatic views of Lujiazui and the Bund skyline.", tip:"Best around blue hour and after dark."},
       {name:"Maglev train", zh:"磁悬浮", cat:"transport", q:"t:Shanghai maglev train", lat:31.2033, lng:121.5590, desc:"A magnetic floating train between Pudong Airport and Longyang Road. About 30 km in roughly 8 minutes.", tip:"Take it from the airport just for the ride. Watch the speed screen."}
     ],
     shows:[
-      {name:"Shanghai Eternal Love", zh:"上海千古情", cat:"activity", q:"Shanghai Songcheng Eternal Love", desc:"Large-scale theatrical spectacle with choreography, elaborate costumes, projections and stage effects.", tip:"Allow half a day; verify the current venue and showtimes before booking."},
-      {name:"DIY lipstick workshop", zh:"口红DIY", cat:"activity", q:"Shanghai custom lipstick workshop", desc:"Create a personalized lipstick shade at a hands-on beauty workshop.", tip:"Confirm the studio, location, reservation and language support before going."},
-      {name:"ERA: Intersection of Time", zh:"时空之旅", cat:"night", q:"t:Shanghai Circus World", lat:31.2800, lng:121.4520, desc:"Shanghai’s signature acrobatics show: jaw-dropping stunts mixed with music, lights and stage tech. No language needed.", tip:"Starts 19:30. A shorter version runs on weekdays and a longer one at weekends. Book ahead.", top:true},
-      {name:"teamLab Borderless Shanghai", zh:"teamLab无界美术馆", cat:"activity", q:"teamLab Borderless", lat:31.2015, lng:121.4935, desc:"An immersive digital art museum where artworks flow between rooms and react to you. Hugely popular for photos.", tip:"Wear plain light clothes. The projections look amazing on you."},
+      {name:"Shanghai Eternal Love", zh:"上海千古情", cat:"activity", q:"zh:上海千古情|zh:宋城千古情", desc:"Large-scale theatrical spectacle with choreography, elaborate costumes, projections and stage effects.", tip:"Allow half a day; verify the current venue and showtimes before booking."},
+      {name:"DIY lipstick workshop", zh:"口红DIY", cat:"activity", q:"t:Lipstick", desc:"Create a personalized lipstick shade at a hands-on beauty workshop.", tip:"Confirm the studio, location, reservation and language support before going."},
+      {name:"ERA: Intersection of Time", zh:"时空之旅", cat:"night", q:"t:Shanghai Circus World|zh:上海马戏城", lat:31.2800, lng:121.4520, book:{url:"https://us.trip.com/things-to-do/detail/102198714", label:"Tickets on Trip.com"}, desc:"Shanghai’s signature acrobatics show: jaw-dropping stunts mixed with music, lights and stage tech. No language needed.", tip:"Starts 19:30. A shorter version runs on weekdays and a longer one at weekends. Book ahead.", top:true},
+      {name:"teamLab Borderless Shanghai", zh:"teamLab无界美术馆", cat:"activity", q:"zh:teamLab无界美术馆|t:teamLab Borderless|t:TeamLab", lat:31.2015, lng:121.4935, book:{url:"https://www.teamlab.art/e/borderless-shanghai/", label:"Official site"}, desc:"An immersive digital art museum where artworks flow between rooms and react to you. Hugely popular for photos.", tip:"Wear plain light clothes. The projections look amazing on you."},
       {name:"Hanfu photoshoot", zh:"汉服写真", cat:"activity", q:"t:Hanfu", desc:"Rent traditional Han clothing with hair and make-up, then get photographed in an old garden or water town. A huge trend with young Chinese.", tip:"Book a studio near Yu Garden or Zhujiajiao. A great couple activity."},
-      {name:"Tea at Huxinting Teahouse", zh:"湖心亭茶楼", cat:"cafe", q:"Huxinting Teahouse", lat:31.2275, lng:121.4917, desc:"A centuries-old teahouse on the lake in Yu Garden, reached by the famous zigzag bridge.", tip:"Order a pot of tea with small snacks and take your time."},
-      {name:"Chinese EV showrooms", zh:"新能源汽车展厅", cat:"shopping", q:"Xiaomi SU7", desc:"China leads the world in electric cars. Brands like Xiaomi, BYD, NIO and Li Auto have showrooms in malls where you can sit in cars with fridges, massage seats and giant screens.", tip:"Free to walk in. Look for them on Nanjing Road and in big malls."},
-      {name:"Shanghai Haichang Ocean Park", zh:"上海海昌海洋公园", cat:"activity", q:"Shanghai Haichang Ocean Park", desc:"Large marine-themed park with aquarium exhibits, rides and scheduled presentations.", tip:"Full-day outing far from downtown; check the daily schedule."},
-      {name:"Shanghai LEGOLAND Resort", zh:"上海乐高乐园", cat:"activity", q:"LEGOLAND Shanghai Resort", desc:"LEGO-themed rides and interactive zones, especially suited to families.", tip:"Allow a full day and check transport to Jinshan."},
-      {name:"Shanghai Happy Valley", zh:"上海欢乐谷", cat:"activity", q:"Happy Valley Shanghai", desc:"Large amusement park with roller coasters and thrill rides.", tip:"Full day; check seasonal operating hours and ride closures."},
-      {name:"Shanghai Wild Animal Park", zh:"上海野生动物园", cat:"activity", q:"Shanghai Wild Animal Park", desc:"Large wildlife park with walking and safari-style exhibit areas.", tip:"Full day; check transport and animal welfare considerations."},
-      {name:"Shanghai Film Park", zh:"上海影视乐园", cat:"activity", q:"Shanghai Film Park", desc:"Film-set streets recreating old Shanghai, including vintage architecture and photo locations.", tip:"Half-day trip in Songjiang; verify opening and filming restrictions."},
+      {name:"Tea at Huxinting Teahouse", zh:"湖心亭茶楼", cat:"cafe", q:"zh:湖心亭茶楼|zh:湖心亭 (上海)|t:Yu Garden", lat:31.2275, lng:121.4917, desc:"A centuries-old teahouse on the lake in Yu Garden, reached by the famous zigzag bridge.", tip:"Order a pot of tea with small snacks and take your time."},
+      {name:"Chinese EV showrooms", zh:"新能源汽车展厅", cat:"shopping", q:"t:Xiaomi SU7", desc:"China leads the world in electric cars. Brands like Xiaomi, BYD, NIO and Li Auto have showrooms in malls where you can sit in cars with fridges, massage seats and giant screens.", tip:"Free to walk in. Look for them on Nanjing Road and in big malls."},
+      {name:"Shanghai Haichang Ocean Park", zh:"上海海昌海洋公园", cat:"activity", q:"t:Shanghai Haichang Ocean Park", lat:30.9200, lng:121.9100, desc:"Large marine-themed park with aquarium exhibits, rides and scheduled presentations.", tip:"Full-day outing far from downtown; check the daily schedule."},
+      {name:"Shanghai LEGOLAND Resort", zh:"上海乐高乐园", cat:"activity", q:"t:Legoland Shanghai", lat:30.8860, lng:121.0912, book:{url:"https://legolandshanghai.cn/", label:"Official site"}, desc:"LEGO-themed rides and interactive zones, especially suited to families.", tip:"Allow a full day and check transport to Jinshan."},
+      {name:"Shanghai Happy Valley", zh:"上海欢乐谷", cat:"activity", q:"t:Happy Valley Shanghai", lat:31.0960, lng:121.2080, desc:"Large amusement park with roller coasters and thrill rides.", tip:"Full day; check seasonal operating hours and ride closures."},
+      {name:"Shanghai Wild Animal Park", zh:"上海野生动物园", cat:"activity", q:"zh:上海野生动物园", lat:31.0570, lng:121.7230, desc:"Large wildlife park with walking and safari-style exhibit areas.", tip:"Full day; check transport and animal welfare considerations."},
+      {name:"Shanghai Film Park", zh:"上海影视乐园", cat:"activity", q:"zh:上海影视乐园|t:Shanghai Film Park", lat:30.9950, lng:121.2050, desc:"Film-set streets recreating old Shanghai, including vintage architecture and photo locations.", tip:"Half-day trip in Songjiang; verify opening and filming restrictions."},
       {name:"Shanghai Astronomy Museum", zh:"上海天文馆", cat:"place", q:"t:Shanghai Astronomy Museum", lat:30.9140, lng:121.9060, desc:"One of the largest astronomy museums in the world, with a striking building designed around the movement of the sun, moon and stars.", tip:"It’s far out in Lingang. Plan half a day."},
-      {name:"Foot massage", zh:"足疗", cat:"activity", q:"Foot reflexology", desc:"Chinese foot and body massage is everywhere and affordable. Perfect after a day of walking.", tip:"Look on Dianping for 足疗 near your hotel. Many are open late."}
+      {name:"Foot massage", zh:"足疗", cat:"activity", q:"t:Reflexology", desc:"Chinese foot and body massage is everywhere and affordable. Perfect after a day of walking.", tip:"Look on Dianping for 足疗 near your hotel. Many are open late."}
     ],
     trips:[
-      {name:"Suzhou", zh:"苏州", cat:"activity", q:"t:Humble Administrator's Garden", lat:31.3245, lng:120.6290, far:"About 30 min by high-speed train", stay:"Full day", desc:"The city of classical gardens. Walk through UNESCO-listed gardens like the Humble Administrator’s Garden, then the canal street of Pingjiang Road.", tip:"Trains leave Shanghai Hongqiao every few minutes. Book garden tickets online the day before, and see the Suzhou Museum next door."},
-      {name:"Hangzhou", zh:"杭州", cat:"activity", q:"t:West Lake", lat:30.2460, lng:120.1510, far:"About 1 hour by high-speed train", stay:"Full day", desc:"West Lake is one of China’s most famous views: willow-lined causeways, pagodas and boats. Above the city, the Longjing tea villages grow China’s best-known green tea.", tip:"Rent bikes to ride around the lake, then take a taxi up to Longjing village to sip tea among the fields."}
+      {name:"Suzhou", zh:"苏州", cat:"activity", q:"t:Humble Administrator's Garden", lat:31.3245, lng:120.6290, far:"About 30 min by high-speed train", stay:"Full day", book:{url:"https://www.12306.cn/en/index.html", label:"Train tickets (12306)"}, desc:"The city of classical gardens. Walk through UNESCO-listed gardens like the Humble Administrator’s Garden, then the canal street of Pingjiang Road.", tip:"Trains leave Shanghai Hongqiao every few minutes. Book garden tickets online the day before, and see the Suzhou Museum next door."},
+      {name:"Hangzhou", zh:"杭州", cat:"activity", q:"t:West Lake", lat:30.2460, lng:120.1510, far:"About 1 hour by high-speed train", stay:"Full day", book:{url:"https://www.12306.cn/en/index.html", label:"Train tickets (12306)"}, desc:"West Lake is one of China’s most famous views: willow-lined causeways, pagodas and boats. Above the city, the Longjing tea villages grow China’s best-known green tea.", tip:"Rent bikes to ride around the lake, then take a taxi up to Longjing village to sip tea among the fields."}
     ],
     foods:[
       {name:"Xiaolongbao", zh:"小笼包", q:"t:Xiaolongbao", desc:"Soup dumplings: hot broth sealed inside a thin, pleated skin.", tip:"Put it on a spoon, bite a small hole, sip the soup, then eat.", tags:["pork"], top:true},
-      {name:"Shengjianbao", zh:"生煎包", q:"Shengjian mantou", desc:"Pan-fried buns with a crunchy base and soup inside.", tip:"They squirt. Yang’s Dumpling is the famous chain.", tags:["pork"]},
-      {name:"Hairy crab", zh:"大闸蟹", q:"t:Chinese mitten crab", desc:"An autumn delicacy prized for its rich golden roe.", tip:"Season runs roughly September to December, best in October and November.", tags:[]},
-      {name:"Scallion oil noodles", zh:"葱油拌面", q:"scallion oil noodles", desc:"Noodles tossed in fried scallion oil and soy. Cheap and addictive.", tip:"Ask whether lard is used if that matters to you.", tags:["veg"]},
+      {name:"Shengjianbao", zh:"生煎包", q:"t:Shengjian mantou|zh:生煎包", desc:"Pan-fried buns with a crunchy base and soup inside.", tip:"They squirt. Yang’s Dumpling is the famous chain.", tags:["pork"]},
+      {name:"Hairy crab", zh:"大闸蟹", q:"t:Chinese mitten crab|zh:大闸蟹", desc:"An autumn delicacy prized for its rich golden roe.", tip:"Season runs roughly September to December, best in October and November.", tags:[]},
+      {name:"Scallion oil noodles", zh:"葱油拌面", q:"zh:葱油拌面", desc:"Noodles tossed in fried scallion oil and soy. Cheap and addictive.", tip:"Ask whether lard is used if that matters to you.", tags:["veg"]},
       {name:"Shanghai breakfast", zh:"四大金刚", q:"t:Youtiao", desc:"The classic four: flatbread, fried dough sticks, a sticky-rice roll and soy milk.", tip:"Small street stalls, before 9am.", tags:["veg"]},
-      {name:"Red-braised pork", zh:"红烧肉", q:"Red braised pork belly", desc:"Pork belly slow-cooked in soy and sugar until sticky and glossy.", tip:"The signature of Shanghai home cooking.", tags:["pork"]},
-      {name:"Crab roe noodles", zh:"蟹黄面", q:"crab roe noodles", desc:"Noodles coated in rich crab roe sauce.", tip:"Pricey, but worth it once.", tags:[]},
-      {name:"Lanzhou beef noodles", zh:"兰州牛肉面", q:"Lanzhou beef noodles", desc:"Hand-pulled noodles in clear beef broth, usually made by Hui Muslim families.", tip:"Look for the green 清真 sign and watch them pull the dough.", tags:["halal"]},
+      {name:"Red-braised pork", zh:"红烧肉", q:"t:Red braised pork belly|zh:红烧肉", desc:"Pork belly slow-cooked in soy and sugar until sticky and glossy.", tip:"The signature of Shanghai home cooking.", tags:["pork"]},
+      {name:"Crab roe noodles", zh:"蟹黄面", q:"zh:蟹黄面|zh:蟹粉", desc:"Noodles coated in rich crab roe sauce.", tip:"Pricey, but worth it once.", tags:[]},
+      {name:"Lanzhou beef noodles", zh:"兰州牛肉面", q:"zh:兰州牛肉面|t:Lanzhou beef noodle soup", desc:"Hand-pulled noodles in clear beef broth, usually made by Hui Muslim families.", tip:"Look for the green 清真 sign and watch them pull the dough.", tags:["halal"]},
       {name:"Bubble tea", zh:"奶茶", q:"t:Bubble tea", desc:"The milk-tea scene is enormous. Try a new shop every day.", tip:"Order 少糖 (shǎo táng) for less sugar.", tags:["veg"]},
       {name:"Scallion pancakes", zh:"葱油饼", q:"t:Scallion pancake", desc:"Flaky, crispy flatbreads with spring onions, fried on a griddle while you wait.", tip:"The famous stalls have long queues. Worth it.", tags:["veg"]},
-      {name:"Xinjiang lamb skewers", zh:"羊肉串", q:"Chuan lamb skewers cumin", desc:"Cumin and chilli lamb skewers grilled over coals, from Uyghur and Hui Muslim kitchens.", tip:"Look for 清真 restaurants with Xinjiang (新疆) in the name.", tags:["halal"]}
+      {name:"Xinjiang lamb skewers", zh:"羊肉串", q:"t:Chuan (food)|zh:羊肉串", desc:"Cumin and chilli lamb skewers grilled over coals, from Uyghur and Hui Muslim kitchens.", tip:"Look for 清真 restaurants with Xinjiang (新疆) in the name.", tags:["halal"]}
     ],
     cool:[
-      {name:"Tian An 1000 Trees", zh:"天安千树", cat:"shopping", q:"Tian An 1000 Trees Shanghai", desc:"Unusual tree-covered terraced building and shopping destination along Suzhou Creek.", tip:"Great architecture photography stop; pair with nearby art spaces."},
-      {name:"Anfu Road boutiques", zh:"安福路", cat:"shopping", q:"Anfu Road Shanghai", desc:"Trendy independent boutiques, coffee shops and photogenic French Concession streets.", tip:"Best as a relaxed afternoon walk."},
-      {name:"Nanjing West Road", zh:"南京西路", cat:"shopping", q:"Nanjing West Road Shanghai", desc:"Upscale shopping district with flagship stores and large malls.", tip:"Combine with Jing’an Temple."},
-      {name:"Shanghai IFC Mall", zh:"上海国金中心商场", cat:"shopping", q:"Shanghai IFC Mall", desc:"Luxury shopping mall in the Lujiazui skyscraper district.", tip:"Easy to combine with Shanghai Tower and Oriental Pearl Tower."},
-      {name:"Starbucks Reserve Roastery", zh:"星巴克臻选烘焙工坊", cat:"cafe", q:"Starbucks Reserve Roastery Shanghai", lat:31.2296, lng:121.4565, desc:"One of the largest Starbucks in the world, with a two-storey copper roaster inside.", tip:"Weekday mornings are quietest."},
-      {name:"Former French Concession cafés", zh:"安福路", cat:"cafe", q:"Shanghai French Concession", lat:31.2149, lng:121.4440, desc:"Shanghai reportedly has more cafés than any other city, and Anfu Road is the centre of it.", tip:"Try Manner, a cheap and good coffee chain born in Shanghai."},
-      {name:"M50 art district", zh:"M50创意园", cat:"activity", q:"M50 Moganshan Road art district", lat:31.2500, lng:121.4480, desc:"Galleries and graffiti in old textile mills by Suzhou Creek.", tip:"Free, and great for photos."},
+      {name:"Tian An 1000 Trees", zh:"天安千树", cat:"shopping", q:"zh:天安千树|zh:1000 Trees|1000 Trees Heatherwick Shanghai", lat:31.2470, lng:121.4440, desc:"Unusual tree-covered terraced building and shopping destination along Suzhou Creek.", tip:"Great architecture photography stop; pair with nearby art spaces."},
+      {name:"Anfu Road boutiques", zh:"安福路", cat:"shopping", q:"zh:安福路|t:Shanghai French Concession", lat:31.2160, lng:121.4430, desc:"Trendy independent boutiques, coffee shops and photogenic French Concession streets.", tip:"Best as a relaxed afternoon walk."},
+      {name:"Nanjing West Road", zh:"南京西路", cat:"shopping", q:"zh:南京西路|t:Nanjing Road (Shanghai)", lat:31.2290, lng:121.4560, desc:"Upscale shopping district with flagship stores and large malls.", tip:"Combine with Jing’an Temple."},
+      {name:"Shanghai IFC Mall", zh:"上海国金中心商场", cat:"shopping", q:"t:Shanghai IFC", lat:31.2365, lng:121.5010, desc:"Luxury shopping mall in the Lujiazui skyscraper district.", tip:"Easy to combine with Shanghai Tower and Oriental Pearl Tower."},
+      {name:"Starbucks Reserve Roastery", zh:"星巴克臻选烘焙工坊", cat:"cafe", q:"zh:星巴克臻选上海烘焙工坊|Starbucks Reserve Roastery Shanghai", lat:31.2296, lng:121.4565, desc:"One of the largest Starbucks in the world, with a two-storey copper roaster inside.", tip:"Weekday mornings are quietest."},
+      {name:"Former French Concession cafés", zh:"安福路", cat:"cafe", q:"t:Shanghai French Concession", lat:31.2149, lng:121.4440, desc:"Shanghai reportedly has more cafés than any other city, and Anfu Road is the centre of it.", tip:"Try Manner, a cheap and good coffee chain born in Shanghai."},
+      {name:"M50 art district", zh:"M50创意园", cat:"activity", q:"zh:M50创意园|t:M50 Creative Park", lat:31.2500, lng:121.4480, desc:"Galleries and graffiti in old textile mills by Suzhou Creek.", tip:"Free, and great for photos."},
       {name:"Lujiazui skyline views", zh:"陆家嘴", cat:"night", q:"t:Lujiazui", lat:31.2410, lng:121.4990, desc:"The forest of towers across the river, including the Oriental Pearl Tower.", tip:"Walk the elevated ring walkway at night."},
-      {name:"People’s Park marriage market", zh:"人民公园相亲角", cat:"activity", q:"People's Park Shanghai", lat:31.2325, lng:121.4720, desc:"On weekends, parents pin their children’s profiles (age, height, salary) to umbrellas to find them a match.", tip:"Weekend afternoons. Ask before taking photos."},
-      {name:"Shanghai Disneyland", zh:"上海迪士尼乐园", cat:"activity", q:"t:Shanghai Disneyland", lat:31.1440, lng:121.6570, desc:"Opened in 2016, with the biggest Disney castle in the world.", tip:"A full day. Buy tickets ahead on the official app."},
-      {name:"Bund Sightseeing Tunnel", zh:"外滩观光隧道", cat:"activity", q:"t:Bund Sightseeing Tunnel", lat:31.2408, lng:121.4905, desc:"A trippy ride in a glass pod under the Huangpu River, through a tunnel of flashing, colour-changing lights. It was China’s first pedestrian tunnel under the river.", tip:"Gloriously cheesy. Ride it one way and come back on the ferry."},
-      {name:"1933 Old Millfun", zh:"1933老场坊", cat:"activity", q:"1933 Old Millfun Shanghai", lat:31.2560, lng:121.4960, desc:"A former slaughterhouse turned creative space: a concrete maze of ramps, bridges and spiral stairs that cattle once walked.", tip:"Go for the photos. Quiet on weekdays."},
-      {name:"Propaganda Poster Art Centre", zh:"宣传画艺术中心", cat:"place", q:"Shanghai Propaganda Poster Art Centre", lat:31.2090, lng:121.4320, desc:"A hidden museum in the basement of an ordinary apartment block, packed with original Mao-era propaganda posters.", tip:"Hard to find. Show the guard at the gate the Chinese name."},
-      {name:"Jewish Refugees Museum", zh:"上海犹太难民纪念馆", cat:"place", q:"t:Shanghai Jewish Refugees Museum", lat:31.2565, lng:121.5070, desc:"The story of the Jewish refugees who escaped Europe and found shelter in Shanghai during World War II.", tip:"Pair it with a walk around the old lanes nearby."},
-      {name:"Huangpu River ferry", zh:"黄浦江轮渡", cat:"transport", q:"Huangpu River ferry Shanghai", lat:31.2330, lng:121.4930, desc:"The local commuter ferry across the river. Same skyline views as the tour boats, for a tiny fraction of the price.", tip:"Pay with the transport QR code in Alipay. A favourite local tip."},
-      {name:"Peace Hotel jazz bar", zh:"和平饭店爵士吧", cat:"night", q:"t:Peace Hotel", lat:31.2410, lng:121.4880, desc:"A 1920s Art Deco landmark on the Bund with an old-school jazz bar famous for its veteran house band.", tip:"Evenings only. Smart casual."}
+      {name:"People’s Park marriage market", zh:"人民公园相亲角", cat:"activity", q:"zh:人民公园相亲角|t:People's Park (Shanghai)", lat:31.2325, lng:121.4720, desc:"On weekends, parents pin their children’s profiles (age, height, salary) to umbrellas to find them a match.", tip:"Weekend afternoons. Ask before taking photos."},
+      {name:"Shanghai Disneyland", zh:"上海迪士尼乐园", cat:"activity", q:"t:Shanghai Disneyland", lat:31.1440, lng:121.6570, book:{url:"https://www.shanghaidisneyresort.com/en/", label:"Official site"}, desc:"Opened in 2016, with the biggest Disney castle in the world.", tip:"A full day. Buy tickets ahead on the official app."},
+      {name:"Bund Sightseeing Tunnel", zh:"外滩观光隧道", cat:"activity", q:"t:Bund Sightseeing Tunnel|zh:外滩观光隧道", lat:31.2408, lng:121.4905, desc:"A trippy ride in a glass pod under the Huangpu River, through a tunnel of flashing, colour-changing lights. It was China’s first pedestrian tunnel under the river.", tip:"Gloriously cheesy. Ride it one way and come back on the ferry."},
+      {name:"1933 Old Millfun", zh:"1933老场坊", cat:"activity", q:"t:1933 Old Millfun|zh:1933老场坊", lat:31.2566, lng:121.4879, desc:"A former slaughterhouse turned creative space: a concrete maze of ramps, bridges and spiral stairs that cattle once walked.", tip:"Go for the photos. Quiet on weekdays."},
+      {name:"Propaganda Poster Art Centre", zh:"宣传画艺术中心", cat:"place", q:"t:Shanghai Propaganda Poster Art Centre|zh:上海宣传画艺术中心", lat:31.2090, lng:121.4320, desc:"A hidden museum in the basement of an ordinary apartment block, packed with original Mao-era propaganda posters.", tip:"Hard to find. Show the guard at the gate the Chinese name."},
+      {name:"Jewish Refugees Museum", zh:"上海犹太难民纪念馆", cat:"place", q:"t:Shanghai Jewish Refugees Museum|zh:上海犹太难民纪念馆", lat:31.2565, lng:121.5070, desc:"The story of the Jewish refugees who escaped Europe and found shelter in Shanghai during World War II.", tip:"Pair it with a walk around the old lanes nearby."},
+      {name:"Huangpu River ferry", zh:"黄浦江轮渡", cat:"transport", q:"zh:黄浦江轮渡|t:Huangpu River", lat:31.2330, lng:121.4930, desc:"The local commuter ferry across the river. Same skyline views as the tour boats, for a tiny fraction of the price.", tip:"Pay with the transport QR code in Alipay. A favourite local tip."},
+      {name:"Peace Hotel jazz bar", zh:"和平饭店爵士吧", cat:"night", q:"t:Peace Hotel|zh:和平饭店", lat:31.2410, lng:121.4880, desc:"A 1920s Art Deco landmark on the Bund with an old-school jazz bar famous for its veteran house band.", tip:"Evenings only. Smart casual."}
     ],
     facts:[
       "The metro is the longest in the world, at more than 800 km.",
@@ -687,70 +691,70 @@ const GUIDES = {
     ]
   },
   Chongqing:{
-    zh:"重庆", py:"Chóngqìng", color:"--cq", lat:29.5630, lng:106.5516, hero:"t:Hongyadong",
+    zh:"重庆", py:"Chóngqìng", color:"--cq", lat:29.5630, lng:106.5516, hero:"t:Hongyadong|zh:洪崖洞",
     tag:"A mountain city built in 3D and fuelled by red-hot hotpot.",
     intro:"Built on steep hills where the Yangtze and Jialing rivers meet. Roads stack on roads, trains run through buildings, and the ground floor is wherever you happen to be standing. Foggy, wild and very spicy. Locals call it the 8D city.",
     kv:[["People","About 32 million (municipality)"],["Size","Roughly the size of Austria"],["Nicknames","Mountain City, Fog City, 8D City"],["Rivers","Yangtze and Jialing"]],
     weather:[[10,6],[13,8],[18,11],[23,15],[27,19],[30,22],[34,25],[35,26],[29,22],[22,17],[17,12],[11,7]],
     places:[
-      {name:"Hongyadong", zh:"洪崖洞", cat:"place", q:"t:Hongyadong", lat:29.5640, lng:106.5790, desc:"An 11-storey stilt-house complex on a cliff. At night it glows gold like a fantasy bathhouse.", tip:"Photograph it from across the river or from Qiansimen Bridge. The top entrance is on the 11th floor.", top:true},
-      {name:"Liziba station", zh:"李子坝", cat:"place", q:"Liziba station Chongqing", lat:29.5530, lng:106.5330, desc:"Monorail Line 2 runs straight through a residential building.", tip:"There’s a viewing platform underneath. Wait a few minutes for a train.", top:true},
-      {name:"Yangtze River Cableway", zh:"长江索道", cat:"activity", q:"Yangtze River Cableway Chongqing", lat:29.5560, lng:106.5835, desc:"A cable car across the Yangtze, running since 1987.", tip:"Queues get long. Go early or late."},
-      {name:"Jiefangbei", zh:"解放碑", cat:"shopping", q:"Jiefangbei Chongqing", lat:29.5570, lng:106.5770, desc:"The downtown pedestrian centre around the Liberation Monument, packed with malls and street food.", tip:"A good base for hotels, walkable to Hongyadong."},
-      {name:"Ciqikou old town", zh:"磁器口", cat:"place", q:"Ciqikou Chongqing", lat:29.5800, lng:106.4480, desc:"Old riverside streets with snack stalls, teahouses and the famous twisted mahua snacks.", tip:"Weekday mornings. Weekends are packed."},
-      {name:"Raffles City and Chaotianmen", zh:"来福士 · 朝天门", cat:"place", q:"t:Raffles City Chongqing", lat:29.5670, lng:106.5880, desc:"Where the two rivers meet in two colours of water. Raffles City has a horizontal glass skybridge on top.", tip:"Pair with Hongyadong on the same evening."},
-      {name:"Nanshan night view", zh:"南山一棵树观景台", cat:"night", q:"Chongqing skyline night Yuzhong", lat:29.5440, lng:106.6060, desc:"A mountain viewing platform with the classic panorama of the glowing peninsula.", tip:"Take a Didi up around sunset."},
-      {name:"Two rivers night cruise", zh:"两江游", cat:"night", q:"Chaotianmen Chongqing", lat:29.5655, lng:106.5865, desc:"An hour on the water around the peninsula after dark.", tip:"Book on Trip.com or at Chaotianmen."},
-      {name:"Shibati traditional district", zh:"十八梯", cat:"place", q:"Shibati Chongqing", desc:"Historic stepped lanes winding between old-style houses, lanterns, snack shops and hillside viewpoints.", tip:"Go late afternoon for atmospheric photos and stay until the lights come on."},
-      {name:"Baixiangju residential complex", zh:"白象居", cat:"place", q:"Baixiangju Chongqing", desc:"A famous stacked residential complex where walkways, bridges and streets meet at different levels.", tip:"A great 8D-city photo spot. Be respectful of residents and keep access clear."},
-      {name:"Guanyinqiao pedestrian street", zh:"观音桥步行街", cat:"shopping", q:"Guanyinqiao Chongqing", desc:"Busy modern shopping and nightlife district with giant screens, malls and lively streets.", tip:"Come after dark for the neon and people-watching."},
-      {name:"Nanbin Road waterfront", zh:"南滨路", cat:"night", q:"Nanbin Road Chongqing", desc:"South-bank riverside promenade with views across to the illuminated Yuzhong peninsula.", tip:"Great for skyline photos; check designated viewing areas for drone-show nights."},
-      {name:"Changjiahui riverside", zh:"长嘉汇", cat:"night", q:"Changjiahui Shopping Park Chongqing", desc:"Riverside shopping and dining area near the meeting of the rivers, with dramatic skyline views.", tip:"A popular viewpoint for the illuminated city. Verify any special-event access rules."},
-      {name:"Eling Park", zh:"鹅岭公园", cat:"place", q:"Eling Park Chongqing", lat:29.5525, lng:106.5270, desc:"Hilltop park with river views over the layered city.", tip:"Peak 8D views. Bring a camera."}
+      {name:"Hongyadong", zh:"洪崖洞", cat:"place", q:"t:Hongyadong|zh:洪崖洞", lat:29.5640, lng:106.5790, desc:"An 11-storey stilt-house complex on a cliff. At night it glows gold like a fantasy bathhouse.", tip:"Photograph it from across the river or from Qiansimen Bridge. The top entrance is on the 11th floor.", top:true},
+      {name:"Liziba station", zh:"李子坝", cat:"place", q:"t:Liziba station|zh:李子坝站", lat:29.5530, lng:106.5330, desc:"Monorail Line 2 runs straight through a residential building.", tip:"There’s a viewing platform underneath. Wait a few minutes for a train.", top:true},
+      {name:"Yangtze River Cableway", zh:"长江索道", cat:"activity", q:"t:Yangtze River Cableway|zh:长江索道", lat:29.5560, lng:106.5835, book:{url:"https://uk.trip.com/travel-guide/attraction/chongqing/yangtze-river-cableway-91483/", label:"Tickets on Trip.com"}, desc:"A cable car across the Yangtze, running since 1987.", tip:"Queues get long. Go early or late."},
+      {name:"Jiefangbei", zh:"解放碑", cat:"shopping", q:"zh:解放碑|t:Jiefangbei", lat:29.5570, lng:106.5770, desc:"The downtown pedestrian centre around the Liberation Monument, packed with malls and street food.", tip:"A good base for hotels, walkable to Hongyadong."},
+      {name:"Ciqikou old town", zh:"磁器口", cat:"place", q:"zh:磁器口古镇|t:Ciqikou", lat:29.5800, lng:106.4480, desc:"Old riverside streets with snack stalls, teahouses and the famous twisted mahua snacks.", tip:"Weekday mornings. Weekends are packed."},
+      {name:"Raffles City and Chaotianmen", zh:"来福士 · 朝天门", cat:"place", q:"t:Raffles City Chongqing|zh:重庆来福士广场", lat:29.5670, lng:106.5880, desc:"Where the two rivers meet in two colours of water. Raffles City has a horizontal glass skybridge on top.", tip:"Pair with Hongyadong on the same evening."},
+      {name:"Nanshan night view", zh:"南山一棵树观景台", cat:"night", q:"zh:一棵树观景台|zh:南山 (重庆)", lat:29.5440, lng:106.6060, desc:"A mountain viewing platform with the classic panorama of the glowing peninsula.", tip:"Take a Didi up around sunset."},
+      {name:"Two rivers night cruise", zh:"两江游", cat:"night", q:"zh:朝天门|t:Chaotianmen", lat:29.5655, lng:106.5865, book:{url:"https://uk.trip.com/travel-guide/attraction/chongqing/chaotianmen-two-rivers-night-cruise-69571118/", label:"Tickets on Trip.com"}, desc:"An hour on the water around the peninsula after dark.", tip:"Book on Trip.com or at Chaotianmen."},
+      {name:"Shibati traditional district", zh:"十八梯", cat:"place", q:"t:Eighteen Stairs|zh:十八梯", lat:29.5545, lng:106.5740, desc:"Historic stepped lanes winding between old-style houses, lanterns, snack shops and hillside viewpoints.", tip:"Go late afternoon for atmospheric photos and stay until the lights come on."},
+      {name:"Baixiangju residential complex", zh:"白象居", cat:"place", q:"zh:白象居", lat:29.5560, lng:106.5855, desc:"A famous stacked residential complex where walkways, bridges and streets meet at different levels.", tip:"A great 8D-city photo spot. Be respectful of residents and keep access clear."},
+      {name:"Guanyinqiao pedestrian street", zh:"观音桥步行街", cat:"shopping", q:"zh:观音桥步行街|zh:观音桥商圈", lat:29.5755, lng:106.5330, desc:"Busy modern shopping and nightlife district with giant screens, malls and lively streets.", tip:"Come after dark for the neon and people-watching."},
+      {name:"Nanbin Road waterfront", zh:"南滨路", cat:"night", q:"t:Nanbin Park|zh:南滨路", lat:29.5520, lng:106.5870, desc:"South-bank riverside promenade with views across to the illuminated Yuzhong peninsula.", tip:"Great for skyline photos; check designated viewing areas for drone-show nights."},
+      {name:"Changjiahui riverside", zh:"长嘉汇", cat:"night", q:"zh:长嘉汇|zh:弹子石老街", lat:29.5610, lng:106.5960, desc:"Riverside shopping and dining area near the meeting of the rivers, with dramatic skyline views.", tip:"A popular viewpoint for the illuminated city. Verify any special-event access rules."},
+      {name:"Eling Park", zh:"鹅岭公园", cat:"place", q:"t:Eling Park|zh:鹅岭公园", lat:29.5525, lng:106.5270, desc:"Hilltop park with river views over the layered city.", tip:"Peak 8D views. Bring a camera."}
     ],
     shows:[
-      {name:"Glamorous Chongqing drone show", zh:"魅力重庆无人机表演", cat:"night", q:"Drone light show", lat:29.5560, lng:106.5850, desc:"Thousands of drones draw the city’s landmarks, food and symbols in the sky over the rivers, with the skyscrapers lit up to match. About 18 minutes.", tip:"Most Saturday nights and on major holidays. Watch from Nanbin Road, Chaotianmen or Jiangbeizui.", top:true},
-      {name:"Chongqing 1949 immersive show", zh:"重庆1949", cat:"night", q:"Chongqing 1949 Grand Theatre", desc:"Large-scale historical theatre production with immersive staging and moving audience sections.", tip:"Plan around two hours including arrival; check performance dates and language accessibility."},
-      {name:"Raffles City Exploration Deck", zh:"重庆来福士探索舱", cat:"activity", q:"Raffles City Chongqing Exploration Deck", desc:"Elevated observation experience at the landmark Raffles City complex, with sweeping river and skyline views.", tip:"Check the current deck access, ticket options and opening hours."},
-      {name:"Sichuan opera face-changing", zh:"川剧变脸", cat:"night", q:"t:Bian lian", desc:"Performers swap brightly painted masks in a split second, with no visible trick. A secret art passed down in families.", tip:"Short shows run in teahouses and in Ciqikou old town."},
-      {name:"Hot springs", zh:"温泉", cat:"activity", q:"Chongqing hot springs", desc:"Chongqing calls itself China’s hot spring capital, with resorts in and around the city.", tip:"Perfect on a cold, foggy winter day."},
-      {name:"Hanfu in Ciqikou", zh:"磁器口汉服", cat:"activity", q:"Ciqikou Chongqing", lat:29.5800, lng:106.4480, desc:"Dress up in traditional clothing and wander the old town lanes for photos.", tip:"Studios at the entrance do hair and make-up too."},
-      {name:"Night photography walk", zh:"夜景", cat:"night", q:"Chongqing skyline night", lat:29.5640, lng:106.5790, desc:"The cyberpunk city at its best: neon, fog, bridges and layered streets. Start at Hongyadong, cross Qiansimen Bridge, end at Chaotianmen.", tip:"Go after 7pm. Bring a power bank."}
+      {name:"Glamorous Chongqing drone show", zh:"魅力重庆无人机表演", cat:"night", q:"t:Drone light show", lat:29.5560, lng:106.5850, desc:"Thousands of drones draw the city’s landmarks, food and symbols in the sky over the rivers, with the skyscrapers lit up to match. About 18 minutes.", tip:"Most Saturday nights and on major holidays. Watch from Nanbin Road, Chaotianmen or Jiangbeizui.", top:true},
+      {name:"Chongqing 1949 immersive show", zh:"重庆1949", cat:"night", q:"zh:重庆·1949|zh:重庆1949大剧院", book:{url:"https://www.trip.com/travel-guide/attraction/chongqing/chongqing-1949-129377915", label:"Tickets on Trip.com"}, desc:"Large-scale historical theatre production with immersive staging and moving audience sections.", tip:"Plan around two hours including arrival; check performance dates and language accessibility."},
+      {name:"Raffles City Exploration Deck", zh:"重庆来福士探索舱", cat:"activity", q:"zh:重庆来福士广场|t:Raffles City Chongqing", lat:29.5670, lng:106.5880, desc:"Elevated observation experience at the landmark Raffles City complex, with sweeping river and skyline views.", tip:"Check the current deck access, ticket options and opening hours."},
+      {name:"Sichuan opera face-changing", zh:"川剧变脸", cat:"night", q:"t:Bian lian|zh:变脸", desc:"Performers swap brightly painted masks in a split second, with no visible trick. A secret art passed down in families.", tip:"Short shows run in teahouses and in Ciqikou old town."},
+      {name:"Hot springs", zh:"温泉", cat:"activity", q:"zh:重庆温泉|t:Hot spring", desc:"Chongqing calls itself China’s hot spring capital, with resorts in and around the city.", tip:"Perfect on a cold, foggy winter day."},
+      {name:"Hanfu in Ciqikou", zh:"磁器口汉服", cat:"activity", q:"t:Hanfu", lat:29.5800, lng:106.4480, desc:"Dress up in traditional clothing and wander the old town lanes for photos.", tip:"Studios at the entrance do hair and make-up too."},
+      {name:"Night photography walk", zh:"夜景", cat:"night", q:"zh:千厮门嘉陵江大桥|t:Qiansimen Bridge", lat:29.5640, lng:106.5790, desc:"The cyberpunk city at its best: neon, fog, bridges and layered streets. Start at Hongyadong, cross Qiansimen Bridge, end at Chaotianmen.", tip:"Go after 7pm. Bring a power bank."}
     ],
     trips:[
-      {name:"Chengdu pandas", zh:"成都大熊猫繁育研究基地", cat:"activity", q:"t:Chengdu Research Base of Giant Panda Breeding", lat:30.7340, lng:104.1460, far:"About 1 to 1.5 hours by high-speed train", stay:"Full day", desc:"See dozens of giant pandas munching bamboo, plus cubs and red pandas. Then explore Chengdu: Kuanzhai Alley, teahouses and its own style of hotpot.", tip:"Take an early train. Pandas are most active in the morning, and they nap after lunch. Bring your passport for tickets."},
-      {name:"Wulong Karst", zh:"武隆天生三桥", cat:"activity", q:"Wulong Karst Three Natural Bridges", lat:29.4370, lng:107.7980, far:"About 40 min by high-speed train", stay:"Full day", desc:"UNESCO-listed giant stone bridges over a deep gorge, the largest natural bridge cluster on Earth. Used as a filming location for Transformers: Age of Extinction.", tip:"Take the train from Chongqing East to Wulong South, then the scenic shuttle bus. Wear good shoes: lots of steps."},
-      {name:"Fairy Mountain", zh:"仙女山", cat:"activity", q:"Xiannüshan Fairy Mountain Wulong", lat:29.4290, lng:107.7300, far:"About 40 min by train, plus a short taxi", stay:"Half day, pair with Wulong", desc:"High grassy meadows about 2,000 metres up, with forest and a little scenic train. Nicknamed the “Switzerland of the East”. It can snow in winter.", tip:"Combine it with Wulong Karst, ideally with one night in Wulong. Bring a warm jacket, it’s much colder than the city."}
+      {name:"Chengdu pandas", zh:"成都大熊猫繁育研究基地", cat:"activity", q:"t:Chengdu Research Base of Giant Panda Breeding", lat:30.7340, lng:104.1460, far:"About 1 to 1.5 hours by high-speed train", stay:"Full day", book:{url:"https://panda.org.cn/en/service/ticket", label:"Official tickets"}, desc:"See dozens of giant pandas munching bamboo, plus cubs and red pandas. Then explore Chengdu: Kuanzhai Alley, teahouses and its own style of hotpot.", tip:"Take an early train. Pandas are most active in the morning, and they nap after lunch. Bring your passport for tickets."},
+      {name:"Wulong Karst", zh:"武隆天生三桥", cat:"activity", q:"t:Three Natural Bridges|t:Wulong Karst", lat:29.4339, lng:107.8013, far:"About 40 min by high-speed train", stay:"Full day", book:{url:"https://www.trip.com/things-to-do/experiences/chongqing-day-tour/", label:"Day tours on Trip.com"}, desc:"UNESCO-listed giant stone bridges over a deep gorge, the largest natural bridge cluster on Earth. Used as a filming location for Transformers: Age of Extinction.", tip:"Take the train from Chongqing East to Wulong South, then the scenic shuttle bus. Wear good shoes: lots of steps."},
+      {name:"Fairy Mountain", zh:"仙女山", cat:"activity", q:"zh:仙女山国家森林公园|zh:仙女山", lat:29.4290, lng:107.7300, far:"About 40 min by train, plus a short taxi", stay:"Half day, pair with Wulong", book:{url:"https://www.trip.com/things-to-do/experiences/chongqing-day-tour/", label:"Day tours on Trip.com"}, desc:"High grassy meadows about 2,000 metres up, with forest and a little scenic train. Nicknamed the “Switzerland of the East”. It can snow in winter.", tip:"Combine it with Wulong Karst, ideally with one night in Wulong. Bring a warm jacket, it’s much colder than the city."}
     ],
     foods:[
-      {name:"Chongqing hotpot", zh:"重庆火锅", q:"Chongqing hot pot", desc:"Bubbling beef-tallow broth with chillies and numbing Sichuan pepper. Cook your own meat and veg.", tip:"Order a 鸳鸯锅, half spicy and half mild. Dip in sesame oil with garlic.", tags:["spicy"], top:true},
-      {name:"Xiao mian", zh:"重庆小面", q:"Chongqing noodles xiaomian", desc:"The city’s breakfast: noodles in chilli oil, garlic and Sichuan pepper.", tip:"Locals eat it on tiny stools at 8am.", tags:["spicy","veg"]},
-      {name:"Hot and sour noodles", zh:"酸辣粉", q:"Hot and sour noodles", desc:"Chewy sweet-potato noodles in a hot and sour broth with peanuts.", tip:"Cheap, fast and everywhere.", tags:["spicy","veg"]},
-      {name:"Lazi ji", zh:"辣子鸡", q:"Laziji chicken", desc:"Crispy chicken pieces hidden in a mountain of dried chillies.", tip:"Find the chicken. Leave the chillies.", tags:["spicy"]},
-      {name:"Chuan chuan xiang", zh:"串串香", q:"Chuan chuan xiang skewers", desc:"Skewer hotpot: pick sticks from the fridge, cook them, pay per stick.", tip:"Fun and social for a casual night.", tags:["spicy"]},
-      {name:"Grilled fish", zh:"万州烤鱼", q:"Wanzhou grilled fish", desc:"A whole grilled fish simmered in chilli broth with vegetables.", tip:"Choose mala, garlic or black bean.", tags:["spicy"]},
-      {name:"Mao xue wang", zh:"毛血旺", q:"Maoxuewang", desc:"A fiery stew of duck blood, tripe and more.", tip:"Only for adventurous eaters.", tags:["spicy"]},
-      {name:"Bing fen", zh:"冰粉", q:"Bingfen dessert jelly", desc:"Cold jelly with brown-sugar syrup, raisins and hawthorn.", tip:"Order it with hotpot to rescue your mouth.", tags:["veg"]},
-      {name:"Chen mahua", zh:"陈麻花", q:"Mahua fried dough twist", desc:"Crunchy twisted dough sticks in many flavours, from Ciqikou.", tip:"A great edible souvenir.", tags:["veg"]},
-      {name:"Fish with pickled greens", zh:"酸菜鱼", q:"Suancai fish", desc:"Tender fish slices in a sour, tangy pickled-mustard broth. Less fiery than most Chongqing dishes.", tip:"A good break from the chilli.", tags:[]}
+      {name:"Chongqing hotpot", zh:"重庆火锅", q:"zh:重庆火锅|t:Hot pot", desc:"Bubbling beef-tallow broth with chillies and numbing Sichuan pepper. Cook your own meat and veg.", tip:"Order a 鸳鸯锅, half spicy and half mild. Dip in sesame oil with garlic.", tags:["spicy"], top:true},
+      {name:"Xiao mian", zh:"重庆小面", q:"zh:重庆小面", desc:"The city’s breakfast: noodles in chilli oil, garlic and Sichuan pepper.", tip:"Locals eat it on tiny stools at 8am.", tags:["spicy","veg"]},
+      {name:"Hot and sour noodles", zh:"酸辣粉", q:"zh:酸辣粉|t:Hot and sour noodles", desc:"Chewy sweet-potato noodles in a hot and sour broth with peanuts.", tip:"Cheap, fast and everywhere.", tags:["spicy","veg"]},
+      {name:"Lazi ji", zh:"辣子鸡", q:"t:Laziji|zh:辣子鸡", desc:"Crispy chicken pieces hidden in a mountain of dried chillies.", tip:"Find the chicken. Leave the chillies.", tags:["spicy"]},
+      {name:"Chuan chuan xiang", zh:"串串香", q:"zh:串串香", desc:"Skewer hotpot: pick sticks from the fridge, cook them, pay per stick.", tip:"Fun and social for a casual night.", tags:["spicy"]},
+      {name:"Grilled fish", zh:"万州烤鱼", q:"zh:万州烤鱼|zh:烤鱼", desc:"A whole grilled fish simmered in chilli broth with vegetables.", tip:"Choose mala, garlic or black bean.", tags:["spicy"]},
+      {name:"Mao xue wang", zh:"毛血旺", q:"zh:毛血旺|t:Maoxuewang", desc:"A fiery stew of duck blood, tripe and more.", tip:"Only for adventurous eaters.", tags:["spicy"]},
+      {name:"Bing fen", zh:"冰粉", q:"zh:冰粉", desc:"Cold jelly with brown-sugar syrup, raisins and hawthorn.", tip:"Order it with hotpot to rescue your mouth.", tags:["veg"]},
+      {name:"Chen mahua", zh:"陈麻花", q:"t:Mahua (food)|zh:麻花", desc:"Crunchy twisted dough sticks in many flavours, from Ciqikou.", tip:"A great edible souvenir.", tags:["veg"]},
+      {name:"Fish with pickled greens", zh:"酸菜鱼", q:"zh:酸菜鱼", desc:"Tender fish slices in a sour, tangy pickled-mustard broth. Less fiery than most Chongqing dishes.", tip:"A good break from the chilli.", tags:[]}
     ],
     cool:[
-      {name:"Crown Grand Escalator", zh:"皇冠大扶梯", cat:"transport", q:"Crown Grand Escalator Chongqing", desc:"A famously long indoor escalator climbing a steep section of the city near Lianglukou.", tip:"Quick, unusual transit experience that shows off Chongqing’s vertical geography."},
-      {name:"Zhongshuge bookstore", zh:"钟书阁", cat:"shopping", q:"Zhongshuge Chongqing", desc:"Photogenic bookstore known for mirrored ceilings, staircases and dramatic shelves.", tip:"Go on a weekday and be considerate of shoppers when taking photos."},
-      {name:"Eling Second Factory", zh:"鹅岭二厂", cat:"activity", q:"Testbed 2 Eling Chongqing", desc:"Former industrial site turned into a creative district of cafés, boutiques and city-view terraces.", tip:"Pair it with Eling Park and a ride on Monorail Line 2."},
-      {name:"Mountain City Trail", zh:"山城步道", cat:"activity", q:"Shancheng Trail Chongqing", desc:"Steep historic pedestrian path with stairways, old walls, small shops and river viewpoints.", tip:"Wear comfortable shoes; expect lots of steps."},
-      {name:"Monorail Line 2", zh:"轻轨2号线", cat:"transport", q:"Line 2 Chongqing Rail Transit", lat:29.5550, lng:106.5420, desc:"A scenic ride along the Jialing River, through buildings and over hills.", tip:"Sit by a window and ride it end to end."},
-      {name:"Old teahouses", zh:"交通茶馆", cat:"cafe", q:"Sichuan teahouse", lat:29.5040, lng:106.5110, desc:"Jiaotong Teahouse in Huangjueping is an old-school hall where locals play cards and mahjong.", tip:"Order a cheap cup and watch the room."},
-      {name:"Huangjueping graffiti street", zh:"黄桷坪涂鸦街", cat:"activity", q:"Huangjueping graffiti street", lat:29.5050, lng:106.5125, desc:"Whole buildings painted by art students from the nearby fine-arts institute.", tip:"Pair with Jiaotong Teahouse."},
+      {name:"Crown Grand Escalator", zh:"皇冠大扶梯", cat:"transport", q:"zh:皇冠大扶梯", lat:29.5530, lng:106.5520, desc:"A famously long indoor escalator climbing a steep section of the city near Lianglukou.", tip:"Quick, unusual transit experience that shows off Chongqing’s vertical geography."},
+      {name:"Zhongshuge bookstore", zh:"钟书阁", cat:"shopping", q:"zh:钟书阁", desc:"Photogenic bookstore known for mirrored ceilings, staircases and dramatic shelves.", tip:"Go on a weekday and be considerate of shoppers when taking photos."},
+      {name:"Eling Second Factory", zh:"鹅岭二厂", cat:"activity", q:"zh:鹅岭二厂", lat:29.5530, lng:106.5290, desc:"Former industrial site turned into a creative district of cafés, boutiques and city-view terraces.", tip:"Pair it with Eling Park and a ride on Monorail Line 2."},
+      {name:"Mountain City Trail", zh:"山城步道", cat:"activity", q:"zh:山城步道", lat:29.5540, lng:106.5745, desc:"Steep historic pedestrian path with stairways, old walls, small shops and river viewpoints.", tip:"Wear comfortable shoes; expect lots of steps."},
+      {name:"Monorail Line 2", zh:"轻轨2号线", cat:"transport", q:"t:Line 2 (Chongqing Rail Transit)|zh:重庆轨道交通2号线", lat:29.5550, lng:106.5420, desc:"A scenic ride along the Jialing River, through buildings and over hills.", tip:"Sit by a window and ride it end to end."},
+      {name:"Old teahouses", zh:"交通茶馆", cat:"cafe", q:"zh:交通茶馆|t:Chinese tea house", lat:29.5040, lng:106.5110, desc:"Jiaotong Teahouse in Huangjueping is an old-school hall where locals play cards and mahjong.", tip:"Order a cheap cup and watch the room."},
+      {name:"Huangjueping graffiti street", zh:"黄桷坪涂鸦街", cat:"activity", q:"zh:黄桷坪涂鸦街|zh:黄桷坪", lat:29.5050, lng:106.5125, desc:"Whole buildings painted by art students from the nearby fine-arts institute.", tip:"Pair with Jiaotong Teahouse."},
       {name:"Chaotianmen Bridge", zh:"朝天门大桥", cat:"place", q:"t:Chaotianmen Bridge", lat:29.5860, lng:106.5980, desc:"One of the longest arch bridges in the world, in a city of thousands of bridges.", tip:"Best seen from the night cruise."},
-      {name:"Hotpot with a view", zh:"江景火锅", cat:"food", q:"Hot pot Sichuan", desc:"Many hotpot places sit high up or by the river with skyline views.", tip:"Search 江景火锅 on Dianping or Xiaohongshu."},
+      {name:"Hotpot with a view", zh:"江景火锅", cat:"food", q:"t:Hot pot", desc:"Many hotpot places sit high up or by the river with skyline views.", tip:"Search 江景火锅 on Dianping or Xiaohongshu."},
       {name:"Haidilao", zh:"海底捞", cat:"food", q:"t:Haidilao", desc:"A hotpot chain famous for service: dancing noodle pullers, snacks while you wait, even manicures.", tip:"Ask for the 捞面 noodle dance."},
-      {name:"Air-raid shelter hotpot", zh:"防空洞火锅", cat:"food", q:"Chongqing air raid shelter", desc:"Eat hotpot inside the city’s old World War II bomb shelters: cool, cave-like tunnels carved into the rock.", tip:"Search 防空洞火锅 on Dianping. Some branches face the river near Hongyadong."},
-      {name:"Longmenhao and Xiahaoli", zh:"龙门浩 · 下浩里", cat:"activity", q:"Longmenhao Old Street Chongqing", lat:29.5585, lng:106.5895, desc:"Old streets on the south bank with yellow walls, blue tiles, graffiti murals and cafés, facing the downtown skyline.", tip:"Go late afternoon and stay for the lights across the river."},
-      {name:"Kuixing Building", zh:"奎星楼", cat:"place", q:"Kuixinglou Chongqing", lat:29.5600, lng:106.5770, desc:"The classic 8D building: its street entrance is reportedly on the 22nd floor, with another street at the bottom.", tip:"Take the lift down and walk out at ground level. Mind blown."},
-      {name:"Bayi Food Street", zh:"八一好吃街", cat:"food", q:"Jiefangbei Chongqing street food", lat:29.5560, lng:106.5760, desc:"A packed snack street off Jiefangbei: skewers, noodles, tofu pudding and cold jelly.", tip:"Go hungry after dark and share lots of small things."},
-      {name:"Fly restaurants", zh:"苍蝇馆子", cat:"food", q:"Chongqing street food noodles", desc:"Locals swear the best food is in tiny, scruffy hole-in-the-wall joints nicknamed “fly restaurants”. Sometimes the bench is the table.", tip:"If it’s shabby and full of locals, sit down."},
-      {name:"Chongqing Zoo pandas", zh:"重庆动物园", cat:"activity", q:"Chongqing Zoo", lat:29.5080, lng:106.5050, desc:"See giant pandas without leaving the city.", tip:"Go at opening time, when the pandas are awake and eating."}
+      {name:"Air-raid shelter hotpot", zh:"防空洞火锅", cat:"food", q:"zh:防空洞火锅|t:Air raid shelter", desc:"Eat hotpot inside the city’s old World War II bomb shelters: cool, cave-like tunnels carved into the rock.", tip:"Search 防空洞火锅 on Dianping. Some branches face the river near Hongyadong."},
+      {name:"Longmenhao and Xiahaoli", zh:"龙门浩 · 下浩里", cat:"activity", q:"zh:龙门浩老街|zh:下浩里", lat:29.5585, lng:106.5895, desc:"Old streets on the south bank with yellow walls, blue tiles, graffiti murals and cafés, facing the downtown skyline.", tip:"Go late afternoon and stay for the lights across the river."},
+      {name:"Kuixing Building", zh:"奎星楼", cat:"place", q:"zh:奎星楼 (重庆)|zh:奎星楼", lat:29.5600, lng:106.5770, desc:"The classic 8D building: its street entrance is reportedly on the 22nd floor, with another street at the bottom.", tip:"Take the lift down and walk out at ground level. Mind blown."},
+      {name:"Bayi Food Street", zh:"八一好吃街", cat:"food", q:"zh:八一好吃街|zh:解放碑", lat:29.5560, lng:106.5760, desc:"A packed snack street off Jiefangbei: skewers, noodles, tofu pudding and cold jelly.", tip:"Go hungry after dark and share lots of small things."},
+      {name:"Fly restaurants", zh:"苍蝇馆子", cat:"food", q:"zh:苍蝇馆子", desc:"Locals swear the best food is in tiny, scruffy hole-in-the-wall joints nicknamed “fly restaurants”. Sometimes the bench is the table.", tip:"If it’s shabby and full of locals, sit down."},
+      {name:"Chongqing Zoo pandas", zh:"重庆动物园", cat:"activity", q:"zh:重庆动物园|t:Chongqing Zoo", lat:29.5080, lng:106.5050, desc:"See giant pandas without leaving the city.", tip:"Go at opening time, when the pandas are awake and eating."}
     ],
     facts:[
       "Chongqing was China’s wartime capital from 1938 to 1946.",
@@ -830,20 +834,20 @@ const CHINA = {
 const BUY = [
   {id:"silk", g:"sh", name:"Silk scarves and fabric", zh:"丝绸", q:"t:Silk", where:"South Bund Fabric Market, Shanghai", desc:"China is the home of silk: scarves, pyjamas, fabric by the metre."},
   {id:"tailor", g:"sh", name:"Tailor-made qipao or suit", zh:"旗袍", q:"t:Cheongsam", where:"South Bund Fabric Market, Shanghai", desc:"Get measured, pick a fabric, collect it a few days later."},
-  {id:"tea", g:"any", name:"Chinese tea", zh:"茶叶", q:"Longjing tea", where:"Tea shops in both cities", desc:"Longjing (green), Tieguanyin (oolong), Pu’er (aged). Taste before you buy."},
-  {id:"teaset", g:"any", name:"Clay teapot", zh:"紫砂壶", q:"Yixing clay teapot", where:"Yu Garden bazaar, Ciqikou", desc:"Purple-clay Yixing teapots and porcelain cups."},
-  {id:"chop", g:"any", name:"Name seal stamp", zh:"印章", q:"Seal (East Asia)", where:"Yu Garden, Tianzifang, Ciqikou", desc:"Your names carved in Chinese on a stone stamp. A good couple souvenir."},
-  {id:"hotpot", g:"cq", name:"Chongqing hotpot base", zh:"火锅底料", q:"Chongqing hot pot", where:"Any Chongqing supermarket", desc:"Vacuum-packed blocks of hotpot base. Check the ingredients (beef tallow)."},
+  {id:"tea", g:"any", name:"Chinese tea", zh:"茶叶", q:"t:Longjing tea|zh:龙井茶", where:"Tea shops in both cities", desc:"Longjing (green), Tieguanyin (oolong), Pu’er (aged). Taste before you buy."},
+  {id:"teaset", g:"any", name:"Clay teapot", zh:"紫砂壶", q:"t:Yixing clay teapot|zh:紫砂壶", where:"Yu Garden bazaar, Ciqikou", desc:"Purple-clay Yixing teapots and porcelain cups."},
+  {id:"chop", g:"any", name:"Name seal stamp", zh:"印章", q:"t:Seal (East Asia)", where:"Yu Garden, Tianzifang, Ciqikou", desc:"Your names carved in Chinese on a stone stamp. A good couple souvenir."},
+  {id:"hotpot", g:"cq", name:"Chongqing hotpot base", zh:"火锅底料", q:"zh:火锅底料|zh:重庆火锅", where:"Any Chongqing supermarket", desc:"Vacuum-packed blocks of hotpot base. Check the ingredients (beef tallow)."},
   {id:"pepper", g:"cq", name:"Sichuan pepper and chilli oil", zh:"花椒", q:"t:Sichuan pepper", where:"Chongqing markets", desc:"The numbing mala spice, far fresher than abroad."},
-  {id:"mahua", g:"cq", name:"Chen mahua snacks", zh:"陈麻花", q:"Mahua fried dough twist", where:"Ciqikou, Chongqing", desc:"Crunchy twisted dough sticks in many flavours."},
-  {id:"rabbit", g:"sh", name:"White Rabbit candy", zh:"大白兔", q:"White Rabbit candy", where:"Supermarkets", desc:"A Shanghai milk candy classic. The rice-paper wrapper is edible."},
-  {id:"feiyue", g:"sh", name:"Feiyue or Warrior sneakers", zh:"飞跃 · 回力", q:"Feiyue shoes", where:"Shops in Shanghai", desc:"Retro canvas sneakers with Shanghai roots. Cheap and iconic."},
-  {id:"fan", g:"any", name:"Paper cuttings and fans", zh:"剪纸 · 扇子", q:"Chinese paper cutting", where:"Old towns", desc:"Light, pretty and easy to pack."},
+  {id:"mahua", g:"cq", name:"Chen mahua snacks", zh:"陈麻花", q:"t:Mahua (food)|zh:麻花", where:"Ciqikou, Chongqing", desc:"Crunchy twisted dough sticks in many flavours."},
+  {id:"rabbit", g:"sh", name:"White Rabbit candy", zh:"大白兔", q:"t:White Rabbit (candy)|zh:大白兔奶糖", where:"Supermarkets", desc:"A Shanghai milk candy classic. The rice-paper wrapper is edible."},
+  {id:"feiyue", g:"sh", name:"Feiyue or Warrior sneakers", zh:"飞跃 · 回力", q:"t:Feiyue (shoe)|zh:飞跃 (鞋)", where:"Shops in Shanghai", desc:"Retro canvas sneakers with Shanghai roots. Cheap and iconic."},
+  {id:"fan", g:"any", name:"Paper cuttings and fans", zh:"剪纸 · 扇子", q:"t:Chinese paper cutting", where:"Old towns", desc:"Light, pretty and easy to pack."},
   {id:"knot", g:"any", name:"Chinese knots and lanterns", zh:"中国结", q:"t:Chinese knotting", where:"Souvenir markets", desc:"Red good-luck decorations."},
-  {id:"calli", g:"sh", name:"Calligraphy brush set", zh:"毛笔", q:"Chinese calligraphy brush ink", where:"Fuzhou Road, Shanghai", desc:"Brush, ink stone and rice paper. Fun to try together."},
-  {id:"porcelain", g:"any", name:"Blue and white porcelain", zh:"青花瓷", q:"Blue and white porcelain", where:"Museum shops", desc:"Classic ceramics. Wrap them well for the flight."},
-  {id:"popmart", g:"any", name:"Pop Mart blind boxes", zh:"泡泡玛特", q:"Pop Mart", where:"Malls everywhere", desc:"China’s designer-toy craze. You never know which figure you’ll get."},
-  {id:"embro", g:"cq", name:"Shu embroidery", zh:"蜀绣", q:"Shu embroidery", where:"Shops in Chongqing", desc:"Fine silk embroidery from the Sichuan–Chongqing region."}
+  {id:"calli", g:"sh", name:"Calligraphy brush set", zh:"毛笔", q:"zh:毛笔|t:Ink brush", where:"Fuzhou Road, Shanghai", desc:"Brush, ink stone and rice paper. Fun to try together."},
+  {id:"porcelain", g:"any", name:"Blue and white porcelain", zh:"青花瓷", q:"t:Blue and white pottery", where:"Museum shops", desc:"Classic ceramics. Wrap them well for the flight."},
+  {id:"popmart", g:"any", name:"Pop Mart blind boxes", zh:"泡泡玛特", q:"zh:泡泡玛特|t:Pop Mart", where:"Malls everywhere", desc:"China’s designer-toy craze. You never know which figure you’ll get."},
+  {id:"embro", g:"cq", name:"Shu embroidery", zh:"蜀绣", q:"t:Shu embroidery|zh:蜀绣", where:"Shops in Chongqing", desc:"Fine silk embroidery from the Sichuan–Chongqing region."}
 ];
 
 const PREP = [
@@ -1071,21 +1075,32 @@ const sugg = it => esc(JSON.stringify({city:it.city, title:it.name, cat:it.cat, 
 /* =========================================================
    PHOTOS — real images from Wikipedia (free-licensed lead images)
    ========================================================= */
-const PH_KEY = "chinaTrip.photos.v2";
+const PH_KEY = "chinaTrip.photos.v3";
 let PHOTOS = {}; try{ PHOTOS = JSON.parse(localStorage.getItem(PH_KEY)) || {}; }catch(e){}
 const phPending = {}; const phQueue = []; let phActive = 0;
 function phPump(){ while(phActive < 4 && phQueue.length){ const [q,res] = phQueue.shift(); phActive++; phFetch(q).then(res).finally(()=>{ phActive--; phPump(); }); } }
-async function phFetch(q){
-  const base = "https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=pageimages|info&inprop=url&piprop=thumbnail&pithumbsize=960";
-  const url = q.startsWith("t:") ? `${base}&redirects=1&titles=${enc(q.slice(2))}` : `${base}&generator=search&gsrnamespace=0&gsrlimit=4&gsrsearch=${enc(q)}`;
+async function phTry(c){
+  let host = "en", term = c, exact = false;
+  if(c.startsWith("zh:")){ host = "zh"; term = c.slice(3); exact = true; }
+  else if(c.startsWith("t:")){ term = c.slice(2); exact = true; }
+  const base = `https://${host}.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=pageimages|info&inprop=url&piprop=thumbnail&pithumbsize=960`;
+  const url = exact ? `${base}&redirects=1${host==="zh"?"&converttitles=1":""}&titles=${enc(term)}` : `${base}&generator=search&gsrnamespace=0&gsrlimit=3&gsrsearch=${enc(term)}`;
   try{
     const j = await (await fetch(url)).json();
     const pages = Object.values((j.query && j.query.pages) || {}).sort((a,b)=>(a.index||0)-(b.index||0));
     const p = pages.find(p => p.thumbnail);
-    const r = p ? {src:p.thumbnail.source, page:p.fullurl, title:p.title} : null;
-    PHOTOS[q] = r; try{ localStorage.setItem(PH_KEY, JSON.stringify(PHOTOS)); }catch(e){}
-    return r;
+    return p ? {src:p.thumbnail.source, page:p.fullurl, title:p.title} : null;
   }catch(e){ return undefined; }
+}
+async function phFetch(q){
+  let result = null;
+  for(const c of q.split("|").map(x => x.trim()).filter(Boolean)){
+    const r = await phTry(c);
+    if(r === undefined) return undefined;
+    if(r){ result = r; break; }
+  }
+  PHOTOS[q] = result; try{ localStorage.setItem(PH_KEY, JSON.stringify(PHOTOS)); }catch(e){}
+  return result;
 }
 function getPhoto(q){
   if(q in PHOTOS) return Promise.resolve(PHOTOS[q]);
@@ -1221,8 +1236,7 @@ function dayHTML(d, i){
           </div>
           ${a.notes?`<p class="notes">${esc(a.notes)}</p>`:""}
           ${kw||a.lat?`<div class="links">
-            ${kw?`<a class="pill" target="_blank" rel="noopener" href="https://uri.amap.com/search?keyword=${enc(kw)}${it&&it.kind==="trips"?"":`&city=${enc(cityZh)}`}&callnative=1">${icon("pin",14)} Amap</a>`:""}
-            <a class="pill" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${gq}">${icon("ext",14)} Google Maps</a>
+            ${linkPills(placeLinks({name:a.place||a.title, zh:a.zh||(kw!==a.place?kw:""), lat:a.lat, lng:a.lng, city, trip:it&&it.kind==="trips"}), it&&it.book)}
           </div>`:""}
         </div>
         ${a.q?`<div class="ph" data-photo="${esc(a.q)}" data-size="s" style="--c:${color}" ${it?`data-spot="${it.id}" title="See details"`:""}><span class="ph-ic">${icon(cat,18)}</span></div>`:""}
@@ -1315,6 +1329,17 @@ function renderConv(){
    GUIDES
    ========================================================= */
 const TAGS = {pork:["tag-pork","Usually pork"], halal:["tag-halal","Halal option"], spicy:["tag-spicy","Spicy"], veg:["","Meat-free option"]};
+function placeLinks(o){
+  const g = guideFor(o.city) || {};
+  const kw = o.zh || o.name;
+  const ll = o.lat ? `${o.lat},${o.lng}` : (o.trip || !g.lat ? "" : `${g.lat},${g.lng}`);
+  return {
+    amap:`https://uri.amap.com/search?keyword=${enc(kw)}${o.trip || !g.zh ? "" : `&city=${enc(g.zh)}`}&callnative=1`,
+    apple:`https://maps.apple.com/?q=${enc(kw)}${ll ? `&sll=${ll}` : ""}`,
+    google:`https://www.google.com/maps/search/?api=1&query=${o.lat ? `${o.lat},${o.lng}` : enc(`${o.name} ${o.city||""}`)}`
+  };
+}
+const linkPills = (L, book, size=14) => `<a class="pill" target="_blank" rel="noopener" href="${L.amap}">${icon("pin",size)} Amap</a><a class="pill" target="_blank" rel="noopener" href="${L.apple}">${icon("apple",size)} Apple Maps</a>${book?`<a class="pill book" target="_blank" rel="noopener" href="${esc(book.url)}">${icon("ticket",size)} ${esc(book.label)}</a>`:""}`;
 function spotCard(it){
   const color = `var(${GUIDES[it.city].color})`, added = inPlan(it.name);
   return `<div class="spot">
@@ -1324,6 +1349,7 @@ function spotCard(it){
       <p>${esc(it.desc)}</p>
       ${it.tip?`<p class="tip"><b>Tip</b> ${esc(it.tip)}</p>`:""}
       ${it.far?`<div class="trip-meta"><span>${icon("transport",14)} ${esc(it.far)}</span><span>${icon("clock",14)} ${esc(it.stay)}</span></div>`:""}
+      <div class="links">${linkPills(placeLinks({...it, trip:it.kind==="trips"}), it.book, 13)}</div>
       <div class="spot-f">
         ${(it.tags||[]).map(t=>`<span class="tag ${TAGS[t][0]}">${TAGS[t][1]}</span>`).join("")}
         <span class="grow"></span>
@@ -1395,8 +1421,7 @@ function openSpot(id){
       <div class="acts">
         <button class="btn primary eo" data-sugg="${sugg(it)}">${icon("plus",16)} ${added?"Add again":"Add to plan"}</button>
         ${it.lat?`<button class="btn" data-showmap="${it.id}">${icon("map",16)} Show on map</button>`:""}
-        <a class="btn" target="_blank" rel="noopener" href="https://uri.amap.com/search?keyword=${enc(it.zh)}${it.kind==="trips"?"":`&city=${enc(g.zh)}`}&callnative=1">${icon("pin",16)} Amap</a>
-        <a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${it.lat?`${it.lat},${it.lng}`:enc(it.name+" "+it.city)}">${icon("ext",16)} Google Maps</a>
+        ${(()=>{ const L = placeLinks({...it, trip:it.kind==="trips"}); return `<a class="btn" target="_blank" rel="noopener" href="${L.amap}">${icon("pin",16)} Amap</a><a class="btn" target="_blank" rel="noopener" href="${L.apple}">${icon("apple",16)} Apple Maps</a><a class="btn" target="_blank" rel="noopener" href="${L.google}">${icon("ext",16)} Google Maps</a>${it.book?`<a class="btn book" target="_blank" rel="noopener" href="${esc(it.book.url)}">${icon("ticket",16)} ${esc(it.book.label)}</a>`:""}`; })()}
       </div>
       <p class="credit" id="spotCredit"></p>
     </div>`;

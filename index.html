@@ -1673,7 +1673,7 @@ function tileLayer(){
   });
 }
 /* Map UI: category icon markers, verified pins, and Amap/Apple/Google links.
- * A location without verified coordinates stays in a searchable directory instead of being falsely pinned.
+ * Locations without supplied coordinates stay in the Amap/Apple directory instead of being pinned at a guessed position.
  */
 const mapVenueItems = () => ITEMS.filter(it =>
   it.kind!=="foods" &&
@@ -1687,8 +1687,8 @@ function mapDirectory(){
   if(!target) return;
   target.innerHTML = missing.length ? `
     <details class="map-unpinned">
-      <summary>${icon("search",16)} ${missing.length} places without verified pin coordinates <span>Open in Amap instead</span></summary>
-      <p class="muted">These are in your guide and category filters, but don't have a confirmed map coordinate. We won't display an incorrect pin.</p>
+      <summary>${icon("search",16)} ${missing.length} places without pin coordinates <span>Open in Amap instead</span></summary>
+      <p class="muted">These are in your guide and category filters, but don't have a coordinate in the planner. We won't invent a pin.</p>
       <div class="unpin-grid">${missing.map(it=>{
         const L=placeLinks({...it,trip:it.kind==="trips"});
         return `<div class="unpin-item" style="--gc:${groupColor(it)}">
@@ -1699,7 +1699,7 @@ function mapDirectory(){
           <a class="pill" href="${L.apple}" target="_blank" rel="noopener">Apple</a>
         </div>`;
       }).join("")}</div>
-    </details>` : `<p class="map-all-pinned">${icon("check",16)} All listed venues in this filter have map pins.</p>`;
+    </details>` : `<p class="map-all-pinned">${icon("check",16)} Every venue in this filter has a supplied map coordinate.</p>`;
 }
 function mapShell(){
   $("#v-map").innerHTML = `
@@ -1725,7 +1725,7 @@ function mapShell(){
     <div class="maplegend">
       <span><i class="ring"></i>In our plan</span>
       <span id="mapCount"></span>
-      <span class="muted">Pins with exact coordinates only; map labels and positions may vary across Chinese providers.</span>
+      <span class="muted">Pins use approximate saved coordinates; confirm exact entrances in Amap.</span>
     </div>
     <div class="map-nav-note">${icon("pin",17)} <span><b>For real directions in China, open Amap.</b> Every map popup has Amap, Apple Maps and Google Maps links. Amap handles Chinese addresses more reliably.</span></div>
     <div id="mapDirectory"></div>`;

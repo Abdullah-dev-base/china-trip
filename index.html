@@ -499,6 +499,40 @@ footer{max-width:1120px;margin:0 auto;padding:0 var(--pad) 40px;color:var(--mute
 .chips button[data-filter]:not([data-filter="all"]){color:var(--gc)}
 .chips button[data-filter][aria-pressed="true"]{box-shadow:inset 0 -2px 0 var(--gc,var(--sh))}
 .sec-h h2{display:flex;align-items:center;gap:9px}
+
+/* Category based map markers and location fallback directory */
+.map-catbar{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:0 0 14px}
+.map-catbar button{display:inline-flex;align-items:center;gap:6px;padding:7px 11px;background:var(--surface);border:1px solid var(--line-2);border-radius:999px;color:var(--gc,var(--ink-2));font-size:12px;font-weight:750;cursor:pointer}
+.map-catbar button span{opacity:.65}
+.map-catbar button[aria-pressed="true"]{background:color-mix(in srgb,var(--gc,var(--sh)) 12%,var(--surface));border-color:var(--gc,var(--sh));color:var(--gc,var(--sh))}
+.catpin{position:relative;width:34px;height:34px;display:grid;place-items:center;border-radius:12px 12px 12px 3px;transform:rotate(-45deg);background:var(--pc);color:white;border:2px solid white;box-shadow:0 3px 10px #0005}
+.catpin .ic{transform:rotate(45deg);stroke-width:2.3}
+.catpin.in-plan{outline:3px solid var(--ink);outline-offset:2px}
+.pin-icon{background:none!important;border:0!important}
+.map-pop-title{display:flex;align-items:center;gap:10px;padding:14px 18px 12px;background:color-mix(in srgb,var(--gc) 13%,var(--surface));border-bottom:1px solid var(--line)}
+.map-pop-title>span{flex:none;color:var(--gc)}
+.map-pop-title>div{display:flex;flex-direction:column;gap:3px;min-width:0}
+.map-pop-title b{font-size:14px;line-height:1.3}
+.map-pop-title small{font-size:11px;color:var(--muted)}
+.map-pop-title+.pb{padding:10px 14px 14px}
+.map-pop-title+.pb .links{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.map-pop-title+.pb .pill{font-size:11px;height:26px;padding:0 8px}
+.map-best{font-size:12px!important}
+.map-nav-note{display:flex;gap:10px;align-items:flex-start;font-size:13px;padding:12px 14px;margin-top:12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink-2)}
+.map-nav-note .ic{flex:none;color:var(--sh)}
+.map-unpinned{margin-top:18px;border:1px solid var(--line);border-radius:13px;overflow:hidden;background:var(--surface)}
+.map-unpinned summary{cursor:pointer;display:flex;align-items:center;gap:8px;padding:14px 16px;font-weight:750;font-size:13px}
+.map-unpinned summary span{color:var(--muted);font-size:12px;font-weight:500;margin-left:auto}
+.map-unpinned>p{padding:0 16px 12px;font-size:12px}
+.unpin-grid{max-height:440px;overflow:auto;padding:0 12px 12px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.unpin-item{display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:9px;border:1px solid var(--line);border-radius:11px}
+.unpin-symbol{color:var(--gc);flex:none}
+.unpin-title{flex:1;min-width:120px;display:flex;flex-direction:column;gap:2px}
+.unpin-title b{font-size:12px;line-height:1.35}
+.unpin-title small{font-size:11px;color:var(--muted)}
+.unpin-item .pill{height:26px;padding:0 8px;font-size:11px}
+.map-all-pinned{font-size:13px;color:var(--ok);display:flex;gap:6px;align-items:center;margin-top:12px}
+@media(max-width:650px){.unpin-grid{grid-template-columns:1fr}.map-unpinned summary span{display:none}.mapwrap{height:56vh;min-height:360px}}
 </style>
 </head>
 <body>
@@ -1115,7 +1149,7 @@ async function signIn(){
 }
 function signOut(silent){ TOKEN = ""; try{ localStorage.removeItem("chinaTrip.ghToken"); }catch(e){} SYNC = "idle"; renderAll(); if(!silent) toast("Signed out. This device is view only now."); }
 const guard = () => { if(RO()){ toast("View only. Only the owner can make changes."); return true; } return false; };
-const UI = { view:"plan", day:null, mode:"day", guide:"Shanghai", list:"prep", filter:"all", c101:"essentials", fcity:"all", mapCity:null, mapPlanOnly:false, convAmt:100, convFrom:"CNY" };
+const UI = { view:"plan", day:null, mode:"day", guide:"Shanghai", list:"prep", filter:"all", c101:"essentials", fcity:"all", mapCity:null, mapGroup:"all", mapPlanOnly:false, convAmt:100, convFrom:"CNY" };
 let RATES = { SAR:0.52, USD:0.14, live:false };
 const WX = {};
 
@@ -1638,9 +1672,38 @@ function tileLayer(){
     attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>'
   });
 }
+/* Map UI: category icon markers, verified pins, and Amap/Apple/Google links.
+ * A location without verified coordinates stays in a searchable directory instead of being falsely pinned.
+ */
+const mapVenueItems = () => ITEMS.filter(it =>
+  it.kind!=="foods" &&
+  (UI.mapCity==="all" || it.city===UI.mapCity) &&
+  (UI.mapGroup==="all" || guideGroup(it)===UI.mapGroup)
+);
+function mapDirectory(){
+  const eligible = UI.mapPlanOnly ? [] : mapVenueItems();
+  const missing = eligible.filter(it=>!Number.isFinite(+it.lat) || !Number.isFinite(+it.lng));
+  const target = $("#mapDirectory");
+  if(!target) return;
+  target.innerHTML = missing.length ? `
+    <details class="map-unpinned">
+      <summary>${icon("search",16)} ${missing.length} places without verified pin coordinates <span>Open in Amap instead</span></summary>
+      <p class="muted">These are in your guide and category filters, but don't have a confirmed map coordinate. We won't display an incorrect pin.</p>
+      <div class="unpin-grid">${missing.map(it=>{
+        const L=placeLinks({...it,trip:it.kind==="trips"});
+        return `<div class="unpin-item" style="--gc:${groupColor(it)}">
+          <span class="unpin-symbol">${icon(groupInfo(it).icon,16)}</span>
+          <div class="unpin-title"><b>${esc(it.name)}</b><small>${esc(it.city)} · ${esc(groupInfo(it).label)}</small></div>
+          <button class="pill" data-spot="${it.id}">Details</button>
+          <a class="pill" href="${L.amap}" target="_blank" rel="noopener">Amap</a>
+          <a class="pill" href="${L.apple}" target="_blank" rel="noopener">Apple</a>
+        </div>`;
+      }).join("")}</div>
+    </details>` : `<p class="map-all-pinned">${icon("check",16)} All listed venues in this filter have map pins.</p>`;
+}
 function mapShell(){
   $("#v-map").innerHTML = `
-    <div class="pagehead"><div><h1>Map</h1><p>Every place from the guides, plus your own stops</p></div></div>
+    <div class="pagehead"><div><h1>Map</h1><p>Filter places by type. Colored icons show what each pin is; use Amap for navigation in China.</p></div></div>
     <div class="mapbar">
       <div class="seg" role="group" aria-label="City">
         <button data-mapcity="all" aria-pressed="${UI.mapCity==="all"}">Both</button>
@@ -1651,50 +1714,80 @@ function mapShell(){
         <button data-mapplan="1" aria-pressed="${UI.mapPlanOnly}">Our stops</button>
       </div>
     </div>
+    <div class="map-catbar" role="group" aria-label="Filter map places by category">
+      <button data-mapgroup="all" aria-pressed="${UI.mapGroup==="all"}">${icon("map",16)} All types</button>
+      ${GUIDE_GROUPS.map(group=>{
+        const count=ITEMS.filter(it=>it.kind!=="foods" && (UI.mapCity==="all" || it.city===UI.mapCity) && guideGroup(it)===group.k).length;
+        return count?`<button data-mapgroup="${group.k}" style="--gc:${group.color}" aria-pressed="${UI.mapGroup===group.k}">${icon(group.icon,16)} ${group.label} <span>${count}</span></button>`:"";
+      }).join("")}
+    </div>
     <div class="mapwrap"><div id="map"></div><div class="mapmsg" id="mapMsg">Loading map…</div></div>
     <div class="maplegend">
-      ${Object.keys(GUIDES).map(k=>`<span><i style="background:var(${GUIDES[k].color})"></i>${k}</span>`).join("")}
       <span><i class="ring"></i>In our plan</span>
-      <span class="muted">Pins are approximate. Use Amap for directions in China.</span>
-    </div>`;
+      <span id="mapCount"></span>
+      <span class="muted">Pins with exact coordinates only; map labels and positions may vary across Chinese providers.</span>
+    </div>
+    <div class="map-nav-note">${icon("pin",17)} <span><b>For real directions in China, open Amap.</b> Every map popup has Amap, Apple Maps and Google Maps links. Amap handles Chinese addresses more reliably.</span></div>
+    <div id="mapDirectory"></div>`;
   if(map){ map.remove(); map = null; }
+  mapDirectory();
 }
 async function renderMap(focusId){
-  if(!UI.mapCity){ const d = getDays().find(x => x.date === UI.day); const c = d && d.cities.at(-1); UI.mapCity = GUIDES[c] ? c : "Shanghai"; }
+  if(!UI.mapCity){ const d=getDays().find(x=>x.date===UI.day), city=d && d.cities.at(-1); UI.mapCity=GUIDES[city]?city:"Shanghai"; }
   if(!$("#map")) mapShell();
-  try{ await loadLeaflet(); }catch(e){ $("#mapMsg").textContent = "The map couldn’t load. Check your connection and open this tab again."; return; }
-  $("#mapMsg").style.display = "none";
-  if(!map){
-    map = L.map("map", {zoomControl:true}); tiles = tileLayer().addTo(map);
-    layer = L.layerGroup().addTo(map);
-    map.on("popupopen", e => hydrate(e.popup.getElement()));
+  mapDirectory();
+  const list=UI.mapPlanOnly?[]:mapVenueItems();
+  const coords=list.filter(it=>Number.isFinite(+it.lat) && Number.isFinite(+it.lng) && Math.abs(+it.lat)<=90 && Math.abs(+it.lng)<=180);
+  const count=$("#mapCount"); if(count) count.textContent=UI.mapPlanOnly?"Your planned stops":`${coords.length} pinned · ${list.length-coords.length} in Amap-only directory`;
+  try{ await loadLeaflet(); }catch(e){
+    const msg=$("#mapMsg"); if(msg) msg.innerHTML="Map tiles could not load. You can still open each place in Amap, Apple Maps or Google Maps below.";
+    return;
   }
-  setTimeout(()=>map.invalidateSize(), 0);
+  const msg=$("#mapMsg"); if(msg) msg.style.display="none";
+  if(!map){
+    map=L.map("map",{zoomControl:true});tiles=tileLayer().addTo(map);
+    layer=L.layerGroup().addTo(map);
+    map.on("popupopen",e=>hydrate(e.popup.getElement()));
+  }
+  setTimeout(()=>map.invalidateSize(),0);
   layer.clearLayers();
-  const pts = []; let focus = null;
-  const pop = it => `${ph(it.q,"","image",`var(${GUIDES[it.city].color})`)}<div class="pb"><h4>${esc(it.name)} <span class="zh">${esc(it.zh||"")}</span></h4><p>${esc(it.desc)}</p>
-    <div class="links"><button class="pill eo" data-sugg="${sugg(it)}">${icon("plus",14)} Add to plan</button><button class="pill" data-spot="${it.id}">Details</button></div></div>`;
+  const pts=[];let focus=null;
+  const pop=it=>{
+    const group=groupInfo(it), L=placeLinks({...it,trip:it.kind==="trips"});
+    return `<div class="map-pop-title" style="--gc:${group.color}"><span>${icon(group.icon,21)}</span><div><b>${esc(it.name)}</b><small>${esc(group.label)} · ${esc(it.city)}</small></div></div>
+      <div class="pb"><p>${esc(it.desc)}</p>${it.best?`<p class="map-best"><b>Best time:</b> ${esc(it.best)}</p>`:""}
+      <div class="links"><a class="pill" href="${L.amap}" target="_blank" rel="noopener">Amap</a><a class="pill" href="${L.apple}" target="_blank" rel="noopener">Apple</a><a class="pill" href="${L.google}" target="_blank" rel="noopener">Google</a>
+      <button class="pill" data-spot="${it.id}">Details</button></div>
+      <div class="links"><button class="pill eo" data-sugg="${sugg(it)}">${icon("plus",14)} Add to plan</button>${it.book?`<a class="pill book" href="${esc(it.book.url)}" target="_blank" rel="noopener">${icon("ticket",14)} Book</a>`:""}</div></div>`;
+  };
   if(!UI.mapPlanOnly){
-    ITEMS.filter(s => s.lat && (UI.mapCity==="all" || s.city===UI.mapCity)).forEach(s => {
-      const col = cityColor(s.city), on = inPlan(s.name);
-      const m = L.circleMarker([s.lat,s.lng], {radius:on?9:7, color:on?col:"#fff", weight:on?4:2, fillColor:on?"#fff":col, fillOpacity:1}).bindPopup(pop(s), {maxWidth:260, minWidth:240}).bindTooltip(s.name,{direction:"top",offset:[0,-6]});
-      layer.addLayer(m); if(s.kind !== "trips") pts.push([s.lat,s.lng]); if(focusId && s.id === focusId) focus = m;
+    coords.forEach(it=>{
+      const group=groupInfo(it), selected=inPlan(it.name);
+      const html=`<div class="catpin ${selected?"in-plan":""}" style="--pc:${group.color}" title="${esc(group.label)}">${icon(group.icon,19)}</div>`;
+      const marker=L.marker([it.lat,it.lng],{icon:L.divIcon({className:"pin-icon",html,iconSize:[36,42],iconAnchor:[18,41],popupAnchor:[0,-34]})})
+        .bindPopup(pop(it),{maxWidth:340,minWidth:240})
+        .bindTooltip(it.name,{direction:"top",offset:[0,-24]});
+      layer.addLayer(marker);
+      if(it.kind!=="trips")pts.push([it.lat,it.lng]);
+      if(focusId&&it.id===focusId)focus=marker;
     });
   }
-  const days = getDays();
-  S.acts.filter(a => a.lat).forEach(a => {
-    const d = days.find(x => x.date === a.date); if(!d) return;
-    const city = d.cities.at(-1);
-    if(UI.mapCity!=="all" && city!==UI.mapCity) return;
-    if(!UI.mapPlanOnly && itemByName(a.title)) return;
-    const col = cityColor(city), idx = days.indexOf(d)+1;
-    const m = L.marker([a.lat,a.lng], {icon:L.divIcon({className:"", html:`<div class="mk" style="background:${col}">${idx}</div>`, iconSize:[26,26], iconAnchor:[13,13]})})
-      .bindTooltip(`Day ${idx}: ${a.title}`,{direction:"top",offset:[0,-12]});
-    layer.addLayer(m); pts.push([a.lat,a.lng]);
+  const days=getDays();
+  S.acts.filter(act=>Number.isFinite(+act.lat)&&Number.isFinite(+act.lng)&&act.lat).forEach(act=>{
+    const day=days.find(d=>d.date===act.date);if(!day)return;
+    const city=day.cities.at(-1);
+    if(UI.mapCity!=="all"&&city!==UI.mapCity)return;
+    if(!UI.mapPlanOnly&&itemByName(act.title))return;
+    if(!UI.mapPlanOnly&&UI.mapGroup!=="all")return;
+    const col=cityColor(city),idx=days.indexOf(day)+1;
+    const marker=L.marker([act.lat,act.lng],{icon:L.divIcon({className:"",html:`<div class="mk" style="background:${col}">${idx}</div>`,iconSize:[26,26],iconAnchor:[13,13]})})
+      .bindTooltip(`Day ${idx}: ${act.title}`,{direction:"top",offset:[0,-12]});
+    layer.addLayer(marker);pts.push([act.lat,act.lng]);
   });
-  if(focus){ map.setView(focus.getLatLng(), 15); focus.openPopup(); }
-  else if(pts.length) map.fitBounds(pts, {padding:[40,40], maxZoom:14});
-  else { const g = GUIDES[UI.mapCity] || GUIDES.Shanghai; map.setView([g.lat,g.lng], 11); }
+  if(focus){map.setView(focus.getLatLng(),15);focus.openPopup();}
+  else if(pts.length) map.fitBounds(pts,{padding:[45,45],maxZoom:14});
+  else if(coords.length)map.fitBounds(coords.map(it=>[it.lat,it.lng]),{padding:[45,45],maxZoom:13});
+  else{const city=GUIDES[UI.mapCity]||GUIDES.Shanghai;map.setView([city.lat,city.lng],11);}
 }
 
 /* =========================================================
@@ -1924,7 +2017,7 @@ document.addEventListener("click", e => {
   if(ds.del){ const a = S.acts.find(x=>x.id===ds.del); if(a && confirm(`Delete “${a.title}”?`)){ S.acts = S.acts.filter(x=>x.id!==a.id); save(); renderAll(); toast("Stop deleted"); } return; }
   if(ds.done){ const a = S.acts.find(x=>x.id===ds.done); a.done = !a.done; save(); renderPlan(); hydrate(); return; }
   if(ds.spot){ if(map) map.closePopup(); openSpot(ds.spot); return; }
-  if(ds.showmap){ const it = itemById(ds.showmap); closeSpot(); UI.mapCity = it.city; UI.mapPlanOnly = false; showView("map"); mapShell(); renderMap(it.id); return; }
+  if(ds.showmap){ const it = itemById(ds.showmap); closeSpot(); UI.mapCity = it.city; UI.mapPlanOnly = false; UI.mapGroup="all"; showView("map"); mapShell(); renderMap(it.id); return; }
   if(ds.guide){ UI.guide = ds.guide; UI.filter = "all"; renderGuides(); hydrate(); return; }
   if(ds.list){ UI.list = ds.list; renderLists(); hydrate(); return; }
   if(ds.filter){ UI.filter = ds.filter; renderGuides(); hydrate(); return; }
@@ -1932,6 +2025,7 @@ document.addEventListener("click", e => {
   if(ds.fcity){ UI.fcity = ds.fcity; renderBasics(); return; }
   if(ds.factcity){ UI.c101 = "facts"; UI.fcity = ds.factcity; renderBasics(); showView("basics"); return; }
   if(ds.mapcity){ UI.mapCity = ds.mapcity; mapShell(); renderMap(); return; }
+  if(ds.mapgroup){ UI.mapGroup = ds.mapgroup; mapShell(); renderMap(); return; }
   if(ds.mapplan){ UI.mapPlanOnly = ds.mapplan === "1"; mapShell(); renderMap(); return; }
   if(ds.pick){ pickItem(ds.pick); return; }
   if(ds.pickkind){ pickKind = ds.pickkind; renderPick(); return; }

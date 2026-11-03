@@ -1682,7 +1682,7 @@ const mapVenueItems = () => ITEMS.filter(it =>
 );
 function mapDirectory(){
   const eligible = UI.mapPlanOnly ? [] : mapVenueItems();
-  const missing = eligible.filter(it=>!Number.isFinite(+it.lat) || !Number.isFinite(+it.lng));
+  const missing = eligible.filter(it=>!it.lat || !it.lng || !Number.isFinite(+it.lat) || !Number.isFinite(+it.lng));
   const target = $("#mapDirectory");
   if(!target) return;
   target.innerHTML = missing.length ? `
@@ -1737,7 +1737,7 @@ async function renderMap(focusId){
   if(!$("#map")) mapShell();
   mapDirectory();
   const list=UI.mapPlanOnly?[]:mapVenueItems();
-  const coords=list.filter(it=>Number.isFinite(+it.lat) && Number.isFinite(+it.lng) && Math.abs(+it.lat)<=90 && Math.abs(+it.lng)<=180);
+  const coords=list.filter(it=>it.lat && it.lng && Number.isFinite(+it.lat) && Number.isFinite(+it.lng) && Math.abs(+it.lat)<=90 && Math.abs(+it.lng)<=180);
   const count=$("#mapCount"); if(count) count.textContent=UI.mapPlanOnly?"Your planned stops":`${coords.length} pinned · ${list.length-coords.length} in Amap-only directory`;
   try{ await loadLeaflet(); }catch(e){
     const msg=$("#mapMsg"); if(msg) msg.innerHTML="Map tiles could not load. You can still open each place in Amap, Apple Maps or Google Maps below.";
@@ -2017,7 +2017,7 @@ document.addEventListener("click", e => {
   if(ds.del){ const a = S.acts.find(x=>x.id===ds.del); if(a && confirm(`Delete “${a.title}”?`)){ S.acts = S.acts.filter(x=>x.id!==a.id); save(); renderAll(); toast("Stop deleted"); } return; }
   if(ds.done){ const a = S.acts.find(x=>x.id===ds.done); a.done = !a.done; save(); renderPlan(); hydrate(); return; }
   if(ds.spot){ if(map) map.closePopup(); openSpot(ds.spot); return; }
-  if(ds.showmap){ const it = itemById(ds.showmap); closeSpot(); UI.mapCity = it.city; UI.mapPlanOnly = false; UI.mapGroup="all"; showView("map"); mapShell(); renderMap(it.id); return; }
+  if(ds.showmap){ const it = itemById(ds.showmap); if(!it)return; closeSpot(); UI.mapCity=it.city; UI.mapPlanOnly=false; UI.mapGroup="all"; UI.view="map"; document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id==="v-map")); renderNav(); mapShell(); renderMap(it.id); window.scrollTo({top:0}); return; }
   if(ds.guide){ UI.guide = ds.guide; UI.filter = "all"; renderGuides(); hydrate(); return; }
   if(ds.list){ UI.list = ds.list; renderLists(); hydrate(); return; }
   if(ds.filter){ UI.filter = ds.filter; renderGuides(); hydrate(); return; }

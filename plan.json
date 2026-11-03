@@ -15,24 +15,7 @@
       "leave": "2026-11-28"
     }
   ],
-  "acts": [
-    {
-      "id": "8ka6ime",
-      "done": false,
-      "date": "2026-11-20",
-      "start": "10:00",
-      "end": "11:30",
-      "cat": "place",
-      "title": "The Bund",
-      "place": "外滩 The Bund",
-      "notes": "Go after sunset when the lights come on, then come back at 7am to watch locals doing tai chi.",
-      "cost": "",
-      "zh": "外滩",
-      "lat": 31.24,
-      "lng": 121.4903,
-      "q": "t:The Bund|zh:外滩"
-    }
-  ],
+  "acts": [],
   "buy": {},
   "prep": {},
   "custom": []

@@ -317,6 +317,28 @@ a.pill:hover,button.pill:hover{background:var(--surface-2);color:var(--ink)}
 .catpick button:hover{background:var(--surface-2)}
 .catpick button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .sheet-foot{display:flex;justify-content:flex-end;gap:8px;margin-top:24px}
+.pick{margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--line)}
+.pick .lbl{display:block;font-size:13px;font-weight:700;color:var(--muted);margin-bottom:8px}
+.pick-find{position:relative;margin-bottom:10px}
+.pick-find svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+.pick-find .in{padding-left:38px}
+.pick .catpick{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+.pick .catpick::-webkit-scrollbar{display:none}
+.pick .catpick button{flex:none}
+.pick-list{margin-top:10px;max-height:264px;overflow:auto;border:1px solid var(--line);border-radius:12px;overscroll-behavior:contain}
+.pick-row{display:flex;align-items:center;gap:12px;width:100%;padding:8px 10px;border:0;border-bottom:1px solid var(--line);background:none;text-align:left;cursor:pointer;color:var(--ink);font:inherit}
+.pick-row:last-child{border-bottom:0}
+.pick-row:hover{background:var(--surface-2)}
+.pick-row[aria-pressed="true"]{background:color-mix(in srgb,var(--ok) 14%,var(--surface))}
+.pick-row .ph{width:44px;height:44px;border-radius:9px;flex:none}
+.pick-row .ph .ph-ic svg{width:18px;height:18px}
+.pick-row .t{flex:1;min-width:0}
+.pick-row b{display:block;font-size:14.5px;font-weight:700;line-height:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pick-row small{display:block;font-size:12.5px;color:var(--muted);line-height:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pick-row .st{flex:none;font-size:12px;font-weight:700;color:var(--muted)}
+.pick-row[aria-pressed="true"] .st{color:var(--ok)}
+.pick-empty{padding:18px 14px;color:var(--muted);font-size:14px}
+.pick-or{margin-top:12px;font-size:13px;color:var(--muted)}
 
 .bigphrase{position:fixed;inset:0;z-index:70;background:var(--surface);display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center;cursor:pointer}
 .bigphrase.on{display:flex}
@@ -486,6 +508,13 @@ footer{max-width:1120px;margin:0 auto;padding:0 var(--pad) 40px;color:var(--mute
 <div class="sheet-bg" id="sheetBg">
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sTitle">
     <h2 id="sTitle">Add a stop</h2>
+    <div class="pick" id="sPick">
+      <span class="lbl">Pick from the guides</span>
+      <div class="pick-find"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input class="in" id="sFind" type="search" placeholder="Search sights, food, shows, cafés" autocomplete="off"></div>
+      <div class="catpick" id="sKinds" role="group" aria-label="Filter"></div>
+      <div class="pick-list" id="sPickList" role="listbox" aria-label="Places from the guides"></div>
+      <p class="pick-or">Or fill in your own stop below.</p>
+    </div>
     <div class="fgrid">
       <div class="full"><div class="catpick" id="sCats" role="group" aria-label="Type"></div></div>
       <label class="field full"><span>What</span><input class="in" id="sName" placeholder="Soup dumplings near Yu Garden"></label>
@@ -558,6 +587,7 @@ const IC = {
   sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>',
   moon:'<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
   plus:'<path d="M12 5v14M5 12h14"/>',
+  search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
   apple:'<path d="M12 20.5c-1.2 0-2-.7-3.2-.7s-2.1.7-3.2.7C3.7 20.5 2 16.8 2 13.6 2 10.4 4 8.7 6 8.7c1.2 0 2.2.8 3 .8s1.9-.9 3.3-.9c1.1 0 2.4.5 3.2 1.6-2.8 1.6-2.3 5.6.5 6.7-.5 1.4-1.6 3.6-3 3.6Z"/><path d="M12 8.5c-.2-1.9 1.4-4 3.5-4.2.2 2.1-1.6 4.1-3.5 4.2Z"/>',
   ticket:'<path d="M3 9a2 2 0 0 0 0 6v3a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-3a2 2 0 0 0 0-6V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1Z"/><path d="M14 5v2M14 11v2M14 17v2"/>',
   clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
@@ -1607,7 +1637,38 @@ async function renderMap(focusId){
 /* =========================================================
    ADD / EDIT STOP SHEET
    ========================================================= */
-let editing = null, sCat = "food", sExtra = {};
+let editing = null, sCat = "food", sExtra = {}, pickKind = "all", pickId = null;
+function renderPick(){
+  const box = $("#sPickList"); if(!box) return;
+  const days = getDays(), d = days.find(x => x.date === $("#sDate").value);
+  const cities = d ? d.cities.filter(c => GUIDES[c]) : [];
+  const q = $("#sFind").value.trim().toLowerCase();
+  const pool = ITEMS.filter(it => q || !cities.length || cities.includes(it.city));
+  const SHORT = {places:"Sights", shows:"Shows", trips:"Day trips", foods:"Food", cool:"Cafés"};
+  const kinds = Object.entries(KINDS).map(([k,l]) => [k, SHORT[k]||l]).filter(([k]) => pool.some(it => it.kind === k));
+  if(pickKind !== "all" && !kinds.some(([k]) => k === pickKind)) pickKind = "all";
+  $("#sKinds").innerHTML = [["all","All"], ...kinds].map(([k,l]) => `<button type="button" data-pickkind="${k}" aria-pressed="${k===pickKind}">${esc(l)}</button>`).join("");
+  const list = pool.filter(it => (pickKind === "all" || it.kind === pickKind) && (!q || `${it.name} ${it.zh} ${it.desc} ${it.city}`.toLowerCase().includes(q)));
+  box.innerHTML = list.length ? list.map(it => {
+    const sel = it.id === pickId, added = inPlan(it.name);
+    return `<button type="button" class="pick-row" role="option" data-pick="${it.id}" aria-pressed="${sel}" aria-selected="${sel}">
+      ${ph(it.q, "", it.cat, `var(${GUIDES[it.city].color})`, "s")}
+      <span class="t"><b>${esc(it.name)}</b><small>${esc(KINDS[it.kind])} · ${esc(it.city)}${it.zh?` · ${esc(it.zh)}`:""}</small></span>
+      <span class="st">${sel ? icon("check",18) : added ? "In plan" : ""}</span></button>`;
+  }).join("") : `<p class="pick-empty">Nothing matches${q?` “${esc(q)}”`:""}. Type your own stop below.</p>`;
+  hydrate(box);
+}
+function pickItem(id){
+  const it = itemById(id); if(!it) return;
+  pickId = it.id;
+  $("#sName").value = it.name;
+  $("#sPlace").value = it.zh ? `${it.zh} ${it.name}` : it.name;
+  $("#sNotes").value = it.tip || "";
+  sExtra = {zh:it.zh, lat:it.lat, lng:it.lng, q:it.q};
+  sCat = CATS[it.cat] ? it.cat : sCat;
+  document.querySelectorAll("#sCats button").forEach(b => b.setAttribute("aria-pressed", b.dataset.cat === sCat));
+  renderPick();
+}
 function openSheet(o = {}){
   const days = getDays();
   if(!days.length){ toast("Add your city dates first"); showView("plan"); setTimeout(()=>{ const el=document.querySelector('.cityrow input[type=date]'); el&&el.focus(); },80); return; }
@@ -1629,9 +1690,15 @@ function openSheet(o = {}){
   if(a){ $("#sStart").value = a.start||""; $("#sEnd").value = a.end||""; }
   else { const last = actsOn(date).filter(x=>x.end).sort((x,y)=>y.end.localeCompare(x.end))[0]; const s = last ? toMin(last.end) : 600; $("#sStart").value = fromMin(s); $("#sEnd").value = fromMin(Math.min(s+90, 1439)); }
   $("#sCats").innerHTML = Object.entries(CATS).map(([k,c])=>`<button type="button" data-cat="${k}" aria-pressed="${k===sCat}">${icon(k,15)} ${c.label}</button>`).join("");
+  const pre = !a && o.title ? ITEMS.find(it => it.name === o.title) : null;
+  pickId = pre ? pre.id : null; pickKind = "all"; $("#sFind").value = "";
+  $("#sPick").hidden = !!a;
+  if(!a) renderPick();
   closeSpot();
   $("#sheetBg").classList.add("on");
-  setTimeout(()=>$("#sName").focus(), 60);
+  $("#sPickList").scrollTop = 0;
+  if(pre){ const r = $(`#sPickList [data-pick="${pre.id}"]`); r && r.scrollIntoView({block:"nearest"}); }
+  if(a || o.title) setTimeout(()=>$("#sName").focus(), 60);
 }
 function closeSheet(){ $("#sheetBg").classList.remove("on"); editing = null; }
 function saveSheet(){
@@ -1803,6 +1870,8 @@ document.addEventListener("click", e => {
   if(ds.factcity){ UI.c101 = "facts"; UI.fcity = ds.factcity; renderBasics(); showView("basics"); return; }
   if(ds.mapcity){ UI.mapCity = ds.mapcity; mapShell(); renderMap(); return; }
   if(ds.mapplan){ UI.mapPlanOnly = ds.mapplan === "1"; mapShell(); renderMap(); return; }
+  if(ds.pick){ pickItem(ds.pick); return; }
+  if(ds.pickkind){ pickKind = ds.pickkind; renderPick(); return; }
   if(ds.cat){ sCat = ds.cat; document.querySelectorAll("#sCats button").forEach(b => b.setAttribute("aria-pressed", b.dataset.cat === sCat)); return; }
   if(ds.phrase){ const p = CHINA.phrases[+ds.phrase]; const bp = $("#bigPhrase"); bp.innerHTML = `<div class="hz">${p[2]}</div><div class="py">${p[1]}</div><div>${p[0]}</div><small>Tap anywhere to close</small>`; bp.classList.add("on"); return; }
   if(ds.rmcity){ const c = S.cities.find(x=>x.id===ds.rmcity); if(confirm(`Remove ${c.name||"this city"}? Stops on its days are kept.`)){ S.cities = S.cities.filter(x=>x.id!==c.id); save(); renderAll(); } return; }
@@ -1846,7 +1915,8 @@ document.addEventListener("change", e => {
   if(el.dataset.check){ const store = UI.list === "buy" ? S.buy : S.prep; store[el.dataset.check] = el.checked; save(); renderLists(); hydrate(); return; }
   if(el.id === "convFrom") renderConv();
 });
-document.addEventListener("input", e => { if(e.target.id === "convAmt") renderConv(); });
+document.addEventListener("input", e => { if(e.target.id === "convAmt") renderConv(); if(e.target.id === "sFind"){ pickKind = "all"; renderPick(); } });
+$("#sDate").addEventListener("change", () => { if(!$("#sPick").hidden) renderPick(); });
 $("#sheetBg").addEventListener("click", e => { if(e.target.id === "sheetBg") closeSheet(); });
 $("#spotBg").addEventListener("click", e => { if(e.target.id === "spotBg") closeSpot(); });
 $("#authBg").addEventListener("click", e => { if(e.target.id === "authBg") $("#authBg").classList.remove("on"); });

@@ -15,24 +15,7 @@
       "leave": "2026-11-28"
     }
   ],
-  "acts": [
-    {
-      "id": "z6j9uuf",
-      "done": false,
-      "date": "2026-11-20",
-      "start": "10:00",
-      "end": "11:30",
-      "cat": "place",
-      "title": "Shanghai Tower",
-      "place": "上海中心大厦 Shanghai Tower",
-      "notes": "Pick a clear day. The lift is one of the fastest in the world.",
-      "cost": "",
-      "zh": "上海中心大厦",
-      "lat": 31.2335,
-      "lng": 121.5055,
-      "q": "t:Shanghai Tower"
-    }
-  ],
+  "acts": [],
   "buy": {},
   "prep": {},
   "custom": []

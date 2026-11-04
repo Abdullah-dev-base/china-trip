@@ -17,6 +17,8 @@
   ],
   "acts": [],
   "buy": {},
-  "prep": {},
+  "prep": {
+    "alipay": false
+  },
   "custom": []
 }

@@ -1518,7 +1518,7 @@ function spotCard(it){
   return `<div class="spot">
     <div class="ph guide-art" data-photo="${esc(verifiedPhotoQuery(it))}" data-photo-alt="${esc(it.name)}" data-spot="${it.id}" style="--c:${groupColor(it)}" role="button" tabindex="0" aria-label="See ${esc(it.name)}"><span class="ph-ic">${icon(groupInfo(it).icon,46)}</span><span class="ph-label">${esc(groupInfo(it).label)}</span></div>
     <div class="sc">
-      <div class="spot-h"><h3><span data-spot="${it.id}">${esc(it.name)}</span></h3><span class="zh">${esc(it.zh)}</span></div><div class="group-tag" style="--gc:${groupColor(it)}">${icon(groupInfo(it).icon,14)} ${esc(groupInfo(it).label)}</div>
+      <div class="spot-h"><h3><span data-spot="${it.id}">${esc(it.name)}</span></h3><span class="zh">${esc(it.zh)}</span></div><div class="group-tag" style="--gc:${groupColor(it)}">${icon(groupInfo(it).icon,14)} ${esc(groupInfo(it).label)}</div>${UI.guideSearch.trim()&&UI.guideSearchScope==="both"?`<span class="guide-citychip">${esc(it.city)}</span>`:""}
       ${it.foodKind?`<div class="food-label">${esc(it.foodKind==="restaurant"?"LOCAL RESTAURANT":"TRADITIONAL DISH")}</div>`:""}
       ${it.address?`<p class="food-address">${icon("pin",13)} ${esc(it.address)}</p>`:""}
       <p>${esc(it.desc)}</p>

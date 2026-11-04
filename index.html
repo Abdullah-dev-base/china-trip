@@ -533,6 +533,32 @@ footer{max-width:1120px;margin:0 auto;padding:0 var(--pad) 40px;color:var(--mute
 .unpin-item .pill{height:26px;padding:0 8px;font-size:11px}
 .map-all-pinned{font-size:13px;color:var(--ok);display:flex;gap:6px;align-items:center;margin-top:12px}
 @media(max-width:650px){.unpin-grid{grid-template-columns:1fr}.map-unpinned summary span{display:none}.mapwrap{height:56vh;min-height:360px}}
+
+/* Search and curated food: keep controls compact on small screens. */
+.guide-search-panel{background:var(--surface);border:1px solid var(--line);border-radius:15px;padding:16px 18px;margin:22px 0 15px}
+.guide-search-panel>label{display:block;font-size:13.5px;font-weight:700;margin-bottom:9px}
+.guide-search-field{height:44px;border:1px solid var(--line-2);border-radius:11px;display:flex;align-items:center;gap:9px;padding:4px 6px 4px 13px;background:var(--bg)}
+.guide-search-field:focus-within{outline:2px solid var(--sh);outline-offset:1px}
+.guide-search-field svg{flex:none;color:var(--muted)}
+.guide-search-field input{flex:1;min-width:0;background:transparent;color:var(--ink);border:0;outline:0;font-size:14px;padding:5px 0}
+.guide-search-field input:focus{outline:0}
+.guide-search-scope{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:10px;font-size:12px;color:var(--muted)}
+.guide-search-scope button{cursor:pointer;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:5px 10px;font-size:12px;font-weight:650;color:var(--ink-2)}
+.guide-search-scope button[aria-pressed="true"]{background:color-mix(in srgb,var(--sh) 12%,var(--surface));color:var(--sh);border-color:var(--sh)}
+.guide-search-scope small{font-size:12px;flex-basis:100%}
+.guide-search-status{font-size:13.5px;color:var(--muted);margin:20px 0 4px}
+.search-empty{padding:25px;margin-top:15px}
+.search-empty p{font-size:13.5px;margin-top:6px;color:var(--muted)}
+.food-sub{margin-top:16px}
+.food-subhead{display:flex;align-items:center;gap:12px;justify-content:space-between;margin:0 0 12px}
+.food-subhead h3{font-size:17px}
+.food-subhead span{font-size:12px;color:var(--muted);white-space:nowrap}
+.food-sub+.food-sub{margin-top:30px}
+.food-label{display:inline-flex;align-self:flex-start;margin:8px 0 9px;padding:3px 7px;font-size:11px;letter-spacing:.035em;font-weight:800;color:var(--sh);background:color-mix(in srgb,var(--sh) 12%,transparent);border-radius:5px}
+.food-address{display:flex;align-items:flex-start;gap:5px;margin-bottom:7px;color:var(--ink-2);font-size:12.5px}
+.food-address svg{flex:none}
+.guide-citychip{display:inline-flex;padding:3px 7px;margin-left:5px;font-size:11px;font-weight:750;border-radius:5px;background:var(--surface-2);color:var(--ink-2)}
+@media(max-width:600px){.guide-search-panel{padding:13px}.guide-search-scope small{line-height:1.4}}
 </style>
 </head>
 <body>
@@ -544,6 +570,7 @@ footer{max-width:1120px;margin:0 auto;padding:0 var(--pad) 40px;color:var(--mute
     <nav class="nav" id="nav" aria-label="Sections"></nav>
     <span class="count" id="count"></span>
     <button class="btn sm hide" id="authBtn"></button>
+    <button class="ibtn" id="navSearchBtn" type="button" aria-label="Search guides, restaurants and places" title="Search Shanghai and Chongqing"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="10.8" cy="10.8" r="7"></circle><path d="m16 16 5 5"></path></svg></button>
     <button class="ibtn" id="themeBtn" aria-label="Switch theme"></button>
   </div>
 </header>
@@ -1166,7 +1193,7 @@ async function signIn(){
 }
 function signOut(silent){ TOKEN = ""; try{ localStorage.removeItem("chinaTrip.ghToken"); }catch(e){} SYNC = "idle"; renderAll(); if(!silent) toast("Signed out. This device is view only now."); }
 const guard = () => { if(RO()){ toast("View only. Only the owner can make changes."); return true; } return false; };
-const UI = { view:"plan", day:null, mode:"day", guide:"Shanghai", list:"prep", filter:"all", c101:"essentials", fcity:"all", mapCity:null, mapGroup:"all", mapPlanOnly:false, convAmt:100, convFrom:"CNY" };
+const UI = { view:"plan", day:null, mode:"day", guide:"Shanghai", list:"prep", filter:"all", guideSearch:"", guideSearchScope:"both", c101:"essentials", fcity:"all", mapCity:null, mapGroup:"all", mapPlanOnly:false, convAmt:100, convFrom:"CNY" };
 let RATES = { SAR:0.52, USD:0.14, live:false };
 const WX = {};
 
@@ -1471,12 +1498,12 @@ function renderConv(){
 const TAGS = {pork:["tag-pork","Usually pork"], halal:["tag-halal","Halal option"], spicy:["tag-spicy","Spicy"], veg:["","Meat-free option"]};
 function placeLinks(o){
   const g = guideFor(o.city) || {};
-  const kw = o.zh || o.name;
+  const kw = o.placeQuery || o.zh || o.name;
   const ll = o.lat ? `${o.lat},${o.lng}` : (o.trip || !g.lat ? "" : `${g.lat},${g.lng}`);
   return {
     amap:o.amapUrl || `https://uri.amap.com/search?keyword=${enc(kw)}${o.trip || !g.zh ? "" : `&city=${enc(g.zh)}`}&callnative=1`,
     apple:`https://maps.apple.com/?q=${enc(kw)}${ll ? `&sll=${ll}` : ""}`,
-    google:`https://www.google.com/maps/search/?api=1&query=${o.lat ? `${o.lat},${o.lng}` : enc(`${o.name} ${o.city||""}`)}`
+    google:`https://www.google.com/maps/search/?api=1&query=${o.lat ? `${o.lat},${o.lng}` : enc(o.placeQuery || `${o.name} ${o.city||""}`)}`
   };
 }
 const visitMeta = it => {
@@ -1492,6 +1519,8 @@ function spotCard(it){
     <div class="ph guide-art" data-photo="${esc(verifiedPhotoQuery(it))}" data-photo-alt="${esc(it.name)}" data-spot="${it.id}" style="--c:${groupColor(it)}" role="button" tabindex="0" aria-label="See ${esc(it.name)}"><span class="ph-ic">${icon(groupInfo(it).icon,46)}</span><span class="ph-label">${esc(groupInfo(it).label)}</span></div>
     <div class="sc">
       <div class="spot-h"><h3><span data-spot="${it.id}">${esc(it.name)}</span></h3><span class="zh">${esc(it.zh)}</span></div><div class="group-tag" style="--gc:${groupColor(it)}">${icon(groupInfo(it).icon,14)} ${esc(groupInfo(it).label)}</div>
+      ${it.foodKind?`<div class="food-label">${esc(it.foodKind==="restaurant"?"LOCAL RESTAURANT":"TRADITIONAL DISH")}</div>`:""}
+      ${it.address?`<p class="food-address">${icon("pin",13)} ${esc(it.address)}</p>`:""}
       <p>${esc(it.desc)}</p>
       ${it.tip?`<p class="tip"><b>Tip</b> ${esc(it.tip)}</p>`:""}
       ${it.far?`<div class="trip-meta"><span>${icon("transport",14)} ${esc(it.far)}</span><span>${icon("clock",14)} ${esc(it.stay)}</span></div>`:""}
@@ -1507,6 +1536,49 @@ function spotCard(it){
   </div>`;
 }
 const SECTIONS = GUIDE_GROUPS;
+
+/* Accessible live search across the Shanghai and Chongqing guide. No network calls.
+   Input stays mounted so typing never loses focus, even on mobile. */
+let guideSearchImageTimer = null;
+const normalizeGuideSearch = text => String(text??"").normalize("NFKC").toLocaleLowerCase().trim();
+function guideSearchMatches(it, raw){
+  if(!raw) return true;
+  const haystack = normalizeGuideSearch([
+    it.name,it.zh,it.city,it.desc,it.tip,it.address,it.placeQuery,
+    it.foodKind==="restaurant"?"restaurant local eatery where locals eat":"traditional food must try dish",
+    groupInfo(it).label,(it.tags||[]).join(" ")
+  ].join(" "));
+  return normalizeGuideSearch(raw).split(/\s+/).every(part=>haystack.includes(part));
+}
+function renderGuideResults(){
+  const root = $("#guideResultList");
+  if(!root) return;
+  const query = UI.guideSearch.trim(), both = !!query && UI.guideSearchScope==="both";
+  const matching = ITEMS.filter(it=>(both||it.city===UI.guide)&&guideSearchMatches(it,query));
+  const grouped = GUIDE_GROUPS.map(g=>({...g,items:matching.filter(it=>guideGroup(it)===g.k)}))
+    .filter(g=>g.items.length && (UI.filter==="all" || UI.filter===g.k));
+  const count=grouped.reduce((sum,g)=>sum+g.items.length,0);
+  const foodCards=(items,heading,subtitle)=>{
+    if(!items.length) return "";
+    return `<div class="food-sub"><div class="food-subhead"><h3>${heading}</h3><span>${items.length} ${subtitle}</span></div><div class="cards">${items.map(spotCard).join("")}</div></div>`;
+  };
+  root.innerHTML=`
+    <p class="guide-search-status" role="status">${query
+      ?`${count} match${count===1?"":"es"} for <b>“${esc(query)}”</b> in ${both?"both cities":esc(UI.guide)}`
+      :`${count} places and food discoveries in ${esc(UI.guide)}`}</p>
+    ${count===0?`<div class="card search-empty"><b>No matches found.</b><p>Try a shorter name or a food type like “noodles”, “hotpot”, “coffee” or “dumplings”. ${!both?"You can also search both cities.":""}</p></div>`:""}
+    ${grouped.map(g=>`<div class="sec">
+      <div class="sec-h"><h2>${icon(g.icon,20)} ${esc(g.label)}</h2><p>${g.items.length} places</p></div>
+      ${g.k==="food"
+        ? foodCards(g.items.filter(it=>it.foodKind!=="restaurant"&&it.kind==="foods"),"Must-try traditional dishes","dishes")
+           +foodCards(g.items.filter(it=>it.foodKind==="restaurant"||it.kind!=="foods"),"Where locals eat & food stops","places")
+        : `<div class="cards">${g.items.map(spotCard).join("")}</div>`}
+      ${g.k==="food"?`<div class="note"><b>Food note:</b> Dishes without a specific restaurant are citywide food searches, not exact shop pins. Amap is best for checking branch locations and hours. Pork, lard and meat broth are common even in seemingly vegetarian dishes; look for <span class="zh">清真</span> for Muslim-owned halal options and confirm preparation.</div>`:""}
+    </div>`).join("")}`;
+  clearTimeout(guideSearchImageTimer);
+  guideSearchImageTimer=setTimeout(()=>{if(UI.view==="guides")hydrate();},180);
+}
+
 function renderGuides(){
   const name = UI.guide, g = GUIDES[name], color = `var(${g.color})`;
   const days = getDays().filter(d => d.cities.includes(name));
@@ -1534,18 +1606,29 @@ function renderGuides(){
         </div>
       </div>
     </div>
+    <div class="guide-search-panel">
+      <label for="guideSearch">Search places, traditional food, restaurants, cafés & shows</label>
+      <div class="guide-search-field">
+        ${icon("search",19)}
+        <input id="guideSearch" type="search" aria-label="Search China trip guides" placeholder="e.g. dumplings, hotpot, Disneyland, 豌杂面…" value="${esc(UI.guideSearch)}" autocomplete="off" spellcheck="false">
+        <button type="button" class="btn sm" data-guideclear="1" aria-label="Clear guide search">Clear</button>
+      </div>
+      <div class="guide-search-scope" role="group" aria-label="Search location">
+        <span>Search within</span>
+        <button type="button" data-searchscope="city" aria-pressed="${UI.guideSearchScope==="city"}">Current city</button>
+        <button type="button" data-searchscope="both" aria-pressed="${UI.guideSearchScope==="both"}">Both cities</button>
+        <small>Find a specific shop, Chinese name or dish and open its map.</small>
+      </div>
+    </div>
     <div class="filterbar">
       <div class="chips" role="group" aria-label="Show">
         <button data-filter="all" aria-pressed="${UI.filter==="all"}">All <span>${total}</span></button>
         ${present.map(section=>`<button data-filter="${section.k}" aria-pressed="${UI.filter===section.k}" style="--gc:${section.color}">${icon(section.icon,15)} ${section.label} <span>${section.items.length}</span></button>`).join("")}
       </div>
     </div>
-    ${shown.map(s => `<div class="sec">
-      <div class="sec-h"><h2>${icon(s.icon,20)} ${esc(s.label)}</h2><p>${s.items.length} places</p></div>
-      <div class="cards">${s.items.map(spotCard).join("")}</div>
-      ${s.k==="food"?`<div class="note"><b>Eating halal?</b> Look for the green <span class="zh">清真</span> (qīngzhēn) sign on Lanzhou noodle and Xinjiang restaurants. They’re all over ${name}. Elsewhere, show “我不吃猪肉” (I don’t eat pork) when you order.</div>`:""}
-    </div>`).join("")}
+    <div id="guideResultList" aria-live="polite" aria-atomic="false"></div>
     <button class="morelink" data-factcity="${name}">${icon("spark",18)}<span><b>Fun facts about ${name}</b><small>Funny, surprising and good-to-know things, in China 101</small></span>${icon("arrow",18)}</button>`;
+  renderGuideResults();
 }
 function openSpot(id){
   const it = itemById(id); if(!it) return;
@@ -1559,6 +1642,8 @@ function openSpot(id){
       <p class="sub">${it.kind==="trips"?`Day trip from ${it.city}`:`${it.city}, ${it.kind==="foods"?"Food":CATS[it.cat].label}`}</p>
       ${it.far?`<div class="trip-meta"><span>${icon("transport",14)} ${esc(it.far)}</span><span>${icon("clock",14)} ${esc(it.stay)}</span></div>`:""}
       ${visitMeta(it)}
+      ${it.foodKind?`<div class="food-label">${esc(it.foodKind==="restaurant"?"LOCAL RESTAURANT":"TRADITIONAL DISH")}</div>`:""}
+      ${it.address?`<p class="food-address">${icon("pin",14)} ${esc(it.address)}</p>`:""}
       <p class="desc">${esc(it.desc)}</p>
       ${it.tip?`<div class="tipbox"><b>Tip:</b> ${esc(it.tip)}</div>`:""}
       ${it.tags&&it.tags.length?`<div class="tags">${it.tags.map(t=>`<span class="tag ${TAGS[t][0]}">${TAGS[t][1]}</span>`).join("")}</div>`:""}
@@ -2026,6 +2111,9 @@ document.addEventListener("click", e => {
   const EDIT_IDS = ["addCity","resetBtn","importBtn","addCustom","focusDates","sSave"];
   if((ds.sugg || ds.add || ds.edit || ds.del || ds.done || ds.rmcity || ds.rmcustom || "sample" in ds || EDIT_IDS.includes(t.id)) && guard()) return;
   if(ds.sugg){ e.stopPropagation(); if(map) map.closePopup(); openSheet(JSON.parse(ds.sugg)); return; }
+  if(t.id==="navSearchBtn"){ UI.guideSearchScope="both"; showView("guides"); const field=$("#guideSearch"); if(field)field.focus(); return; }
+  if(ds.guideclear){ UI.guideSearch=""; const field=$("#guideSearch"); if(field){field.value="";field.focus();} renderGuideResults(); return; }
+  if(ds.searchscope){ UI.guideSearchScope=ds.searchscope; document.querySelectorAll("[data-searchscope]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.searchscope===ds.searchscope)); renderGuideResults(); return; }
   if(ds.view){ showView(ds.view); return; }
   if(ds.day){ UI.day = ds.day; UI.mode = "day"; renderPlan(); hydrate(); return; }
   if(ds.mode){ UI.mode = ds.mode; renderPlan(); hydrate(); return; }
@@ -2072,6 +2160,9 @@ document.addEventListener("click", e => {
   }
 });
 document.addEventListener("keydown", e => {
+  if((e.metaKey||e.ctrlKey) && e.key.toLowerCase()==="k"){
+    e.preventDefault(); UI.guideSearchScope="both"; showView("guides"); const field=$("#guideSearch"); if(field)field.focus(); return;
+  }
   if(e.key === "Enter" && e.target.dataset && e.target.dataset.spot && e.target.tagName !== "BUTTON"){ openSpot(e.target.dataset.spot); return; }
   if(e.target.id === "customItem" && e.key === "Enter") $("#addCustom").click();
   if((e.target.id === "tokIn" || e.target.id === "pwIn" || e.target.id === "newPw") && e.key === "Enter") signIn();
@@ -2089,7 +2180,11 @@ document.addEventListener("change", e => {
   if(el.dataset.check){ const store = UI.list === "buy" ? S.buy : S.prep; store[el.dataset.check] = el.checked; save(); renderLists(); hydrate(); return; }
   if(el.id === "convFrom") renderConv();
 });
-document.addEventListener("input", e => { if(e.target.id === "convAmt") renderConv(); if(e.target.id === "sFind"){ pickKind = "all"; renderPick(); } });
+document.addEventListener("input", e => {
+  if(e.target.id === "guideSearch"){ UI.guideSearch=e.target.value; renderGuideResults(); return; }
+  if(e.target.id === "convAmt") renderConv();
+  if(e.target.id === "sFind"){ pickKind = "all"; renderPick(); }
+});
 $("#sDate").addEventListener("change", () => { if(!$("#sPick").hidden) renderPick(); });
 $("#sheetBg").addEventListener("click", e => { if(e.target.id === "sheetBg") closeSheet(); });
 $("#spotBg").addEventListener("click", e => { if(e.target.id === "spotBg") closeSpot(); });

@@ -570,6 +570,21 @@ footer{max-width:1120px;margin:0 auto;padding:0 var(--pad) 40px;color:var(--mute
 .food-address svg{flex:none}
 .guide-citychip{display:inline-flex;padding:3px 7px;margin-left:5px;font-size:11px;font-weight:750;border-radius:5px;background:var(--surface-2);color:var(--ink-2)}
 @media(max-width:600px){.guide-search-panel{padding:13px}.guide-search-scope small{line-height:1.4}}
+
+/* Personal Shanghai map filters and honest approximate-area markers */
+.map-collections{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:8px 0 14px}
+.map-collections button{background:var(--surface);border:1px solid var(--line-2);border-radius:999px;padding:8px 11px;font-size:12px;font-weight:750;color:var(--ink-2);cursor:pointer}
+.map-collections button[aria-pressed="true"]{background:color-mix(in srgb,var(--sh) 13%,var(--surface));color:var(--sh);border-color:var(--sh)}
+.catpin.approx-pin{border:2px dashed #fff}
+.pin-approx{position:absolute;bottom:-6px;right:-6px;width:17px;height:17px;display:grid;place-items:center;background:var(--surface);color:var(--ink);border-radius:50%;border:1px solid var(--line);font-size:11px;font-weight:850;transform:rotate(45deg)}
+.approx-hint{font-size:11.5px!important;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:7px 9px}
+.plan-options{margin:20px 0 4px;padding:15px 16px;background:var(--surface);border:1px solid var(--line);border-radius:13px}
+.plan-options summary{font-size:14px;font-weight:800;cursor:pointer}
+.plan-options>p{font-size:12.5px;color:var(--muted);margin:10px 0}
+.plan-option-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.plan-option-grid button{cursor:pointer;text-align:left;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:10px;color:var(--ink-2);font-weight:650;font-size:12px}
+@media(max-width:560px){.plan-option-grid{grid-template-columns:1fr}}
+.stops .notes{white-space:pre-line}
 </style>
 </head>
 <body>
@@ -658,6 +673,7 @@ footer{max-width:1120px;margin:0 auto;padding:0 var(--pad) 40px;color:var(--mute
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <input type="file" id="importFile" accept=".json,application/json" hidden>
 
+<script src="shanghai-paper.js"></script>
 <script>
 /* =========================================================
    ICONS
@@ -1042,6 +1058,45 @@ const USER_NIGHT_FOOD_ADDS = [{"city":"Shanghai","section":"cool","item":{"name"
 for(const {city,section,item} of USER_NIGHT_FOOD_ADDS)
   if(!GUIDES[city][section].some(existing=>existing.name===item.name)) GUIDES[city][section].push({...item,origin:"user"});
 
+/* Handwritten Shanghai checklist and verified/reported branches.
+ * New map pins use an APPROXIMATE neighborhood coordinate when a precise venue
+ * latitude/longitude has not been independently established. Never treat them as
+ * a storefront pin; the Amap link searches the full Chinese branch name.
+ */
+const SH_PAPER = window.SHANGHAI_PAPER || {areas:{},items:[]};
+const SH_AREA_COUNT = {};
+for (const paper of SH_PAPER.items) {
+  const a=SH_PAPER.areas[paper.area]; if(!a) continue;
+  const k=SH_AREA_COUNT[paper.area]||0;SH_AREA_COUNT[paper.area]=k+1;
+  const radius=k===0?0:0.00019*Math.sqrt(k);
+  const angle=k*2.3999632297;
+  const lat=+(a[0]+Math.sin(angle)*radius).toFixed(6),
+        lng=+(a[1]+Math.cos(angle)*radius*1.2).toFixed(6);
+  const match=Object.values(GUIDES.Shanghai).filter(Array.isArray)
+    .flat().find(it=>it.name===paper.name);
+  if(match){
+    match.paper=true;
+    match.optional=!!paper.optional;
+    match.area=paper.area;
+    if(!match.lat || !match.lng){
+      match.lat=lat;match.lng=lng;match.geoPrecision="area";
+    }
+    if(!match.placeQuery)match.placeQuery=paper.loc;
+    if(!match.address && paper.desc)match.address=paper.desc;
+  } else {
+    const section=paper.cat==="activity"?"shows":(paper.cat==="place"?"places":"cool");
+    GUIDES.Shanghai[section].push({
+      name:paper.name, zh:paper.zh, cat:paper.cat, q:"",
+      desc:paper.desc||paper.name,
+      tip:paper.tip||"Use Amap to confirm the exact branch or entrance.",
+      lat,lng,geoPrecision:"area",placeQuery:paper.loc,
+      area:paper.area,paper:true,optional:!!paper.optional,origin:"user",
+      best:"Check branch hours before visiting",
+      booking:"Usually walk-in; verify selected venue",
+      nov:"Late November: confirm opening hours and any seasonal schedule"
+    });
+  }
+}
 /* flatten guide items with ids */
 const ITEMS = [];
 for(const [city,g] of Object.entries(GUIDES)) for(const kind of Object.keys(KINDS)) g[kind].forEach((it,i) => { it.id = `${city}-${kind}-${i}`; it.city = city; it.kind = kind; if(!it.cat) it.cat = kind==="foods" ? "food" : kind==="places" ? "place" : "activity"; ITEMS.push(it); });
@@ -1224,7 +1279,7 @@ async function signIn(){
 }
 function signOut(silent){ TOKEN = ""; try{ localStorage.removeItem("chinaTrip.ghToken"); }catch(e){} SYNC = "idle"; renderAll(); if(!silent) toast("Signed out. This device is view only now."); }
 const guard = () => { if(RO()){ toast("View only. Only the owner can make changes."); return true; } return false; };
-const UI = { view:"plan", day:null, mode:"day", guide:"Shanghai", list:"prep", filter:"all", originFilter:"all", guideSearch:"", guideSearchScope:"both", c101:"essentials", fcity:"all", mapCity:null, mapGroup:"all", mapPlanOnly:false, convAmt:100, convFrom:"CNY" };
+const UI = { view:"plan", day:null, mode:"day", guide:"Shanghai", list:"prep", filter:"all", originFilter:"all", guideSearch:"", guideSearchScope:"both", c101:"essentials", fcity:"all", mapCity:null, mapGroup:"all", mapCollection:"paper", mapPlanOnly:false, convAmt:100, convFrom:"CNY" };
 let RATES = { SAR:0.52, USD:0.14, live:false };
 const WX = {};
 
@@ -1267,7 +1322,7 @@ function getDays(){
 }
 const actsOn = date => S.acts.filter(a => a.date === date).sort((a,b)=>(a.start||"99").localeCompare(b.start||"99"));
 const inPlan = name => S.acts.some(a => a.title === name);
-const sugg = it => esc(JSON.stringify({city:it.city, title:it.name, cat:it.cat, place:it.name, zh:it.zh, notes:it.tip||"", lat:it.lat, lng:it.lng, q:it.q}));
+const sugg = it => esc(JSON.stringify({city:it.city, title:it.name, cat:it.cat, place:it.name, zh:it.zh, notes:it.tip||"", lat:it.geoPrecision==="area"?undefined:it.lat, lng:it.geoPrecision==="area"?undefined:it.lng, q:it.q}));
 
 /* =========================================================
    PHOTOS — real images from Wikipedia (free-licensed lead images)
@@ -1362,6 +1417,15 @@ function showView(v){
 /* =========================================================
    PLAN
    ========================================================= */
+function shanghaiOptionalHTML(){
+  const options=ITEMS.filter(it=>it.city==="Shanghai"&&it.paper&&it.optional);
+  if(!options.length)return "";
+  return `<details class="plan-options">
+    <summary>☆ Optional Shanghai places (${options.length})</summary>
+    <p>Not scheduled. Open a place to see its Amap link or add it to a day if you decide to go.</p>
+    <div class="plan-option-grid">${options.map(it=>`<button type="button" data-spot="${it.id}">${esc(it.name)}</button>`).join("")}</div>
+  </details>`;
+}
 function renderPlan(){
   const days = getDays();
   if(days.length && !days.some(d => d.date === UI.day)){
@@ -1389,7 +1453,7 @@ function renderPlan(){
       </div>
     </div>`;
   }
-  $("#v-plan").innerHTML = `<div class="plan"><div>${main}</div>${asideHTML(days)}</div>`;
+  $("#v-plan").innerHTML = `<div class="plan"><div>${main}${UI.mode==="all"||getDays().find(d=>d.date===UI.day)?.cities.includes("Shanghai")?shanghaiOptionalHTML():""}</div>${asideHTML(days)}</div>`;
   renderHeader(); renderConv();
 }
 function stripHTML(days){
@@ -1533,8 +1597,8 @@ function placeLinks(o){
   const ll = o.lat ? `${o.lat},${o.lng}` : (o.trip || !g.lat ? "" : `${g.lat},${g.lng}`);
   return {
     amap:o.amapUrl || `https://uri.amap.com/search?keyword=${enc(kw)}${o.trip || !g.zh ? "" : `&city=${enc(g.zh)}`}&callnative=1`,
-    apple:`https://maps.apple.com/?q=${enc(kw)}${ll ? `&sll=${ll}` : ""}`,
-    google:`https://www.google.com/maps/search/?api=1&query=${o.lat ? `${o.lat},${o.lng}` : enc(o.placeQuery || `${o.name} ${o.city||""}`)}`
+    apple:`https://maps.apple.com/?q=${enc(kw)}${ll && o.geoPrecision!=="area" ? `&sll=${ll}` : ""}`,
+    google:`https://www.google.com/maps/search/?api=1&query=${o.lat && o.geoPrecision!=="area" ? `${o.lat},${o.lng}` : enc(o.placeQuery || `${o.name} ${o.city||""}`)}`
   };
 }
 const visitMeta = it => {
@@ -1818,6 +1882,7 @@ function tileLayer(){
 const mapVenueItems = () => ITEMS.filter(it =>
   it.kind!=="foods" &&
   (UI.mapCity==="all" || it.city===UI.mapCity) &&
+  (UI.mapCity==="Chongqing" || (UI.mapCollection==="all" || (UI.mapCollection==="paper"?it.paper&&!it.optional:it.paper&&it.optional))) &&
   (UI.mapGroup==="all" || guideGroup(it)===UI.mapGroup)
 );
 function mapDirectory(){
@@ -1854,10 +1919,15 @@ function mapShell(){
         <button data-mapplan="1" aria-pressed="${UI.mapPlanOnly}">Our stops</button>
       </div>
     </div>
+    ${UI.mapCity!=="Chongqing"?`<div class="map-collections" role="group" aria-label="Shanghai pin list">
+      <button data-mapcollection="paper" aria-pressed="${UI.mapCollection==="paper"}">📌 My Shanghai list</button>
+      <button data-mapcollection="optional" aria-pressed="${UI.mapCollection==="optional"}">☆ Optional outliers</button>
+      <button data-mapcollection="all" aria-pressed="${UI.mapCollection==="all"}">All guide suggestions</button>
+    </div>`:""}
     <div class="map-catbar" role="group" aria-label="Filter map places by category">
       <button data-mapgroup="all" aria-pressed="${UI.mapGroup==="all"}">${icon("map",16)} All types</button>
       ${GUIDE_GROUPS.map(group=>{
-        const count=ITEMS.filter(it=>it.kind!=="foods" && (UI.mapCity==="all" || it.city===UI.mapCity) && guideGroup(it)===group.k).length;
+        const count=mapVenueItems().filter(it=>guideGroup(it)===group.k).length;
         return count?`<button data-mapgroup="${group.k}" style="--gc:${group.color}" aria-pressed="${UI.mapGroup===group.k}">${icon(group.icon,16)} ${group.label} <span>${count}</span></button>`:"";
       }).join("")}
     </div>
@@ -1865,7 +1935,7 @@ function mapShell(){
     <div class="maplegend">
       <span><i class="ring"></i>In our plan</span>
       <span id="mapCount"></span>
-      <span class="muted">Pins use approximate saved coordinates; confirm exact entrances in Amap.</span>
+      <span class="muted">Pins marked ≈ show an approximate neighborhood, NOT the exact storefront. Use Amap for exact directions.</span>
     </div>
     <div class="map-nav-note">${icon("pin",17)} <span><b>For real directions in China, open Amap.</b> Every map popup has Amap, Apple Maps and Google Maps links. Amap handles Chinese addresses more reliably.</span></div>
     <div id="mapDirectory"></div>`;
@@ -1895,7 +1965,7 @@ async function renderMap(focusId){
   const pop=it=>{
     const group=groupInfo(it), L=placeLinks({...it,trip:it.kind==="trips"});
     return `<div class="map-pop-title" style="--gc:${group.color}"><span>${icon(group.icon,21)}</span><div><b>${esc(it.name)}</b><small>${esc(group.label)} · ${esc(it.city)}</small></div></div>
-      <div class="pb"><div class="origin-row">${originTag(it)}</div><p>${esc(it.desc)}</p>${it.best?`<p class="map-best"><b>Best time:</b> ${esc(it.best)}</p>`:""}
+      <div class="pb"><div class="origin-row">${originTag(it)}</div><p>${esc(it.desc)}</p>${it.geoPrecision==="area"?`<p class="approx-hint"><b>≈ Approximate area pin.</b> Open Amap to find the exact entrance.</p>`:""}${it.best?`<p class="map-best"><b>Best time:</b> ${esc(it.best)}</p>`:""}
       <div class="links"><a class="pill" href="${L.amap}" target="_blank" rel="noopener">Amap</a><a class="pill" href="${L.apple}" target="_blank" rel="noopener">Apple</a><a class="pill" href="${L.google}" target="_blank" rel="noopener">Google</a>
       <button class="pill" data-spot="${it.id}">Details</button></div>
       <div class="links"><button class="pill eo" data-sugg="${sugg(it)}">${icon("plus",14)} Add to plan</button>${it.book?`<a class="pill book" href="${esc(it.book.url)}" target="_blank" rel="noopener">${icon("ticket",14)} Book</a>`:""}</div></div>`;
@@ -1903,10 +1973,10 @@ async function renderMap(focusId){
   if(!UI.mapPlanOnly){
     coords.forEach(it=>{
       const group=groupInfo(it), selected=inPlan(it.name);
-      const html=`<div class="catpin ${selected?"in-plan":""}" style="--pc:${group.color}" title="${esc(group.label)}">${icon(group.icon,19)}</div>`;
+      const html=`<div class="catpin ${selected?"in-plan":""} ${it.geoPrecision==="area"?"approx-pin":""}" style="--pc:${group.color}" title="${esc(group.label)}">${icon(group.icon,19)}${it.geoPrecision==="area"?`<span class="pin-approx">≈</span>`:""}</div>`;
       const marker=L.marker([it.lat,it.lng],{icon:L.divIcon({className:"pin-icon",html,iconSize:[36,42],iconAnchor:[18,41],popupAnchor:[0,-34]})})
         .bindPopup(pop(it),{maxWidth:340,minWidth:240})
-        .bindTooltip(it.name,{direction:"top",offset:[0,-24]});
+        .bindTooltip(`${it.geoPrecision==="area"?"≈ ":""}${it.name}`,{direction:"top",offset:[0,-24]});
       layer.addLayer(marker);
       if(it.kind!=="trips")pts.push([it.lat,it.lng]);
       if(focusId&&it.id===focusId)focus=marker;
@@ -2168,8 +2238,9 @@ document.addEventListener("click", e => {
   if(ds.c101){ UI.c101 = ds.c101; renderBasics(); return; }
   if(ds.fcity){ UI.fcity = ds.fcity; renderBasics(); return; }
   if(ds.factcity){ UI.c101 = "facts"; UI.fcity = ds.factcity; renderBasics(); showView("basics"); return; }
-  if(ds.mapcity){ UI.mapCity = ds.mapcity; mapShell(); renderMap(); return; }
+  if(ds.mapcity){ UI.mapCity = ds.mapcity; UI.mapGroup="all"; if(ds.mapcity==="Shanghai")UI.mapCollection="paper"; mapShell(); renderMap(); return; }
   if(ds.mapgroup){ UI.mapGroup = ds.mapgroup; mapShell(); renderMap(); return; }
+  if(ds.mapcollection){ UI.mapCollection=ds.mapcollection; UI.mapPlanOnly=false; UI.mapGroup="all"; mapShell(); renderMap(); return; }
   if(ds.mapplan){ UI.mapPlanOnly = ds.mapplan === "1"; mapShell(); renderMap(); return; }
   if(ds.pick){ pickItem(ds.pick); return; }
   if(ds.pickkind){ pickKind = ds.pickkind; renderPick(); return; }

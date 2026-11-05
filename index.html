@@ -1093,6 +1093,7 @@ for (const paper of SH_PAPER.items) {
       match.lat=lat;match.lng=lng;match.geoPrecision="area";
     }
     if(!match.placeQuery)match.placeQuery=paper.loc;
+    if(paper.amapUrl)match.amapUrl=paper.amapUrl;
     if(!match.address && paper.desc)match.address=paper.desc;
   } else {
     const section=paper.cat==="activity"?"shows":(paper.cat==="place"?"places":"cool");
@@ -1100,7 +1101,7 @@ for (const paper of SH_PAPER.items) {
       name:paper.name, zh:paper.zh, cat:paper.cat, q:"",
       desc:paper.desc||paper.name,
       tip:paper.tip||"Use Amap to confirm the exact branch or entrance.",
-      lat,lng,geoPrecision:"area",placeQuery:paper.loc,
+      lat,lng,geoPrecision:"area",placeQuery:paper.loc,amapUrl:paper.amapUrl,
       area:paper.area,paper:true,optional:!!paper.optional,origin:"user",
       best:"Check branch hours before visiting",
       booking:"Usually walk-in; verify selected venue",

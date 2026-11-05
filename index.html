@@ -1509,7 +1509,7 @@ function dayHTML(d, i){
           </div>
           ${a.notes?`<p class="notes">${esc(a.notes)}</p>`:""}
           ${kw||a.lat?`<div class="links">
-            ${linkPills(placeLinks({name:a.place||a.title, zh:a.zh||(kw!==a.place?kw:""), lat:a.lat, lng:a.lng, city, trip:it&&it.kind==="trips"}), it&&it.book)}
+            ${linkPills(placeLinks({name:a.place||a.title, zh:a.zh||(kw!==a.place?kw:""), lat:a.lat, lng:a.lng, city, geoPrecision:a.geoPrecision, placeQuery:a.place, trip:it&&it.kind==="trips"}), it&&it.book)}
           </div>`:""}
         </div>
         ${a.q?`<div class="ph" data-photo="${esc(a.q)}" data-size="s" style="--c:${color}" ${it?`data-spot="${it.id}" title="See details"`:""}><span class="ph-ic">${icon(cat,18)}</span></div>`:""}
@@ -2001,8 +2001,8 @@ async function renderMap(focusId){
     if(!UI.mapPlanOnly&&itemByName(act.title))return;
     if(!UI.mapPlanOnly&&UI.mapGroup!=="all")return;
     const col=cityColor(city),idx=days.indexOf(day)+1;
-    const marker=L.marker([act.lat,act.lng],{icon:L.divIcon({className:"",html:`<div class="mk" style="background:${col}">${idx}</div>`,iconSize:[26,26],iconAnchor:[13,13]})})
-      .bindTooltip(`Day ${idx}: ${act.title}`,{direction:"top",offset:[0,-12]});
+    const marker=L.marker([act.lat,act.lng],{icon:L.divIcon({className:"",html:`<div class="mk" style="background:${col}">${act.geoPrecision==="area"?"≈":idx}</div>`,iconSize:[26,26],iconAnchor:[13,13]})})
+      .bindTooltip(`${act.geoPrecision==="area"?"Approximate area · ":""}Day ${idx}: ${act.title}`,{direction:"top",offset:[0,-12]});
     layer.addLayer(marker);pts.push([act.lat,act.lng]);
   });
   if(focus){map.setView(focus.getLatLng(),15);focus.openPopup();}

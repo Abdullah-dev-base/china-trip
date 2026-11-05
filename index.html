@@ -1072,10 +1072,21 @@ for (const paper of SH_PAPER.items) {
   const angle=k*2.3999632297;
   const lat=+(a[0]+Math.sin(angle)*radius).toFixed(6),
         lng=+(a[1]+Math.cos(angle)*radius*1.2).toFixed(6);
+  if(paper.noPin){
+    const section=paper.cat==="activity"?"shows":(paper.cat==="place"?"places":"cool");
+    if(!GUIDES.Shanghai[section].some(it=>it.name===paper.name))
+      GUIDES.Shanghai[section].push({
+        name:paper.name,zh:paper.zh,cat:paper.cat,desc:paper.desc,
+        tip:paper.tip||"Exact address unknown; provide the shop name to pin it.",
+        q:"",placeQuery:paper.loc,origin:"user",paper:true,optional:true,geoPrecision:"unknown"
+      });
+    continue;
+  }
   const match=Object.values(GUIDES.Shanghai).filter(Array.isArray)
     .flat().find(it=>it.name===paper.name);
   if(match){
     match.paper=true;
+    match.origin="user";
     match.optional=!!paper.optional;
     match.area=paper.area;
     if(!match.lat || !match.lng){

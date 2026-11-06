@@ -1896,7 +1896,7 @@ function tileLayer(){
  * Locations without supplied coordinates stay in the Amap/Apple directory instead of being pinned at a guessed position.
  */
 const mapVenueItems = () => ITEMS.filter(it =>
-  it.kind!=="foods" &&
+  (it.kind!=="foods" || (it.paper && it.foodKind==="restaurant")) &&
   (UI.mapCity==="all" || it.city===UI.mapCity) &&
   (UI.mapCity==="Chongqing" || (UI.mapCollection==="all" || (UI.mapCollection==="paper"?it.paper&&!it.optional:it.paper&&it.optional))) &&
   (UI.mapGroup==="all" || guideGroup(it)===UI.mapGroup)
